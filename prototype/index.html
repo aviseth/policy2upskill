@@ -650,8 +650,8 @@ function render() {
 document.addEventListener("click", (e) => {
   const tile = e.target.closest(".tile");
   if (tile) {
-    // Setting the hash fires hashchange, which sets state.k, renders and leaves Alerts, White paper and Ask.
-    if (location.hash.slice(1) === tile.dataset.id) { state.k = tile.dataset.id; render(); renderRoute(); }
+    // On Alerts, White paper and Ask, change the municipality without touching the hash: a hash change would jump to the explorer.
+    if (VIEW_ROUTES.includes(location.hash.slice(1)) || location.hash.slice(1) === tile.dataset.id) { state.k = tile.dataset.id; render(); renderRoute(); }
     else location.hash = tile.dataset.id;
     return;
   }
