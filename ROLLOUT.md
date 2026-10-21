@@ -21,7 +21,7 @@ Update this file as work lands. Each update gets a dated entry in the log at the
 | Day | Work | Owner | Gate |
 |---|---|---|---|
 | 1-2 | Agree the data contract (`data/contract.md`, `data/sample.json`; drafted 21 Oct) | Data + Method | Contract signed off by the team |
-| 2-3 | Pull SSB table 11619 for the 4 prototype kommuner. Keep attribution text ("Kilde: SSB", CC BY 4.0) | Data | Real employment layer loads in the explorer |
+| 2-3 | Pull SSB table 11619 for the 4 prototype kommuner, mapping kommune codes by year. Keep attribution text ("Kilde: SSB", CC BY 4.0) | Data | Real employment layer loads in the explorer |
 | 3-4 | Write the tagging rules as code, with thresholds marked proposed | Method | Rules reproduce the demo tags |
 | 4-5 | Explorer fixes from the UX review; decide English or Norwegian UI | Explorer | Decision on language recorded |
 | 5-7 | Send a request for a NAV stilling-feed token (not the deprecated public token) | Data | Request sent |
@@ -68,10 +68,11 @@ Gate 3 (day 21): backtest result known. If the hit rate is no better than baseli
 
 - **Occupation detail is 1-digit only** in SSB table 11619. Skills stay synthetic or demo-only until a finer source is found.
 - **NAV job-ad data needs a token.** If the request is refused, the job-ad signal stays out of the rollout.
-- **Kommune codes change** with the 2024 county reform. Check codes by year before any time series.
+- **Kommune codes change over time.** Tromsø is 1902 (2015-2019), 5401 (2020-2023), 5501 (2024-2025). Kristiansand is 1001 (2015-2019), 4204 (2020-2025). Each code returns 0 outside its period, so map codes per year and never mix them in one series.
 - **Tags may look arbitrary** if thresholds are not validated. Show them as proposed.
 
 ## Log
 
 - 2026-10-21: draft v1 written from the research outputs (data sources, method rigour, explorer UX, briefing, demo and pitch).
 - 2026-10-21 (evening): data contract v0.1 drafted and committed to `data/`. Tromsø fylke corrected to Troms in the prototype. Contract published on the prototype page and on the Miro board.
+- 2026-10-21 (late): data-sources research done. Recommended: SSB 11619 (employment by kommune, 1-digit occupation) and 14746 (population projections, 2026-2050). Cached pulls in /tmp/p2u-probe/, outside the repo. Bedriftsundersøkelsen figures came from search summaries, not the PDF, and must be checked before use.
