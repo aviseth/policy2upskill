@@ -1,0 +1,41 @@
+kommune_slug,occupation_label,employed_2019,employed_2025,annual_growth,trend
+bodo,Akademiske yrker,7637,8241,0.0128,level
+bodo,"Bønder, fiskere mv.",138,181,0.0462,level
+bodo,Håndverkere,2133,2156,0.0018,level
+bodo,Høyskole- og militære yrker,4264,4481,0.0083,level
+bodo,Kontoryrker,1941,1641,-0.0276,level
+bodo,Ledere,2437,2522,0.0057,level
+bodo,"Prosess- og maskinoperatører, transportarbeidere mv.",1030,991,-0.0064,level
+bodo,"Renholdere, hjelpearbeidere mv.",1430,1446,0.0019,level
+bodo,Salgs- og serviceyrker,6050,6348,0.0080,level
+bodo,Uoppgitt / yrker som ikke kan identifiseres,924,943,0.0034,level
+kristiansand,Akademiske yrker,0,15316,,insufficient data
+kristiansand,"Bønder, fiskere mv.",0,116,,insufficient data
+kristiansand,Håndverkere,0,4235,,insufficient data
+kristiansand,Høyskole- og militære yrker,0,9356,,insufficient data
+kristiansand,Kontoryrker,0,3600,,insufficient data
+kristiansand,Ledere,0,4628,,insufficient data
+kristiansand,"Prosess- og maskinoperatører, transportarbeidere mv.",0,2960,,insufficient data
+kristiansand,"Renholdere, hjelpearbeidere mv.",0,2582,,insufficient data
+kristiansand,Salgs- og serviceyrker,0,13530,,insufficient data
+kristiansand,Uoppgitt / yrker som ikke kan identifiseres,0,2650,,insufficient data
+stavanger,Akademiske yrker,20689,24052,0.0254,level
+stavanger,"Bønder, fiskere mv.",218,614,0.1884,rising
+stavanger,Håndverkere,4153,4887,0.0275,level
+stavanger,Høyskole- og militære yrker,12412,14570,0.0271,level
+stavanger,Kontoryrker,4072,4072,0.0000,level
+stavanger,Ledere,6167,7236,0.0270,level
+stavanger,"Prosess- og maskinoperatører, transportarbeidere mv.",2268,2705,0.0298,level
+stavanger,"Renholdere, hjelpearbeidere mv.",2607,2958,0.0213,level
+stavanger,Salgs- og serviceyrker,13831,15341,0.0174,level
+stavanger,Uoppgitt / yrker som ikke kan identifiseres,2755,3201,0.0253,level
+tromso,Akademiske yrker,0,14836,,insufficient data
+tromso,"Bønder, fiskere mv.",0,220,,insufficient data
+tromso,Håndverkere,0,2641,,insufficient data
+tromso,Høyskole- og militære yrker,0,6442,,insufficient data
+tromso,Kontoryrker,0,2196,,insufficient data
+tromso,Ledere,0,3854,,insufficient data
+tromso,"Prosess- og maskinoperatører, transportarbeidere mv.",0,1720,,insufficient data
+tromso,"Renholdere, hjelpearbeidere mv.",0,2235,,insufficient data
+tromso,Salgs- og serviceyrker,0,9814,,insufficient data
+tromso,Uoppgitt / yrker som ikke kan identifiseres,0,1787,,insufficient data
