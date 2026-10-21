@@ -90,6 +90,15 @@
   details.contract { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 18px; max-width: 1280px; margin: 0 28px 16px; }
   details.contract summary { cursor: pointer; font-weight: 600; font-size: 13px; }
 
+  .levels { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 18px; }
+  .levels button { font: inherit; background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer; color: var(--ink-2); }
+  .levels button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .levels select { font: inherit; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+  .reader { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 6px 0 22px; font-size: 13px; color: var(--ink-2); }
+  .reader .label { display: block; margin-bottom: 2px; }
+  .levelview h1 { margin-bottom: 14px; }
+  .stat-table td:not(:first-child), .stat-table th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+
   @media (max-width: 1100px) {
     header { flex-wrap: wrap; height: auto; padding: 12px 20px; gap: 12px; }
     .layout { grid-template-columns: 1fr; gap: 0; padding: 20px; }
@@ -123,6 +132,13 @@
 
   <main>
     <div id="explorer">
+    <div id="levels" class="levels">
+      <button data-level="national" aria-pressed="false">National</button>
+      <button data-level="region" aria-pressed="false">Region</button>
+      <button data-level="municipality" aria-pressed="true">Municipality</button>
+      <label class="toggle">Compare with <select id="compare"></select></label>
+    </div>
+    <div id="levelview"></div>
     <div class="panel" id="municipality-head"></div>
     <div class="panel">
       <div class="head">
@@ -585,6 +601,110 @@ $("scenario-toggle").addEventListener("change", (e) => {
 });
 
 
+// ---- Governance levels: national, region and municipality readers (from the Miro frame "One signal, three readers") ----
+// Two more synthetic municipalities for the demo pair (Frederiksberg vs Lolland) are added here.
+MUNICIPALITIES.push(
+  { id: "frederiksberg", name: "Frederiksberg", region: "Hovedstaden",
+    briefing: [["What is changing", "Knowledge jobs keep growing. Software roles rise faster than the regional average."],
+               ["What to fund this year", "Data and cloud upskilling for clerical and service staff."],
+               ["What we are unsure about", "Thin data: the software signal rests on one source."]] },
+  { id: "lolland", name: "Lolland", region: "Sjælland",
+    briefing: [["What is changing", "The workforce is ageing and shrinking. Construction demand may rise with the Femern link (scenario)."],
+               ["What to fund this year", "Retraining for process operators and heat-pump work. Plan the construction workforce early."],
+               ["What we are unsure about", "The Femern effect is a scenario assumption, not an observed trend."]] }
+);
+SKILLS.push(
+  { k: "frederiksberg", o: "Software developers", s: "Cloud infrastructure", c: "rising", t: "rising", p: 0.79, sc: false, src: ["Job ads (synthetic)"] },
+  { k: "frederiksberg", o: "Clerical support workers", s: "Digital tools and data handling", c: "transforming", t: "rising", p: 0.52, sc: false, src: ["Job ads (synthetic)", "Transferable-skills map (synthetic)"] },
+  { k: "lolland", o: "Process operators", s: "Manual process control", c: "falling", t: "falling", p: 0.64, sc: false, src: ["Job ads (synthetic)", "Employment register (synthetic)"] },
+  { k: "lolland", o: "Heat-pump installers", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.57, sc: false, src: ["Job ads (synthetic)", "Shortage list (synthetic)"] },
+  { k: "lolland", o: "Construction workers", s: "Tunnel construction (Femern link)", c: "rising", t: "rising", p: 0.30, sc: true, src: ["Scenario: Femern link construction"] }
+);
+DEMAND.frederiksberg = { "Software developers": [124, 119, 121], "Clerical support workers": [103, 106, 107] };
+DEMAND.lolland = { "Process operators": [79, 92, 100], "Construction workers": [83, 94, 100] };
+INDICATORS.frederiksberg = { "Software developers": { ttf: 72, shortage: true }, "Clerical support workers": { ttf: 31, shortage: false } };
+INDICATORS.lolland = { "Construction workers": { ttf: 58, shortage: true }, "Heat-pump installers": { ttf: 50, shortage: true }, "Process operators": { ttf: 35, shortage: false } };
+const synthEmployment = (total2025, growth) => ({ "All occupations": { "2019": String(Math.round(total2025 / (1 + growth))), "2025": String(total2025) } });
+EMPLOYMENT.frederiksberg = synthEmployment(105000, 0.06);
+EMPLOYMENT.lolland = synthEmployment(40000, -0.06);
+
+const LEVEL_READERS = {
+  national: { who: "Ministries and agencies (employment ministry, STAR)", question: "Which occupations are rising or falling nationally, and where should training budgets and the shortage list go?", levers: "Shortage lists, training budgets, immigration quotas", view: "Aggregates, trends and a defensible method" },
+  region: { who: "The five regions and the regional labour market councils (RAR)", question: "Where inside my region is the mismatch, and which sectors are under pressure?", levers: "Regional development funds, hospital workforce planning", view: "Municipality comparison inside the region" },
+  municipality: { who: "The municipality's jobcenter and economy unit", question: "Is this just us, or everyone? What happens to our labour market when the tunnel is built or the plant closes?", levers: "Retraining placements, local scenarios, early warning", view: "Neighbours and region alongside; confidence shown lower where data is thin" },
+};
+
+function currentMunicipality() {
+  return MUNICIPALITIES.find((x) => x.id === state.k) || MUNICIPALITIES[0];
+}
+
+function municipalityStats(id) {
+  const t = EMPLOYMENT[id] && EMPLOYMENT[id]["All occupations"];
+  const change = t ? ((+t["2025"]) / (+t["2019"]) - 1) * 100 : null;
+  const skills = SKILLS.filter((r) => r.k === id && !r.sc);
+  return {
+    employed: t ? (+t["2025"]).toLocaleString("en") : "n/a",
+    change: change === null ? "n/a" : (change > 0 ? "+" : "") + change.toFixed(0) + "%",
+    rising: skills.filter((r) => r.t === "rising").length,
+    falling: skills.filter((r) => r.t === "falling").length,
+    shortage: Object.values(INDICATORS[id] || {}).filter((v) => v.shortage).length,
+  };
+}
+
+function statRow(name, st) {
+  return `<tr><td>${esc(name)}</td><td>${st.employed}</td><td>${st.change}</td><td>${st.rising}</td><td>${st.falling}</td><td>${st.shortage}</td></tr>`;
+}
+
+function renderLevelView() {
+  const r = LEVEL_READERS[state.level];
+  const reader = `<div class="reader">
+    <div><span class="label">Who</span>${esc(r.who)}</div>
+    <div><span class="label">Question</span>${esc(r.question)}</div>
+    <div><span class="label">Levers</span>${esc(r.levers)}</div>
+    <div><span class="label">View</span>${esc(r.view)}</div></div>`;
+  const head = `<tr><th>Municipality</th><th>Employed 2025</th><th>Change 2019–25</th><th>Rising skills</th><th>Falling skills</th><th>Shortage occupations</th></tr>`;
+  if (state.level === "national") {
+    const list = MUNICIPALITIES.map((m) => statRow(m.name, municipalityStats(m.id))).join("");
+    return `<div class="levelview"><h1>National</h1>${reader}
+      <div class="panel"><table class="stat-table"><thead>${head}</thead><tbody>${list}</tbody></table></div></div>`;
+  }
+  const k = currentMunicipality();
+  const peers = MUNICIPALITIES.filter((m) => m.region === k.region);
+  return `<div class="levelview"><h1>${esc(k.region)} region</h1>${reader}
+    <div class="panel"><table class="stat-table"><thead>${head}</thead><tbody>${peers.map((m) => statRow(m.name, municipalityStats(m.id))).join("")}</tbody></table></div></div>`;
+}
+
+function renderCompare() {
+  const other = MUNICIPALITIES.find((m) => m.id === state.compare);
+  if (!other || other.id === state.k) return "";
+  const k = currentMunicipality();
+  const a = municipalityStats(k.id), b = municipalityStats(other.id);
+  const rows = [["Employed 2025", a.employed, b.employed], ["Change 2019–25", a.change, b.change], ["Rising skills", a.rising, b.rising], ["Falling skills", a.falling, b.falling], ["Shortage occupations", a.shortage, b.shortage]];
+  return `<div class="panel"><h2>${esc(k.name)} compared with ${esc(other.name)}</h2>
+    <table class="stat-table"><thead><tr><th>Measure</th><th>${esc(k.name)}</th><th>${esc(other.name)}</th></tr></thead>
+    <tbody>${rows.map(([m, x, y]) => `<tr><td>${m}</td><td>${x}</td><td>${y}</td></tr>`).join("")}</tbody></table>
+    <p class="muted" style="margin:10px 0 0">Two contrasting municipalities show more than one number does. Synthetic data.</p></div>`;
+}
+
+function renderLevel() {
+  document.querySelectorAll("#levels button[data-level]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.level === state.level));
+  const isMuni = state.level === "municipality";
+  document.querySelectorAll("#explorer > .panel").forEach((p) => (p.hidden = !isMuni));
+  $("compare").hidden = !isMuni;
+  $("levelview").innerHTML = isMuni ? renderCompare() : renderLevelView();
+}
+
+function initLevels() {
+  $("compare").innerHTML = `<option value="">None</option>` + MUNICIPALITIES.map((m) => `<option value="${m.id}">${esc(m.name)}</option>`).join("");
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("#levels button[data-level]");
+    if (b) { state.level = b.dataset.level; renderLevel(); }
+  });
+  $("compare").addEventListener("change", (e) => { state.compare = e.target.value; renderLevel(); });
+  state.level = "municipality";
+  state.compare = "";
+}
+
 // ---- Views: Alerts, White paper, Ask the data (rule-based and canned, synthetic data) ----
 const VIEW_ROUTES = ["alerts", "paper", "ask"];
 
@@ -683,8 +803,10 @@ window.addEventListener("hashchange", () => {
   renderRoute();
 });
 
+initLevels();
 fromHash();
 render();
+renderLevel();
 renderRoute();
 </script>
 </body>
