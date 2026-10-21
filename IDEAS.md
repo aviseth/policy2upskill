@@ -50,3 +50,29 @@ Brainstorm from Fable. Builds on the agreed architecture (signals -> core model 
 4. Which kommune do we commit to for the demo, and does it have a documented shock we can show in the backtest?
 5. Can Kompetansebehovsutvalget or HK-dir sanity-check the tagging definitions before the white paper?
 6. Who owns the Claude API cost and prompt-grounding checks for the briefing lane?
+
+## Research learnings (2026-10-21, 18:05)
+
+From the demo-pitch and method-rigour research. Data-sources, data-contract, explorer-ux and briefing research still running.
+
+### Fix before the demo
+- Skill-row sources read as connected data. Relabel them as planned sources.
+- Header says "observed skill signals". All values are synthetic, so say so.
+- Offshore wind scenario has confidence 0.41, above the proposed 0.30 scenario cap.
+- Heat-pump tag differs by kommune (transforming in Bodø, rising in Stavanger and Kristiansand). Tags are hand-set; derive them from rules.
+- Briefing is hand-written sample text. Say so in the demo.
+
+### Method (proposed, not validated)
+- Occupation trend: 3-year growth in share of job ads, with a ±5% a year band. "Level" means under 5% a year volume change, not "safe".
+- Under 50 ads gives "insufficient data", never "level".
+- Confidence = agreement × coverage × lag. One source caps at 0.33. Worked example: one signal 0.22, three signals 0.68.
+- Scenario rows cap at 0.30 and never count as observed.
+- Smallest real backtest (about one week): freeze at 2019 using SSB employment by occupation; score 2019–2022 direction against "no change" and "last trend" baselines.
+  - Can claim: directional hit rates with counts and intervals.
+  - Cannot claim: skill-tag accuracy, kommune accuracy, causation, shortage prediction.
+- Check before committing: SSB publishes occupation employment at roughly 20 groups by fylke.
+
+### Say this, not that
+- Not "the model predicts shortages". Say "the prototype shows how signals would combine".
+- Not "backtested". Say "backtest planned, about a week of work".
+- Not "real data". Say "synthetic data; real sources being checked".
