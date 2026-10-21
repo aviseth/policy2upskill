@@ -76,3 +76,15 @@ From the demo-pitch and method-rigour research. Data-sources, data-contract, exp
 - Not "the model predicts shortages". Say "the prototype shows how signals would combine".
 - Not "backtested". Say "backtest planned, about a week of work".
 - Not "real data". Say "synthetic data; real sources being checked".
+
+## Briefing lane learnings (2026-10-21, 18:20)
+
+From the briefing research. Generator script lives in the research folder, not in the repo yet.
+
+- Model IDs: claude-sonnet-5-5 is the default; claude-haiku-5-5 is the cheap option.
+- Structured output via output_config format. Do not send temperature, top_p, top_k, or force tool_choice; Sonnet 5.5 and Haiku 5.5 reject them.
+- Thinking is on by default and counts against max_tokens, so budget 16000.
+- Grounding is enforced in code, not trusted to the model. The validator rejects uncited claims, unknown row ids, predictive wording, unlabelled scenario rows, and observed claims that cite low-confidence rows.
+- Cost estimate, not measured: about 2 cents per kommune on Sonnet, under 0.1 cent on Haiku.
+- Generate briefings ahead of the demo with a real key and serve the saved JSON. No live call on stage.
+- Open: output is English only. Norwegian needs its own prohibited-word rules.
