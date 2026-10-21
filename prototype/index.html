@@ -303,12 +303,18 @@ $("scenario-toggle").addEventListener("change", (e) => {
   render();
 });
 
+// Only kommune ids are valid hashes; other nav anchors (e.g. #briefing) keep the current kommune.
+const fromHash = () => {
+  const id = location.hash.slice(1);
+  if (KOMMUNER.some((x) => x.id === id)) state.k = id;
+};
+
 window.addEventListener("hashchange", () => {
-  state.k = location.hash.slice(1) || state.k;
+  fromHash();
   render();
 });
 
-state.k = location.hash.slice(1) || state.k;
+fromHash();
 render();
 </script>
 </body>
