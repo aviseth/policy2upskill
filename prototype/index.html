@@ -96,7 +96,16 @@
   .levels select { font: inherit; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
   .reader { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 6px 0 22px; font-size: 13px; color: var(--ink-2); }
   .reader .label { display: block; margin-bottom: 2px; }
-  .levelview h1 { margin-bottom: 14px; }
+  .levelview h1 { margin-bottom: 6px; }
+  .heat { border-collapse: collapse; width: 100%; font-size: 13px; }
+  .heat th, .heat td { border: 1px solid var(--line); padding: 8px 10px; text-align: center; }
+  .heat th:first-child, .heat td:first-child { text-align: left; white-space: nowrap; }
+  .heat th { font-weight: 500; color: var(--muted); font-size: 12px; }
+  .heat .cell.up { background: #e6f5ea; color: var(--rising); font-weight: 600; }
+  .heat .cell.down { background: #fbe9e7; color: var(--falling); font-weight: 600; }
+  .heat .cell.flat { color: var(--muted); }
+  .heat .cell.none { color: #bbb; }
+  .heat tr.total td { border-top: 2px solid var(--ink-2); font-weight: 600; }
   .stat-table td:not(:first-child), .stat-table th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
 
   .real { margin-bottom: 4px; }
@@ -694,23 +703,57 @@ function statRow(name, st) {
   return `<tr><td>${esc(name)}</td><td>${st.employed}</td><td>${st.change}</td><td>${st.rising}</td><td>${st.falling}</td><td>${st.shortage}</td></tr>`;
 }
 
+function netDirection(id, occ) {
+  const rows = SKILLS.filter((r) => r.k === id && r.o === occ && !r.sc);
+  return rows.length ? rows.filter((r) => r.t === "rising").length - rows.filter((r) => r.t === "falling").length : null;
+}
+
+function cellHtml(net) {
+  if (net === null) return `<td class="cell none">–</td>`;
+  const cls = net > 0 ? "up" : net < 0 ? "down" : "flat";
+  return `<td class="cell ${cls}">${net > 0 ? "+" : ""}${net}</td>`;
+}
+
+function nationalLeague() {
+  const occs = [...new Set(SKILLS.filter((r) => !r.sc).map((r) => r.o))];
+  const rows = occs.map((occ) => {
+    const idx = MUNICIPALITIES.map((m) => DEMAND[m.id] && DEMAND[m.id][occ] && DEMAND[m.id][occ][2]).filter((v) => v);
+    const nets = MUNICIPALITIES.map((m) => netDirection(m.id, occ)).filter((v) => v !== null);
+    const conf = SKILLS.filter((r) => r.o === occ && !r.sc);
+    return {
+      occ,
+      index: idx.length ? Math.round(idx.reduce((a, b) => a + b, 0) / idx.length) : "–",
+      up: nets.filter((n) => n > 0).length,
+      down: nets.filter((n) => n < 0).length,
+      conf: conf.length ? (conf.reduce((a, r) => a + r.p, 0) / conf.length).toFixed(2) : "–",
+    };
+  }).sort((a, b) => (b.up - b.down) - (a.up - a.down));
+  return `<table class="stat-table"><thead><tr><th>Occupation</th><th>National index (2019=100)</th><th>Municipalities rising</th><th>Municipalities falling</th><th>Avg confidence</th></tr></thead>
+    <tbody>${rows.map((r) => `<tr><td>${esc(r.occ)}</td><td>${r.index}</td><td>${r.up}</td><td>${r.down}</td><td>${r.conf}</td></tr>`).join("")}</tbody></table>`;
+}
+
+function regionHeatGrid(region) {
+  const peers = MUNICIPALITIES.filter((m) => m.region === region);
+  const occs = [...new Set(SKILLS.filter((r) => !r.sc && peers.some((m) => m.id === r.k)).map((r) => r.o))];
+  const head = occs.map((o) => `<th>${esc(o)}</th>`).join("");
+  const body = peers.map((m) => `<tr><td>${esc(m.name)}</td>${occs.map((o) => cellHtml(netDirection(m.id, o))).join("")}</tr>`).join("");
+  const total = occs.map((o) => {
+    const nets = peers.map((m) => netDirection(m.id, o)).filter((v) => v !== null);
+    return cellHtml(nets.length ? nets.reduce((a, b) => a + b, 0) : null);
+  }).join("");
+  return `<table class="heat"><thead><tr><th>Municipality</th>${head}</tr></thead>
+    <tbody>${body}<tr class="total"><td>Region (net)</td>${total}</tr></tbody></table>
+    <p class="muted" style="margin:10px 0 0">Cell = number of rising skills minus falling skills (observed rows only). Green: net rising. Red: net falling.</p>`;
+}
+
 function renderLevelView() {
   const r = LEVEL_READERS[state.level];
-  const reader = `<div class="reader">
-    <div><span class="label">Who</span>${esc(r.who)}</div>
-    <div><span class="label">Question</span>${esc(r.question)}</div>
-    <div><span class="label">Levers</span>${esc(r.levers)}</div>
-    <div><span class="label">View</span>${esc(r.view)}</div></div>`;
-  const head = `<tr><th>Municipality</th><th>Employed 2025</th><th>Change 2023–25</th><th>Rising skills</th><th>Falling skills</th><th>Shortage occupations</th></tr>`;
+  const caption = `<p class="muted" style="margin:-8px 0 18px">${esc(r.question)}</p>`;
   if (state.level === "national") {
-    const list = MUNICIPALITIES.map((m) => statRow(m.name, municipalityStats(m.id))).join("");
-    return `<div class="levelview"><h1>National</h1>${reader}
-      <div class="panel"><table class="stat-table"><thead>${head}</thead><tbody>${list}</tbody></table></div></div>`;
+    return `<div class="levelview"><h1>National</h1>${caption}<div class="panel">${nationalLeague()}</div></div>`;
   }
   const k = currentMunicipality();
-  const peers = MUNICIPALITIES.filter((m) => m.region === k.region);
-  return `<div class="levelview"><h1>${esc(k.region)} region</h1>${reader}
-    <div class="panel"><table class="stat-table"><thead>${head}</thead><tbody>${peers.map((m) => statRow(m.name, municipalityStats(m.id))).join("")}</tbody></table></div></div>`;
+  return `<div class="levelview"><h1>${esc(k.region)} region</h1>${caption}<div class="panel">${regionHeatGrid(k.region)}</div></div>`;
 }
 
 function renderCompare() {
@@ -741,8 +784,27 @@ function initLevels() {
   });
   $("compare").addEventListener("change", (e) => { state.compare = e.target.value; renderLevel(); });
   state.level = "municipality";
-  state.compare = "";
+  state.k = "lolland";
+  state.compare = "frederiksberg";
+  $("compare").value = "frederiksberg";
 }
+
+
+// Neighbours for the Sjælland heat-grid (synthetic; the Miro note asked for at least three per region).
+MUNICIPALITIES.push(
+  { id: "guldborgsund", name: "Guldborgsund", region: "Sjælland",
+    briefing: [["What is changing", "Heat-pump work is growing; process roles are shrinking."], ["What to fund this year", "Electrical and heat-pump certification."], ["What we are unsure about", "Small municipality; numbers are noisy."]] },
+  { id: "naestved", name: "Næstved", region: "Sjælland",
+    briefing: [["What is changing", "Software and care roles are growing."], ["What to fund this year", "Digital skills for care staff."], ["What we are unsure about", "Thin data on software roles."]] }
+);
+SKILLS.push(
+  { k: "guldborgsund", o: "Heat-pump installers", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.61, sc: false, src: ["Job ads (synthetic)"] },
+  { k: "guldborgsund", o: "Process operators", s: "Manual process control", c: "falling", t: "falling", p: 0.58, sc: false, src: ["Job ads (synthetic)"] },
+  { k: "guldborgsund", o: "Nurses", s: "Elderly care", c: "durable", t: "level", p: 0.74, sc: false, src: ["Job ads (synthetic)"] },
+  { k: "naestved", o: "Software developers", s: "Cloud infrastructure", c: "rising", t: "rising", p: 0.55, sc: false, src: ["Job ads (synthetic)"] },
+  { k: "naestved", o: "Nurses", s: "Digital patient records", c: "transforming", t: "rising", p: 0.66, sc: false, src: ["Job ads (synthetic)"] },
+  { k: "naestved", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "level", p: 0.48, sc: false, src: ["Job ads (synthetic)"] }
+);
 
 // ---- Views: Alerts, White paper, Ask the data (rule-based and canned, synthetic data) ----
 const VIEW_ROUTES = ["alerts", "paper", "ask"];
