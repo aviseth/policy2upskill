@@ -99,6 +99,8 @@
   .levelview h1 { margin-bottom: 14px; }
   .stat-table td:not(:first-child), .stat-table th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
 
+  .real { margin-bottom: 4px; }
+
   @media (max-width: 1100px) {
     header { flex-wrap: wrap; height: auto; padding: 12px 20px; gap: 12px; }
     .layout { grid-template-columns: 1fr; gap: 0; padding: 20px; }
@@ -150,6 +152,7 @@
     <div class="panel">
       <h2>Employed persons by occupation group (synthetic)</h2>
       <p class="muted" style="margin:0 0 10px">Synthetic placeholder for Danmarks Statistik figures, 2019 vs 2025.</p>
+      <div id="real-totals"></div>
       <div id="employment"></div>
     </div>
     <div class="panel">
@@ -568,6 +571,7 @@ function render() {
   renderSkills(k);
   renderDemand(k);
   renderEmployment(k);
+  renderRealTotals(k);
   renderIndicators(k);
   renderBriefing(k);
 }
@@ -628,6 +632,40 @@ const synthEmployment = (total2025, growth) => ({ "All occupations": { "2019": S
 EMPLOYMENT.frederiksberg = synthEmployment(105000, 0.06);
 EMPLOYMENT.lolland = synthEmployment(40000, -0.06);
 
+// Real totals: Statistics Denmark table LBESK354, employees by municipality, annual average of quarters.
+// Note: the municipality of Copenhagen is named "Byen København" in the source.
+const REAL_TOTALS = {
+ "copenhagen": {
+  "2023": 452920,
+  "2024": 459700,
+  "2025": 465525
+ },
+ "odense": {
+  "2023": 101961,
+  "2024": 103352,
+  "2025": 105317
+ },
+ "aarhus": {
+  "2023": 188364,
+  "2024": 192462,
+  "2025": 197646
+ },
+ "aalborg": {
+  "2023": 112226,
+  "2024": 113522,
+  "2025": 115127
+ }
+};
+
+function renderRealTotals(k) {
+  const t = REAL_TOTALS[k.id];
+  $("real-totals").innerHTML = t ? `<div class="real">
+    <div class="label">Employees, real data (Statistics Denmark, table LBESK354, annual average)</div>
+    <table class="stat-table"><thead><tr><th>Year</th><th>Employees</th></tr></thead>
+    <tbody>${Object.entries(t).map(([y, v]) => `<tr><td>${y}</td><td>${v.toLocaleString("en")}</td></tr>`).join("")}</tbody></table>
+    <p class="muted" style="margin:8px 0 14px">Source: Statistics Denmark (Danmarks Statistik), CC BY 4.0. Processed by us.</p></div>` : `<p class="muted">No real totals loaded for this municipality.</p>`;
+}
+
 const LEVEL_READERS = {
   national: { who: "Ministries and agencies (employment ministry, STAR)", question: "Which occupations are rising or falling nationally, and where should training budgets and the shortage list go?", levers: "Shortage lists, training budgets, immigration quotas", view: "Aggregates, trends and a defensible method" },
   region: { who: "The five regions and the regional labour market councils (RAR)", question: "Where inside my region is the mismatch, and which sectors are under pressure?", levers: "Regional development funds, hospital workforce planning", view: "Municipality comparison inside the region" },
@@ -639,8 +677,9 @@ function currentMunicipality() {
 }
 
 function municipalityStats(id) {
-  const t = EMPLOYMENT[id] && EMPLOYMENT[id]["All occupations"];
-  const change = t ? ((+t["2025"]) / (+t["2019"]) - 1) * 100 : null;
+  const r = REAL_TOTALS[id];
+  const change = r ? ((+r["2025"]) / (+r["2023"]) - 1) * 100 : null;
+  const t = r ? { "2025": r["2025"] } : null;
   const skills = SKILLS.filter((r) => r.k === id && !r.sc);
   return {
     employed: t ? (+t["2025"]).toLocaleString("en") : "n/a",
@@ -662,7 +701,7 @@ function renderLevelView() {
     <div><span class="label">Question</span>${esc(r.question)}</div>
     <div><span class="label">Levers</span>${esc(r.levers)}</div>
     <div><span class="label">View</span>${esc(r.view)}</div></div>`;
-  const head = `<tr><th>Municipality</th><th>Employed 2025</th><th>Change 2019–25</th><th>Rising skills</th><th>Falling skills</th><th>Shortage occupations</th></tr>`;
+  const head = `<tr><th>Municipality</th><th>Employed 2025</th><th>Change 2023–25</th><th>Rising skills</th><th>Falling skills</th><th>Shortage occupations</th></tr>`;
   if (state.level === "national") {
     const list = MUNICIPALITIES.map((m) => statRow(m.name, municipalityStats(m.id))).join("");
     return `<div class="levelview"><h1>National</h1>${reader}
@@ -679,7 +718,7 @@ function renderCompare() {
   if (!other || other.id === state.k) return "";
   const k = currentMunicipality();
   const a = municipalityStats(k.id), b = municipalityStats(other.id);
-  const rows = [["Employed 2025", a.employed, b.employed], ["Change 2019–25", a.change, b.change], ["Rising skills", a.rising, b.rising], ["Falling skills", a.falling, b.falling], ["Shortage occupations", a.shortage, b.shortage]];
+  const rows = [["Employed 2025", a.employed, b.employed], ["Change 2023–25", a.change, b.change], ["Rising skills", a.rising, b.rising], ["Falling skills", a.falling, b.falling], ["Shortage occupations", a.shortage, b.shortage]];
   return `<div class="panel"><h2>${esc(k.name)} compared with ${esc(other.name)}</h2>
     <table class="stat-table"><thead><tr><th>Measure</th><th>${esc(k.name)}</th><th>${esc(other.name)}</th></tr></thead>
     <tbody>${rows.map(([m, x, y]) => `<tr><td>${m}</td><td>${x}</td><td>${y}</td></tr>`).join("")}</tbody></table>
