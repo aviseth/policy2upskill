@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>policy2upskill · 1:45 presentation</title>
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --bg: #faf9f6; --ink: #1c1c1a; --muted: #5b5b56; --line: #dcdad2;
+    --blue: #2a55c4; --blue-soft: #e8eefb;
+    --green: #1b6b2c; --green-bg: #e3f4e6; --green-line: #b6dfbd;
+    --amber: #8a5200; --amber-bg: #fdf1d6; --amber-line: #f0d38c;
+    --bar-h: 76px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink); overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- slides ---- */
+  .slide {
+    position: absolute; inset: 0 0 var(--bar-h) 0;
+    padding: 4.5vh 5vw 2vh;
+    display: grid; grid-template-rows: auto auto minmax(0, 1fr); row-gap: 1.6vh;
+    opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s linear .45s;
+  }
+  .slide.active { opacity: 1; visibility: visible; transition: opacity .45s ease; }
+  .kicker { font-size: clamp(12px, 1.15vw, 17px); letter-spacing: .12em; text-transform: uppercase; color: var(--blue); font-weight: 700; }
+  h1 { margin: .15em 0 0; font-size: clamp(26px, 3.6vw, 54px); line-height: 1.08; letter-spacing: -.015em; }
+  .cap-wrap { display: grid; margin-top: .5vh; }
+  .cap {
+    grid-area: 1 / 1; margin: 0; max-width: 62em;
+    font-size: clamp(15px, 1.7vw, 25px); line-height: 1.35; color: var(--muted);
+    opacity: 0; transition: opacity .4s ease;
+  }
+  .cap.on { opacity: 1; }
+  .cap strong { color: var(--ink); }
+
+  .chips { display: flex; gap: .6vw; margin-top: 1.4vh; flex-wrap: wrap; }
+  .chip {
+    font-size: clamp(12px, 1.3vw, 19px); padding: .35em .9em; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff; color: var(--muted); transition: all .3s;
+  }
+  .chip.act { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+
+  /* ---- screenshot figure ---- */
+  .fig { container-type: size; min-height: 0; display: flex; justify-content: center; align-items: flex-start; }
+  .frame {
+    position: relative; aspect-ratio: 1410 / 840;
+    width: min(100cqw, 100cqh * 1.6786);
+    border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff;
+    box-shadow: 0 10px 34px rgba(30, 40, 70, .14);
+  }
+  .frame img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .5s ease; }
+  .frame img.on { opacity: 1; }
+  .tag {
+    position: absolute; left: 12px; bottom: 12px; font-size: clamp(11px, 1.1vw, 16px);
+    background: rgba(28, 28, 26, .82); color: #fff; padding: .3em .7em; border-radius: 6px;
+    opacity: 0; transition: opacity .4s;
+  }
+  .tag.on { opacity: 1; }
+
+  /* ---- slide 1 ---- */
+  .s1 { grid-template-rows: minmax(0, 1fr); grid-template-columns: 40% 1fr; column-gap: 3vw; align-items: center; }
+  .s1 .copy { display: flex; flex-direction: column; justify-content: center; }
+  .s1 h1 { font-size: clamp(36px, 6vw, 92px); margin-bottom: .25em; }
+  .s1 .cap { font-size: clamp(16px, 1.9vw, 28px); }
+  .s1 .fig { align-items: center; height: 100%; }
+  .pill-row { display: flex; gap: .6vw; margin-top: 2.2vh; flex-wrap: wrap; }
+
+  /* ---- badges ---- */
+  .badge { display: inline-block; font-size: .72em; font-weight: 600; padding: .15em .75em; border-radius: 999px; border: 1px solid; white-space: nowrap; }
+  .badge.real { background: var(--green-bg); color: var(--green); border-color: var(--green-line); }
+  .badge.synth { background: var(--amber-bg); color: var(--amber); border-color: var(--amber-line); }
+
+  /* ---- slide 5 ---- */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 3vw; min-height: 0; align-self: start; }
+  .col { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 3vh 2.2vw 3.4vh; display: flex; flex-direction: column; }
+  .col.real { border-top: 6px solid #4aa860; }
+  .col.synth { border-top: 6px solid #e0a82e; }
+  .col .badge { font-size: clamp(16px, 2vw, 30px); align-self: flex-start; }
+  .col .sub { color: var(--muted); font-size: clamp(13px, 1.3vw, 19px); margin: 1.2vh 0 1.6vh; }
+  .col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2vh; }
+  .col li { font-size: clamp(16px, 2vw, 30px); display: flex; gap: .6em; align-items: baseline; }
+  .col li small { color: var(--muted); font-size: .72em; }
+  .col.real li::before { content: ""; width: .6em; height: .6em; border-radius: 50%; background: #4aa860; flex: none; transform: translateY(-.05em); }
+  .col.synth li::before { content: ""; width: .6em; height: .6em; border-radius: 50%; background: #e0a82e; flex: none; transform: translateY(-.05em); }
+  .note { margin-top: auto; padding-top: 1.4vh; font-size: clamp(13px, 1.35vw, 20px); color: var(--muted); }
+  .note.rv { margin-top: auto; }
+
+  /* ---- slide 7 ---- */
+  .next { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2vw; align-content: start; align-self: start; min-height: 0; margin-top: 2vh; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 3.4vh 1.8vw 4vh; }
+  .card .n { width: 2em; height: 2em; border-radius: 50%; background: var(--blue-soft); color: var(--blue); display: grid; place-items: center; font-weight: 700; font-size: clamp(14px, 1.5vw, 22px); }
+  .card h3 { margin: 1.8vh 0 1vh; font-size: clamp(18px, 2.3vw, 34px); }
+  .card p { margin: 0; color: var(--muted); font-size: clamp(14px, 1.65vw, 24px); line-height: 1.4; }
+  .ask {
+    grid-column: 1 / -1; margin-top: 2vh; background: var(--blue); color: #fff; border-radius: 12px;
+    padding: 2.6vh 2.2vw; display: flex; align-items: baseline; gap: 1.2vw; flex-wrap: wrap;
+  }
+  .ask b { font-size: clamp(18px, 2.2vw, 33px); }
+  .ask span { font-size: clamp(14px, 1.6vw, 24px); opacity: .95; }
+
+  .rv { opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .5s ease; }
+  .rv.on { opacity: 1; transform: none; }
+
+  .foot { position: absolute; left: 5vw; bottom: 0; font-size: clamp(10px, .95vw, 14px); color: #8a8a84; }
+
+  /* ---- control bar ---- */
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0; height: var(--bar-h);
+    background: #fff; border-top: 1px solid var(--line); padding: 10px 5vw 8px;
+    display: grid; grid-template-rows: auto auto; row-gap: 8px;
+  }
+  .segs { display: flex; gap: 4px; }
+  .seg { position: relative; height: 12px; background: #e4e2da; border-radius: 6px; overflow: hidden; cursor: pointer; }
+  .seg i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--blue); }
+  .seg.done i { background: #7f98d8; }
+  .seg:hover { outline: 2px solid var(--blue-soft); }
+  .meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; gap: 12px; }
+  .meta .btns { display: flex; gap: 6px; }
+  button { font: inherit; font-size: 13px; padding: 3px 12px; border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 6px; cursor: pointer; }
+  button:hover { background: var(--blue-soft); }
+  .meta b { color: var(--ink); }
+  .hint { opacity: .8; }
+  @media (max-width: 760px) { .hint { display: none; } .s1 { grid-template-columns: 1fr; grid-template-rows: auto minmax(0,1fr); } }
+</style>
+</head>
+<body>
+
+<!-- 1. Title: 12 s -->
+<section class="slide s1" data-dur="12">
+  <div class="copy">
+    <div class="kicker">Demo prototype</div>
+    <h1>policy2upskill</h1>
+    <div class="cap-wrap"><p class="cap on">A Danish labour-market explorer for policy makers. It shows how employment moves, and which occupation skills are rising or falling.</p></div>
+    <div class="pill-row">
+      <span class="badge real">Real · Statistics Denmark</span>
+      <span class="badge synth">Synthetic</span>
+    </div>
+  </div>
+  <div class="fig"><div class="frame"><img src="shots/01-explorer-lolland.png" alt="Explorer for Lolland: header, chart and municipality list" class="on"></div></div>
+</section>
+
+<!-- 2. The question: 14 s -->
+<section class="slide" data-dur="14">
+  <div><div class="kicker">The question</div><h1>What is rising and what is falling, where?</h1></div>
+  <div class="cap-wrap">
+    <p class="cap" data-from="0" data-to="8">Which occupations and skills are rising or falling, municipality by municipality? Built for Danish policy makers.</p>
+    <p class="cap" data-from="8">Alerts point to the occupations worth a closer look. Skill rows and alerts are synthetic in this demo.</p>
+  </div>
+  <div class="fig"><div class="frame">
+    <img src="shots/02-skills-table.png" alt="Skills by occupation for Lolland, marked rising or falling" data-from="0" data-to="8">
+    <img src="shots/07-alerts.png" alt="Early-warning alerts list" data-from="8">
+  </div></div>
+</section>
+
+<!-- 3. Three levels: 15 s -->
+<section class="slide" data-dur="15">
+  <div>
+    <div class="kicker">Three levels</div><h1>National, region, municipality</h1>
+    <div class="chips">
+      <span class="chip" data-act="0-4">1 National</span>
+      <span class="chip" data-act="4-11">2 Region</span>
+      <span class="chip" data-act="11-15">3 Municipality</span>
+    </div>
+  </div>
+  <div class="cap-wrap">
+    <p class="cap" data-from="0" data-to="4">National: all of Denmark, from Statistics Denmark employee counts.</p>
+    <p class="cap" data-from="4" data-to="11">Region: Sjælland, built from the municipalities loaded so far. Switch level with one click.</p>
+    <p class="cap" data-from="11">Municipality: one place at a time, with its skills and its own chart.</p>
+  </div>
+  <div class="fig"><div class="frame">
+    <img src="shots/06-national.png" alt="National view" data-from="0" data-to="4">
+    <img src="shots/05-region.png" alt="Region view for Sjælland" data-from="4" data-to="11">
+    <img src="shots/01-explorer-lolland.png" alt="Municipality view for Lolland" data-from="11">
+  </div></div>
+</section>
+
+<!-- 4. Municipality view and chart: 18 s -->
+<section class="slide" data-dur="18">
+  <div><div class="kicker">Municipality view</div><h1>Lolland, with the Femern scenario</h1></div>
+  <div class="cap-wrap">
+    <p class="cap" data-from="0" data-to="7">Lolland against Frederiksberg, both indexed to 2023 = 100. The solid line is Statistics Denmark data to 2025.</p>
+    <p class="cap" data-from="7">Dashed blue: a trend extension, <strong>not a forecast</strong>. Orange dotted: the Femern scenario, <strong>an assumption</strong>.</p>
+  </div>
+  <div class="fig"><div class="frame">
+    <img src="shots/03-chart-compare.png" alt="Lolland chart compared with Frederiksberg" data-from="0" data-to="7">
+    <img src="shots/04-chart-femern-scenario.png" alt="Lolland employees chart with the Femern scenario line switched on" data-from="7">
+    <span class="tag" data-from="7">Femern link: scenario switched on</span>
+  </div></div>
+</section>
+
+<!-- 5. Real vs synthetic: 16 s -->
+<section class="slide" data-dur="16">
+  <div><div class="kicker">Trust</div><h1>Real versus synthetic</h1></div>
+  <div class="cap-wrap"><p class="cap on">Every panel carries a badge, so you can see what is measured and what is made up.</p></div>
+  <div class="cols">
+    <div class="col real rv" data-from="0.5">
+      <span class="badge real">Real · Statistics Denmark</span>
+      <div class="sub">CC BY 4.0, credit Statistics Denmark</div>
+      <ul>
+        <li class="rv" data-from="1.5">Employees <small>2023 to 2025</small></li>
+        <li class="rv" data-from="3">Population</li>
+        <li class="rv" data-from="4.5">Completed education</li>
+      </ul>
+    </div>
+    <div class="col synth rv" data-from="7">
+      <span class="badge synth">Synthetic</span>
+      <div class="sub">Made up for the demo, always marked</div>
+      <ul>
+        <li class="rv" data-from="8">Occupation-level skills</li>
+        <li class="rv" data-from="9.5">Demand indices</li>
+        <li class="rv" data-from="11">Shortage flags</li>
+        <li class="rv" data-from="12.5">Briefings</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">Real data: Statistics Denmark (Danmarks Statistik), CC BY 4.0. Processed data is labelled as processed.</div>
+</section>
+
+<!-- 6. Ask the data: 14 s -->
+<section class="slide" data-dur="14">
+  <div><div class="kicker">Ask the data</div><h1>Plain questions, sourced answers</h1></div>
+  <div class="cap-wrap">
+    <p class="cap" data-from="0" data-to="7">Pick a question about a municipality. A language model writes the answer from the tables on screen.</p>
+    <p class="cap" data-from="7">The <span class="badge real">Real</span> badge marks figures from Statistics Denmark. Check each answer against the table.</p>
+  </div>
+  <div class="fig"><div class="frame"><img src="shots/08-ask-workforce.png" alt="Ask the data: workforce answer for Lolland with the Real badge" class="on"></div></div>
+</section>
+
+<!-- 7. What is next: 16 s -->
+<section class="slide" data-dur="16">
+  <div><div class="kicker">What is next</div><h1>From demo to something you can trust</h1></div>
+  <div class="cap-wrap"><p class="cap on">Predictive claims wait for the backtest.</p></div>
+  <div class="next">
+    <div class="card rv" data-from="1">
+      <div class="n">1</div><h3>Backtest</h3>
+      <p>Score the method on past years before anyone relies on it.</p>
+    </div>
+    <div class="card rv" data-from="4.5">
+      <div class="n">2</div><h3>First real skills source</h3>
+      <p>The Statistics Denmark table has no occupation field, so occupation trends still need a source.</p>
+    </div>
+    <div class="card rv" data-from="8">
+      <div class="n">3</div><h3>Danish data gaps</h3>
+      <p>Map them and close them, starting with occupation-level data.</p>
+    </div>
+    <div class="ask rv" data-from="11.5"><b>The ask: a pilot.</b><span>A municipality or agency to test it with real questions.</span></div>
+  </div>
+</section>
+
+<!-- controls -->
+<div class="bar" role="group" aria-label="Presentation controls">
+  <div class="segs" id="segs"></div>
+  <div class="meta">
+    <div class="btns">
+      <button id="prev" title="Previous slide (left arrow)">Prev</button>
+      <button id="pp" title="Pause or play (space)">Pause</button>
+      <button id="next" title="Next slide (right arrow)">Next</button>
+    </div>
+    <div>Slide <b id="sn">1</b> of <b id="sc">7</b> · slide timer <b id="st">0:00 / 0:12</b></div>
+    <div>Total <b id="tt">0:00 / 1:45</b></div>
+    <div class="hint">Left and right arrows to move, space to pause, R to restart</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var durs = slides.map(function (s) { return +s.getAttribute('data-dur'); });
+  var starts = [], total = 0;
+  durs.forEach(function (d) { starts.push(total); total += d; });
+
+  var $ = function (id) { return document.getElementById(id); };
+  var segsEl = $('segs'), segs = [];
+  durs.forEach(function (d, i) {
+    var s = document.createElement('div');
+    s.className = 'seg'; s.style.flex = d + ' 0 0'; s.title = 'Slide ' + (i + 1);
+    s.appendChild(document.createElement('i'));
+    s.addEventListener('click', function () { seek(starts[i]); });
+    segsEl.appendChild(s); segs.push(s);
+  });
+  $('sc').textContent = slides.length;
+
+  // timed elements per slide
+  var timed = slides.map(function (sl) {
+    return Array.prototype.slice.call(sl.querySelectorAll('[data-from]')).map(function (el) {
+      var to = el.getAttribute('data-to');
+      return { el: el, from: +el.getAttribute('data-from'), to: to === null ? Infinity : +to };
+    });
+  });
+  var acts = slides.map(function (sl) {
+    return Array.prototype.slice.call(sl.querySelectorAll('[data-act]')).map(function (el) {
+      var p = el.getAttribute('data-act').split('-');
+      return { el: el, from: +p[0], to: +p[1] };
+    });
+  });
+
+  var t = 0, paused = false, last = performance.now(), cur = -1;
+
+  function fmt(x) {
+    x = Math.floor(x + 1e-6);
+    return Math.floor(x / 60) + ':' + ('0' + (x % 60)).slice(-2);
+  }
+  function seek(x) { t = Math.max(0, Math.min(total, x)); last = performance.now(); render(); }
+  function go(i) { if (i >= 0 && i < slides.length) seek(starts[i]); }
+  function slideIndex() {
+    for (var i = slides.length - 1; i >= 0; i--) if (t >= starts[i]) return i;
+    return 0;
+  }
+
+  function render() {
+    var finished = t >= total;
+    var i = finished ? slides.length - 1 : slideIndex();
+    var lt = t - starts[i];
+    if (i !== cur) {
+      slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
+      cur = i;
+    }
+    timed[i].forEach(function (o) { o.el.classList.toggle('on', lt >= o.from && lt < o.to); });
+    acts[i].forEach(function (o) { o.el.classList.toggle('act', lt >= o.from && lt < o.to); });
+    segs.forEach(function (s, k) {
+      var f = k < i ? 1 : (k === i ? Math.min(1, lt / durs[k]) : 0);
+      s.firstChild.style.width = (f * 100) + '%';
+      s.classList.toggle('done', k < i);
+    });
+    $('sn').textContent = i + 1;
+    $('st').textContent = fmt(Math.min(lt, durs[i])) + ' / ' + fmt(durs[i]);
+    $('tt').textContent = fmt(Math.min(t, total)) + ' / ' + fmt(total) + (finished ? ' · finished' : '');
+    $('pp').textContent = (finished ? 'Replay' : (paused ? 'Play' : 'Pause'));
+  }
+
+  function tick() {
+    var now = performance.now(), dt = (now - last) / 1000; last = now;
+    if (!paused && t < total) { t = Math.min(total, t + Math.min(dt, 1.5)); }
+    render();
+  }
+
+  function toggle() {
+    if (t >= total) { seek(0); paused = false; return; }
+    paused = !paused; last = performance.now(); render();
+  }
+
+  $('pp').addEventListener('click', toggle);
+  $('prev').addEventListener('click', function () { go(Math.max(0, slideIndex() - 1)); });
+  $('next').addEventListener('click', function () { go(Math.min(slides.length - 1, slideIndex() + 1)); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { go(Math.min(slides.length - 1, slideIndex() + 1)); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { go(Math.max(0, slideIndex() - 1)); e.preventDefault(); }
+    else if (e.key === ' ' || e.code === 'Space') { toggle(); e.preventDefault(); }
+    else if (e.key === 'r' || e.key === 'R') { seek(0); paused = false; }
+  });
+  // buttons keep focus after a click, so stop space from re-triggering them
+  document.addEventListener('keyup', function (e) { if (e.key === ' ') e.preventDefault(); });
+
+  var m = /t=(\d+(?:\.\d+)?)/.exec(location.hash);
+  if (m) { t = Math.min(total, +m[1]); if (/pause/.test(location.hash)) paused = true; }
+  render();
+  setInterval(tick, 100);
+  window.deck = { total: total, durations: durs, state: function () { return { t: t, slide: cur + 1, paused: paused }; } };
+})();
+</script>
+</body>
+</html>
