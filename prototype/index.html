@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>policy2upskill · explorer prototype</title>
+<style>
+  :root {
+    --ink: #1a1a1a; --muted: #6b6b6b; --line: #e4e4e4; --bg: #fafaf8; --card: #fff;
+    --accent: #305bab;
+    --rising: #067429; --falling: #b42318; --durable: #305bab; --transforming: #b26a00;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+
+  header { display: flex; align-items: center; gap: 28px; padding: 12px 24px; background: #fff; border-bottom: 1px solid var(--line); }
+  .brand { font-weight: 700; letter-spacing: -0.01em; }
+  nav { display: flex; gap: 18px; }
+  nav a { color: var(--muted); text-decoration: none; padding: 4px 0; }
+  nav a.active { color: var(--ink); border-bottom: 2px solid var(--accent); }
+  nav a.later { opacity: 0.45; pointer-events: none; }
+  .soon { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 4px; }
+
+  .banner { background: #fff6e0; border-bottom: 1px solid #f1d28a; padding: 8px 24px; font-size: 14px; }
+  .banner strong { font-weight: 600; }
+
+  .layout { display: grid; grid-template-columns: 240px 1fr 320px; gap: 20px; padding: 20px 24px; align-items: start; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; }
+  h2 { font-size: 15px; margin: 0 0 10px; }
+  h3 { font-size: 14px; margin: 14px 0 6px; color: var(--muted); font-weight: 600; }
+  .muted { color: var(--muted); font-size: 13px; }
+
+  .tiles { display: grid; gap: 8px; }
+  .tile { text-align: left; font: inherit; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; color: var(--ink); }
+  .tile:hover { border-color: #bbb; }
+  .tile[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+  .tile small { display: block; color: var(--muted); }
+
+  .head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 14px; }
+  .toggle { font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: center; cursor: pointer; }
+
+  .demand { display: grid; gap: 10px; }
+  .demand-row { display: grid; grid-template-columns: 200px 1fr; gap: 12px; align-items: center; }
+  .bar-line { display: grid; grid-template-columns: 78px 1fr 36px; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
+  .bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+  .bar > div { height: 100%; background: #9bb6e4; }
+  .bar > div.here { background: var(--accent); }
+
+  .group { margin-top: 14px; }
+  .group:first-child { margin-top: 0; }
+  .row { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; background: #fff; }
+  .row:hover { border-color: #bbb; }
+  .row-main { display: grid; grid-template-columns: 110px 1fr 90px 150px; gap: 12px; align-items: center; }
+  .chip { display: inline-block; text-align: center; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; color: #fff; }
+  .c-rising { background: var(--rising); }
+  .c-falling { background: var(--falling); }
+  .c-durable { background: var(--durable); }
+  .c-transforming { background: var(--transforming); }
+  .trend { font-size: 13px; color: var(--muted); }
+  .conf { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+  .conf .bar { height: 6px; }
+  .conf .bar > div { background: var(--ink); opacity: 0.6; }
+  .row.low { border-style: dashed; }
+  .row.low .conf::after { content: "low confidence"; color: var(--falling); font-weight: 600; }
+  .row.scenario { background: repeating-linear-gradient(135deg, #fff, #fff 10px, #fbf8f0 10px, #fbf8f0 20px); border-style: dashed; border-color: var(--transforming); }
+  .assume { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--transforming); font-weight: 700; margin-left: 6px; }
+  .detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .row.open .detail { display: block; }
+  .detail ul { margin: 4px 0 0 18px; padding: 0; }
+
+  .briefing p { margin: 0 0 10px; }
+  .briefing .label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 4px; }
+  .note { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
+
+  footer { padding: 0 24px 24px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">policy2upskill</div>
+  <nav>
+    <a class="active" href="#">Explorer</a>
+    <a href="#briefing">Briefing</a>
+    <a class="later" href="#">Alerts <span class="soon">later</span></a>
+    <a class="later" href="#">White paper <span class="soon">later</span></a>
+    <a class="later" href="#">Ask the data <span class="soon">later</span></a>
+  </nav>
+</header>
+
+<div class="banner"><strong>Synthetic data.</strong> This shows the pipeline and the user experience, not predictive power. Predictive claims wait for the backtest.</div>
+
+<div class="layout">
+  <aside>
+    <div class="card">
+      <h2>Kommune</h2>
+      <div class="tiles" id="tiles"></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="card" id="kommune-head"></div>
+    <div class="card">
+      <div class="head">
+        <h2>Skills by occupation</h2>
+        <label class="toggle"><input type="checkbox" id="scenario-toggle"> Show scenario signals (assumptions)</label>
+      </div>
+      <div id="skills"></div>
+    </div>
+    <div class="card">
+      <h2>Demand index</h2>
+      <p class="muted" style="margin:0 0 10px">2019 = 100, synthetic. Kommune against its fylke and the national value.</p>
+      <div class="demand" id="demand"></div>
+    </div>
+  </main>
+
+  <aside>
+    <div class="card briefing" id="briefing">
+      <div class="label">Briefing · sample</div>
+      <div id="briefing-body"></div>
+      <div class="note">Hand-written sample. The /briefing lane will generate this from the core model with the Claude API, on the server. No API key or call runs in the browser.</div>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  Prototype, not agreed with the team. Data contract is a proposal: kommune · occupation · skill · category · trend · confidence · scenario · sources.
+</footer>
+
+<script>
+/*
+ * DATA CONTRACT (proposal, not yet agreed with the team). All numbers are synthetic.
+ *   skills rows:  kommune · occupation · skill · category · trend · confidence · scenario · sources
+ *   category = the skill tag: rising | falling | durable | transforming
+ *   trend    = the occupation direction: rising | falling | level
+ *   confidence = 0..1, below 0.5 renders as low confidence
+ *   scenario = true for a what-if assumption, not observed data
+ *   sources  = provenance list (added beyond the board contract)
+ *   demand   = occupation index, 2019 = 100, as [kommune, fylke, national]
+ */
+
+const KOMMUNER = [
+  { id: "bodo", name: "Bodø", fylke: "Nordland",
+    briefing: [
+      ["What is changing", "Heat-pump installation demand is rising faster than the fylke average. Electric truck skills are transforming a licence-based role."],
+      ["What to fund this year", "Heat-pump and electrical upskilling for existing electricians. Short digital-records (EPJ) courses for nurses."],
+      ["What we are unsure about", "The electric truck signal rests on one source (confidence 0.38)."],
+    ] },
+  { id: "stavanger", name: "Stavanger", fylke: "Rogaland",
+    briefing: [
+      ["What is changing", "Automation is reshaping process-operator work. Cloud and data roles grow well above the national index."],
+      ["What to fund this year", "Bridging courses from manual process control to automation monitoring."],
+      ["What we are unsure about", "The battery plant is a scenario assumption, not an observed trend."],
+    ] },
+  { id: "tromso", name: "Tromsø", fylke: "Troms og Finnmark",
+    briefing: [
+      ["What is changing", "Fish-processing roles fall below the national index. Data engineering grows fast."],
+      ["What to fund this year", "Transition routes from fish processing into food safety and data roles."],
+      ["What we are unsure about", "The telemedicine signal is weakly supported (confidence 0.47)."],
+    ] },
+  { id: "kristiansand", name: "Kristiansand", fylke: "Agder",
+    briefing: [
+      ["What is changing", "Heat-pump installation is rising above the fylke and national level. Timber-frame construction holds steady."],
+      ["What to fund this year", "Heat-pump certification for electricians. Plan retraining for scaffolding roles, which are declining."],
+      ["What we are unsure about", "The hospital merger is a scenario assumption, not an observed trend."],
+    ] },
+];
+
+const DEMAND = {
+  bodo:         { "Sykepleiere": [118, 109, 114], "Elektrikere": [104, 101, 103], "Lastebilsjåfører": [96, 99, 102] },
+  stavanger:    { "Prosessoperatører": [88, 95, 100], "Programvareutviklere": [131, 118, 121], "Varmepumpeinstallatører": [140, 122, 119] },
+  tromso:       { "Sykepleiere": [109, 104, 114], "Programvareutviklere": [125, 112, 121], "Fiskeforedlere": [81, 90, 98] },
+  kristiansand: { "Elektrikere": [121, 113, 103], "Lastebilsjåfører": [107, 103, 102], "Byggarbeidere": [92, 99, 100] },
+};
+
+const SKILLS = [
+  // Bodø
+  { k: "bodo", o: "Sykepleiere", s: "Digital patient records", c: "transforming", t: "rising", p: 0.72, sc: false, src: ["NAV job ads", "ESCO"] },
+  { k: "bodo", o: "Sykepleiere", s: "Elderly and palliative care", c: "durable", t: "level", p: 0.81, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "bodo", o: "Elektrikere", s: "Heat-pump installation", c: "transforming", t: "rising", p: 0.66, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  { k: "bodo", o: "Elektrikere", s: "Legacy fuse-box work", c: "falling", t: "falling", p: 0.55, sc: false, src: ["NAV job ads"] },
+  { k: "bodo", o: "Elektrikere", s: "Offshore wind cable work", c: "rising", t: "rising", p: 0.41, sc: true, src: ["Scenario: offshore wind yard opens"] },
+  { k: "bodo", o: "Lastebilsjåfører", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.38, sc: false, src: ["NAV job ads"] },
+  { k: "bodo", o: "Lastebilsjåfører", s: "Heavy-vehicle licence C/CE", c: "durable", t: "level", p: 0.79, sc: false, src: ["NAV job ads", "SSB employment"] },
+  // Stavanger
+  { k: "stavanger", o: "Prosessoperatører", s: "Manual process control", c: "falling", t: "falling", p: 0.61, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  { k: "stavanger", o: "Prosessoperatører", s: "Automation and data monitoring", c: "transforming", t: "rising", p: 0.58, sc: false, src: ["NAV job ads", "ESCO"] },
+  { k: "stavanger", o: "Prosessoperatører", s: "Battery cell operation", c: "rising", t: "rising", p: 0.30, sc: true, src: ["Scenario: battery plant opens"] },
+  { k: "stavanger", o: "Programvareutviklere", s: "Cloud infrastructure", c: "rising", t: "rising", p: 0.86, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "stavanger", o: "Varmepumpeinstallatører", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.70, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  // Tromsø
+  { k: "tromso", o: "Sykepleiere", s: "Telemedicine support", c: "transforming", t: "rising", p: 0.47, sc: false, src: ["NAV job ads", "ESCO"] },
+  { k: "tromso", o: "Programvareutviklere", s: "Data engineering", c: "rising", t: "rising", p: 0.74, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "tromso", o: "Fiskeforedlere", s: "Fish-processing line operation", c: "falling", t: "falling", p: 0.66, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "tromso", o: "Fiskeforedlere", s: "Food safety and HACCP", c: "durable", t: "level", p: 0.77, sc: false, src: ["NAV job ads"] },
+  { k: "tromso", o: "Fiskeforedlere", s: "Raw-fish handling", c: "falling", t: "falling", p: 0.25, sc: true, src: ["Scenario: fishing quota cut"] },
+  // Kristiansand
+  { k: "kristiansand", o: "Elektrikere", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.69, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  { k: "kristiansand", o: "Lastebilsjåfører", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.44, sc: false, src: ["NAV job ads"] },
+  { k: "kristiansand", o: "Byggarbeidere", s: "Timber-frame construction", c: "durable", t: "level", p: 0.73, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "kristiansand", o: "Byggarbeidere", s: "Manual scaffolding", c: "falling", t: "falling", p: 0.52, sc: false, src: ["NAV job ads"] },
+  { k: "kristiansand", o: "Sykepleiere", s: "Ward coordination after merger", c: "transforming", t: "rising", p: 0.20, sc: true, src: ["Scenario: hospital merger"] },
+];
+
+const TREND_ARROW = { rising: "↑ rising", falling: "↓ falling", level: "→ level" };
+const state = { k: "bodo", scenarios: false };
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function renderTiles() {
+  $("tiles").innerHTML = KOMMUNER.map((k) => `
+    <button class="tile" aria-pressed="${k.id === state.k}" data-id="${k.id}">
+      ${esc(k.name)}<small>${esc(k.fylke)}</small>
+    </button>`).join("");
+}
+
+function renderHead(k) {
+  const rows = SKILLS.filter((r) => r.k === k.id && !r.sc).length;
+  const scen = SKILLS.filter((r) => r.k === k.id && r.sc).length;
+  $("kommune-head").innerHTML = `
+    <h1>${esc(k.name)}</h1>
+    <div class="muted">${esc(k.fylke)} · ${rows} observed skill signals · ${scen} scenario assumption${scen === 1 ? "" : "s"}</div>`;
+}
+
+function renderSkills(k) {
+  const rows = SKILLS.filter((r) => r.k === k.id && (state.scenarios || !r.sc));
+  const byOcc = {};
+  rows.forEach((r) => (byOcc[r.o] = byOcc[r.o] || []).push(r));
+  $("skills").innerHTML = Object.entries(byOcc).map(([occ, list]) => `
+    <div class="group">
+      <h3>${esc(occ)}</h3>
+      ${list.map((r, i) => {
+        const id = `${k.id}-${occ}-${i}`.replace(/\s+/g, "-");
+        return `
+        <div class="row ${r.p < 0.5 ? "low" : ""} ${r.sc ? "scenario" : ""}" data-id="${id}">
+          <div class="row-main">
+            <span class="chip c-${r.c}">${esc(r.c)}</span>
+            <span>${esc(r.s)}${r.sc ? '<span class="assume">assumption</span>' : ""}</span>
+            <span class="trend">${TREND_ARROW[r.t]}</span>
+            <span class="conf">
+              <span>confidence ${r.p.toFixed(2)}</span>
+              <span class="bar"><div style="width:${r.p * 100}%"></div></span>
+            </span>
+          </div>
+          <div class="detail">
+            ${r.sc ? "This is a what-if assumption, not observed data. " : ""}Sources:
+            <ul>${r.src.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>`).join("") || `<p class="muted">No skill signals for this kommune yet.</p>`;
+}
+
+function renderDemand(k) {
+  const d = DEMAND[k.id];
+  const max = 150;
+  const bar = (label, v, here) => `
+    <div class="bar-line"><span>${label}</span>
+      <span class="bar"><div class="${here ? "here" : ""}" style="width:${(v / max) * 100}%"></div></span>
+      <span>${v}</span></div>`;
+  $("demand").innerHTML = Object.entries(d).map(([occ, [kv, fv, nv]]) => `
+    <div class="demand-row">
+      <div><strong>${esc(occ)}</strong></div>
+      <div>
+        ${bar(esc(k.name), kv, true)}
+        ${bar(esc(k.fylke), fv, false)}
+        ${bar("Norway", nv, false)}
+      </div>
+    </div>`).join("");
+}
+
+function renderBriefing(k) {
+  $("briefing-body").innerHTML = k.briefing.map(([label, text]) =>
+    `<p><span class="label">${esc(label)}</span>${esc(text)}</p>`).join("");
+}
+
+function render() {
+  const k = KOMMUNER.find((x) => x.id === state.k) || KOMMUNER[0];
+  state.k = k.id;
+  renderTiles();
+  renderHead(k);
+  renderSkills(k);
+  renderDemand(k);
+  renderBriefing(k);
+}
+
+document.addEventListener("click", (e) => {
+  const tile = e.target.closest(".tile");
+  if (tile) {
+    state.k = tile.dataset.id;
+    history.replaceState(null, "", `#${state.k}`);
+    render();
+    return;
+  }
+  const row = e.target.closest(".row");
+  if (row) row.classList.toggle("open");
+});
+
+$("scenario-toggle").addEventListener("change", (e) => {
+  state.scenarios = e.target.checked;
+  render();
+});
+
+window.addEventListener("hashchange", () => {
+  state.k = location.hash.slice(1) || state.k;
+  render();
+});
+
+state.k = location.hash.slice(1) || state.k;
+render();
+</script>
+</body>
+</html>
