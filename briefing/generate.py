@@ -6,7 +6,7 @@ Dry run (no network, no key needed):
 
 Live run (key comes from the ANTHROPIC_API_KEY environment variable only):
   export ANTHROPIC_API_KEY=...
-  python3 generate.py --input municipalityr.json --model sonnet --out briefings.json
+  python3 generate.py --input municipalities.json --model sonnet --out briefings.json
 """
 import argparse
 import json
@@ -174,16 +174,16 @@ def main():
     args = ap.parse_args()
 
     with open(args.input, encoding="utf-8") as f:
-        municipalityr = json.load(f)
-    if isinstance(municipalityr, dict):
-        municipalityr = [municipalityr]
+        municipalities = json.load(f)
+    if isinstance(municipalities, dict):
+        municipalities = [municipalities]
     model_id = MODELS[args.model]
 
     if not args.dry_run and not os.environ.get("ANTHROPIC_API_KEY"):
         sys.exit("ANTHROPIC_API_KEY is not set. Export it in your shell. Nothing was sent.")
 
     results = []
-    for k in municipalityr:
+    for k in municipalities:
         indexed = index_payload(k)
         if args.dry_run:
             print(f"=== {indexed['municipality']} | model {model_id} | no request sent ===")

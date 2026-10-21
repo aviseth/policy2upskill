@@ -1,21 +1,21 @@
 [
   {
-    "_note": "SYNTHETIC. Rows copied from the prototype's Bodø sample. Not real data.",
-    "municipality": "Bodø",
-    "region": "Nordland",
+    "_note": "SYNTHETIC. Rows copied from the prototype's København sample. Not real data.",
+    "municipality": "København",
+    "region": "Hovedstaden",
     "rows": [
-      {"occupation": "Sykepleiere", "skill": "Digital patient records", "category": "transforming", "trend": "rising", "confidence": 0.72, "scenario": false, "sources": ["NAV job ads", "ESCO"]},
-      {"occupation": "Sykepleiere", "skill": "Elderly and palliative care", "category": "durable", "trend": "level", "confidence": 0.81, "scenario": false, "sources": ["NAV job ads", "SSB employment"]},
-      {"occupation": "Elektrikere", "skill": "Heat-pump installation", "category": "transforming", "trend": "rising", "confidence": 0.66, "scenario": false, "sources": ["NAV job ads", "NAV shortage survey"]},
-      {"occupation": "Elektrikere", "skill": "Legacy fuse-box work", "category": "falling", "trend": "falling", "confidence": 0.55, "scenario": false, "sources": ["NAV job ads"]},
-      {"occupation": "Elektrikere", "skill": "Offshore wind cable work", "category": "rising", "trend": "rising", "confidence": 0.41, "scenario": true, "sources": ["Scenario: offshore wind yard opens"]},
-      {"occupation": "Lastebilsjåfører", "skill": "Electric truck operation", "category": "transforming", "trend": "rising", "confidence": 0.38, "scenario": false, "sources": ["NAV job ads"]},
-      {"occupation": "Lastebilsjåfører", "skill": "Heavy-vehicle licence C/CE", "category": "durable", "trend": "level", "confidence": 0.79, "scenario": false, "sources": ["NAV job ads", "SSB employment"]}
+      {"occupation": "Nurses", "skill": "Digital patient records", "category": "transforming", "trend": "rising", "confidence": 0.72, "scenario": false, "sources": ["Job ads", "ESCO"]},
+      {"occupation": "Nurses", "skill": "Elderly and palliative care", "category": "durable", "trend": "level", "confidence": 0.81, "scenario": false, "sources": ["Job ads", "Danmarks Statistik employment"]},
+      {"occupation": "Electricians", "skill": "Heat-pump installation", "category": "transforming", "trend": "rising", "confidence": 0.66, "scenario": false, "sources": ["Job ads", "Shortage list"]},
+      {"occupation": "Electricians", "skill": "Legacy fuse-box work", "category": "falling", "trend": "falling", "confidence": 0.55, "scenario": false, "sources": ["Job ads"]},
+      {"occupation": "Electricians", "skill": "Offshore wind cable work", "category": "rising", "trend": "rising", "confidence": 0.41, "scenario": true, "sources": ["Scenario: offshore wind yard opens"]},
+      {"occupation": "Truck drivers", "skill": "Electric truck operation", "category": "transforming", "trend": "rising", "confidence": 0.38, "scenario": false, "sources": ["Job ads"]},
+      {"occupation": "Truck drivers", "skill": "Heavy-vehicle licence C/CE", "category": "durable", "trend": "level", "confidence": 0.79, "scenario": false, "sources": ["Job ads", "Danmarks Statistik employment"]}
     ],
     "demand": [
-      {"occupation": "Sykepleiere", "municipality": 118, "region": 109, "national": 114},
-      {"occupation": "Elektrikere", "municipality": 104, "region": 101, "national": 103},
-      {"occupation": "Lastebilsjåfører", "municipality": 96, "region": 99, "national": 102}
+      {"occupation": "Nurses", "municipality": 118, "region": 109, "national": 114},
+      {"occupation": "Electricians", "municipality": 104, "region": 101, "national": 103},
+      {"occupation": "Truck drivers", "municipality": 96, "region": 99, "national": 102}
     ]
   }
 ]
