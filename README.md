@@ -2,6 +2,8 @@
 
 A Danish labour-market explorer for policy makers. It shows, at national, region and municipality level, how employment moves and which occupation skills are rising or falling. A demo prototype, not a forecasting product.
 
+**Live site:** https://p2u-explorer-10211825.netlify.app
+
 **Open it:** open `prototype/index.html` in a browser. One static file, no build step, no network calls. The demo click path is in `DEMO.md`.
 
 **Data sources:** Statistics Denmark (Danmarks Statistik) StatBank tables LBESK354 (employees by municipality of residence, 2023-2025), BEFOLK3 (population) and UDDAKT10 (completed education). Licence CC BY 4.0, credit Statistics Denmark. Extracts and notes: `data/real/`. Proposed data contract: `data/contract.md`.
