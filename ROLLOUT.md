@@ -20,7 +20,7 @@ Update this file as work lands. Each update gets a dated entry in the log at the
 
 | Day | Work | Owner | Gate |
 |---|---|---|---|
-| 1-2 | Agree the data contract (`contract.md`, sample.json from research) | Data + Method | Contract signed off by the team |
+| 1-2 | Agree the data contract (`data/contract.md`, `data/sample.json`; drafted 21 Oct) | Data + Method | Contract signed off by the team |
 | 2-3 | Pull SSB table 11619 for the 4 prototype kommuner. Keep attribution text ("Kilde: SSB", CC BY 4.0) | Data | Real employment layer loads in the explorer |
 | 3-4 | Write the tagging rules as code, with thresholds marked proposed | Method | Rules reproduce the demo tags |
 | 4-5 | Explorer fixes from the UX review; decide English or Norwegian UI | Explorer | Decision on language recorded |
@@ -74,3 +74,4 @@ Gate 3 (day 21): backtest result known. If the hit rate is no better than baseli
 ## Log
 
 - 2026-10-21: draft v1 written from the research outputs (data sources, method rigour, explorer UX, briefing, demo and pitch).
+- 2026-10-21 (evening): data contract v0.1 drafted and committed to `data/`. Tromsø fylke corrected to Troms in the prototype. Contract published on the prototype page and on the Miro board.

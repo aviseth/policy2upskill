@@ -124,6 +124,27 @@
   </aside>
 </div>
 
+<div style="padding: 0 24px 16px;">
+  <details class="card">
+    <summary style="cursor: pointer; font-weight: 600;">Data contract v0.1.0 (proposal, not yet agreed)</summary>
+    <p class="muted" style="margin: 10px 0;">All values are synthetic. Skill rows are per kommune, occupation and skill. Demand rows are per kommune and occupation, with fylke and national comparators.</p>
+    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+      <thead><tr style="text-align: left; border-bottom: 1px solid var(--line);"><th style="padding: 6px 8px;">Field</th><th style="padding: 6px 8px;">Rule</th></tr></thead>
+      <tbody>
+        <tr><td style="padding: 6px 8px;">kommune</td><td style="padding: 6px 8px;">Lowercase slug from the kommuner list</td></tr>
+        <tr><td style="padding: 6px 8px;">occupation, skill</td><td style="padding: 6px 8px;">Labels, free text</td></tr>
+        <tr><td style="padding: 6px 8px;">category</td><td style="padding: 6px 8px;">Kind of change to the skill: rising, falling, durable, transforming</td></tr>
+        <tr><td style="padding: 6px 8px;">trend</td><td style="padding: 6px 8px;">Direction of demand for this skill in this occupation: rising, falling, level</td></tr>
+        <tr><td style="padding: 6px 8px;">confidence</td><td style="padding: 6px 8px;">0 to 1. Below 0.5 shows as low confidence</td></tr>
+        <tr><td style="padding: 6px 8px;">scenario</td><td style="padding: 6px 8px;">True for a what-if assumption, never observed data</td></tr>
+        <tr><td style="padding: 6px 8px;">sources</td><td style="padding: 6px 8px;">Non-empty list. Scenario rows start with "Scenario:"; observed rows have none</td></tr>
+        <tr><td style="padding: 6px 8px;">index_kommune, index_fylke, index_national</td><td style="padding: 6px 8px;">Demand index, 2019 = 100, range 1 to 150</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin: 10px 0 0;">Open: derive trend from demand once job-ad data arrives (v0.2). SSB codes not yet verified. Full text: data/contract.md in the repo.</p>
+  </details>
+</div>
+
 <footer>
   Prototype, not agreed with the team. Data contract is a proposal: kommune · occupation · skill · category · trend · confidence · scenario · sources.
 </footer>
@@ -153,7 +174,7 @@ const KOMMUNER = [
       ["What to fund this year", "Bridging courses from manual process control to automation monitoring."],
       ["What we are unsure about", "The battery plant is a scenario assumption, not an observed trend."],
     ] },
-  { id: "tromso", name: "Tromsø", fylke: "Troms og Finnmark",
+  { id: "tromso", name: "Tromsø", fylke: "Troms",
     briefing: [
       ["What is changing", "Fish-processing roles fall below the national index. Data engineering grows fast."],
       ["What to fund this year", "Transition routes from fish processing into food safety and data roles."],
