@@ -862,7 +862,7 @@ function renderCompare() {
     ["Falling skills", a.falling, b.falling, false],
     ["Shortage occupations", a.shortage, b.shortage, false],
   ];
-  return `<div class="panel"><div class="head"><h2>${esc(k.name)} compared with ${esc(other.name)}</h2></div>
+  return `<div class="panel"><div class="head"><h2>${esc(k.name)} compared with ${esc(other.name)} ${badge(true)} ${badge(false)}</h2></div>
     <table class="stat-table"><thead><tr><th>Measure</th><th>${esc(k.name)}</th><th>${esc(other.name)}</th><th>Source</th></tr></thead>
     <tbody>${rows.map(([m, x, y, real]) => `<tr><td>${m}</td><td>${cellVal(x)}</td><td>${cellVal(y)}</td><td class="src" style="text-align:left">${badge(real)}</td></tr>`).join("")}</tbody></table>
     <p class="muted" style="margin:10px 0 0">Two contrasting municipalities show more than one number does. Green rows are Statistics Denmark figures; amber rows count synthetic skill signals and indicators.</p></div>`;
