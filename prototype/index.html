@@ -8,7 +8,7 @@
   :root {
     --ink: #1a1a1a; --muted: #6b6b6b; --line: #e4e4e4; --bg: #fafaf8; --card: #fff;
     --accent: #305bab;
-    --rising: #067429; --falling: #b42318; --durable: #305bab; --transforming: #b26a00;
+    --rising: #067429; --falling: #b42318; --durable: #305bab; --transforming: #9b4a08;
   }
   * { box-sizing: border-box; }
   body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
@@ -74,6 +74,13 @@
   .note { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
 
   footer { padding: 0 24px 24px; color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 1100px) {
+    header { flex-wrap: wrap; gap: 12px; }
+    .layout { grid-template-columns: 1fr; }
+    .row-main { grid-template-columns: 1fr; gap: 6px; }
+    .demand-row { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -119,7 +126,7 @@
     <div class="card briefing" id="briefing">
       <div class="label">Briefing · sample</div>
       <div id="briefing-body"></div>
-      <div class="note">Hand-written sample. The /briefing lane will generate this from the core model with the Claude API, on the server. No API key or call runs in the browser.</div>
+      <div class="note">Sample text, written by hand. In the live version, a model writes this from the data on the server, and checks each claim against it.</div>
     </div>
   </aside>
 </div>
@@ -146,7 +153,7 @@
 </div>
 
 <footer>
-  Prototype, not agreed with the team. Data contract is a proposal: kommune · occupation · skill · category · trend · confidence · scenario · sources.
+  Prototype with synthetic data. Data contract is a proposal: kommune · occupation · skill · category · trend · confidence · scenario · sources.
 </footer>
 
 <script>
@@ -199,9 +206,9 @@ const SKILLS = [
   // Bodø
   { k: "bodo", o: "Sykepleiere", s: "Digital patient records", c: "transforming", t: "rising", p: 0.72, sc: false, src: ["NAV job ads", "ESCO"] },
   { k: "bodo", o: "Sykepleiere", s: "Elderly and palliative care", c: "durable", t: "level", p: 0.81, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "bodo", o: "Elektrikere", s: "Heat-pump installation", c: "transforming", t: "rising", p: 0.66, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  { k: "bodo", o: "Elektrikere", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.66, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
   { k: "bodo", o: "Elektrikere", s: "Legacy fuse-box work", c: "falling", t: "falling", p: 0.55, sc: false, src: ["NAV job ads"] },
-  { k: "bodo", o: "Elektrikere", s: "Offshore wind cable work", c: "rising", t: "rising", p: 0.41, sc: true, src: ["Scenario: offshore wind yard opens"] },
+  { k: "bodo", o: "Elektrikere", s: "Offshore wind cable work", c: "rising", t: "rising", p: 0.30, sc: true, src: ["Scenario: offshore wind yard opens"] },
   { k: "bodo", o: "Lastebilsjåfører", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.38, sc: false, src: ["NAV job ads"] },
   { k: "bodo", o: "Lastebilsjåfører", s: "Heavy-vehicle licence C/CE", c: "durable", t: "level", p: 0.79, sc: false, src: ["NAV job ads", "SSB employment"] },
   // Stavanger
@@ -242,7 +249,7 @@ function renderHead(k) {
   const scen = SKILLS.filter((r) => r.k === k.id && r.sc).length;
   $("kommune-head").innerHTML = `
     <h1>${esc(k.name)}</h1>
-    <div class="muted">${esc(k.fylke)} · ${rows} observed skill signals · ${scen} scenario assumption${scen === 1 ? "" : "s"}</div>`;
+    <div class="muted">${esc(k.fylke)} · ${rows} synthetic skill signals ·${scen} scenario assumption${scen === 1 ? "" : "s"}</div>`;
 }
 
 function renderSkills(k) {
@@ -255,7 +262,7 @@ function renderSkills(k) {
       ${list.map((r, i) => {
         const id = `${k.id}-${occ}-${i}`.replace(/\s+/g, "-");
         return `
-        <div class="row ${r.p < 0.5 ? "low" : ""} ${r.sc ? "scenario" : ""}" data-id="${id}">
+        <div class="row ${r.p < 0.5 ? "low" : ""} ${r.sc ? "scenario" : ""}" data-id="${id}" tabindex="0" role="button" aria-expanded="false">
           <div class="row-main">
             <span class="chip c-${r.c}">${esc(r.c)}</span>
             <span>${esc(r.s)}${r.sc ? '<span class="assume">assumption</span>' : ""}</span>
@@ -266,7 +273,7 @@ function renderSkills(k) {
             </span>
           </div>
           <div class="detail">
-            ${r.sc ? "This is a what-if assumption, not observed data. " : ""}Sources:
+            ${r.sc ? "This is a what-if assumption, not observed data. " : ""}Planned sources (not connected yet):
             <ul>${r.src.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
           </div>
         </div>`;
@@ -316,7 +323,18 @@ document.addEventListener("click", (e) => {
     return;
   }
   const row = e.target.closest(".row");
-  if (row) row.classList.toggle("open");
+  if (row) {
+    row.classList.toggle("open");
+    row.setAttribute("aria-expanded", row.classList.contains("open"));
+  }
+});
+
+// Keyboard: Enter or Space expands a skill row, as a click does.
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.classList && e.target.classList.contains("row")) {
+    e.preventDefault();
+    e.target.click();
+  }
 });
 
 $("scenario-toggle").addEventListener("change", (e) => {
