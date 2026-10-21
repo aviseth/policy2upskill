@@ -116,6 +116,11 @@
       <div id="skills"></div>
     </div>
     <div class="card">
+      <h2>Employed persons by occupation group</h2>
+      <p class="muted" style="margin:0 0 10px">Real data: SSB table 11619, 2019 vs 2025. Source: SSB, CC BY 4.0. SSB rounds small cells.</p>
+      <div id="ssb"></div>
+    </div>
+    <div class="card">
       <h2>Demand index</h2>
       <p class="muted" style="margin:0 0 10px">2019 = 100, synthetic. Kommune against its fylke and the national value.</p>
       <div class="demand" id="demand"></div>
@@ -231,6 +236,195 @@ const SKILLS = [
   { k: "kristiansand", o: "Sykepleiere", s: "Ward coordination after merger", c: "transforming", t: "rising", p: 0.20, sc: true, src: ["Scenario: hospital merger"] },
 ];
 
+// SSB table 11619: employed persons by occupation group, 2019 vs 2025 (real data, CC BY 4.0).
+// Tromsø and Kristiansand change kommune code over time; the codes used are in data/ssb/SOURCE.md.
+const SSB = {
+ "bodo": {
+  "Alle yrker": {
+   "2019": "27984",
+   "2025": "28950"
+  },
+  "Ledere": {
+   "2019": "2437",
+   "2025": "2522"
+  },
+  "Akademiske yrker": {
+   "2019": "7637",
+   "2025": "8241"
+  },
+  "Høyskole- og militære yrker": {
+   "2019": "4264",
+   "2025": "4481"
+  },
+  "Kontoryrker": {
+   "2019": "1941",
+   "2025": "1641"
+  },
+  "Salgs- og serviceyrker": {
+   "2019": "6050",
+   "2025": "6348"
+  },
+  "Bønder, fiskere mv.": {
+   "2019": "138",
+   "2025": "181"
+  },
+  "Håndverkere": {
+   "2019": "2133",
+   "2025": "2156"
+  },
+  "Prosess- og maskinoperatører, transportarbeidere mv.": {
+   "2019": "1030",
+   "2025": "991"
+  },
+  "Renholdere, hjelpearbeidere mv.": {
+   "2019": "1430",
+   "2025": "1446"
+  },
+  "Uoppgitt / yrker som ikke kan identifiseres": {
+   "2019": "924",
+   "2025": "943"
+  }
+ },
+ "stavanger": {
+  "Alle yrker": {
+   "2019": "69172",
+   "2025": "79636"
+  },
+  "Ledere": {
+   "2019": "6167",
+   "2025": "7236"
+  },
+  "Akademiske yrker": {
+   "2019": "20689",
+   "2025": "24052"
+  },
+  "Høyskole- og militære yrker": {
+   "2019": "12412",
+   "2025": "14570"
+  },
+  "Kontoryrker": {
+   "2019": "4072",
+   "2025": "4072"
+  },
+  "Salgs- og serviceyrker": {
+   "2019": "13831",
+   "2025": "15341"
+  },
+  "Bønder, fiskere mv.": {
+   "2019": "218",
+   "2025": "614"
+  },
+  "Håndverkere": {
+   "2019": "4153",
+   "2025": "4887"
+  },
+  "Prosess- og maskinoperatører, transportarbeidere mv.": {
+   "2019": "2268",
+   "2025": "2705"
+  },
+  "Renholdere, hjelpearbeidere mv.": {
+   "2019": "2607",
+   "2025": "2958"
+  },
+  "Uoppgitt / yrker som ikke kan identifiseres": {
+   "2019": "2755",
+   "2025": "3201"
+  }
+ },
+ "tromso": {
+  "Alle yrker": {
+   "2019": "42642",
+   "2025": "45745"
+  },
+  "Ledere": {
+   "2019": "3551",
+   "2025": "3854"
+  },
+  "Akademiske yrker": {
+   "2019": "13188",
+   "2025": "14836"
+  },
+  "Høyskole- og militære yrker": {
+   "2019": "5772",
+   "2025": "6442"
+  },
+  "Kontoryrker": {
+   "2019": "2512",
+   "2025": "2196"
+  },
+  "Salgs- og serviceyrker": {
+   "2019": "9055",
+   "2025": "9814"
+  },
+  "Bønder, fiskere mv.": {
+   "2019": "124",
+   "2025": "220"
+  },
+  "Håndverkere": {
+   "2019": "2687",
+   "2025": "2641"
+  },
+  "Prosess- og maskinoperatører, transportarbeidere mv.": {
+   "2019": "1635",
+   "2025": "1720"
+  },
+  "Renholdere, hjelpearbeidere mv.": {
+   "2019": "2325",
+   "2025": "2235"
+  },
+  "Uoppgitt / yrker som ikke kan identifiseres": {
+   "2019": "1793",
+   "2025": "1787"
+  }
+ },
+ "kristiansand": {
+  "Alle yrker": {
+   "2019": "45201",
+   "2025": "58973"
+  },
+  "Ledere": {
+   "2019": "3760",
+   "2025": "4628"
+  },
+  "Akademiske yrker": {
+   "2019": "11099",
+   "2025": "15316"
+  },
+  "Høyskole- og militære yrker": {
+   "2019": "7440",
+   "2025": "9356"
+  },
+  "Kontoryrker": {
+   "2019": "3053",
+   "2025": "3600"
+  },
+  "Salgs- og serviceyrker": {
+   "2019": "10548",
+   "2025": "13530"
+  },
+  "Bønder, fiskere mv.": {
+   "2019": "54",
+   "2025": "116"
+  },
+  "Håndverkere": {
+   "2019": "3043",
+   "2025": "4235"
+  },
+  "Prosess- og maskinoperatører, transportarbeidere mv.": {
+   "2019": "2049",
+   "2025": "2960"
+  },
+  "Renholdere, hjelpearbeidere mv.": {
+   "2019": "1953",
+   "2025": "2582"
+  },
+  "Uoppgitt / yrker som ikke kan identifiseres": {
+   "2019": "2202",
+   "2025": "2650"
+  }
+ }
+};
+
 const TREND_ARROW = { rising: "↑ rising", falling: "↓ falling", level: "→ level" };
 const state = { k: "bodo", scenarios: false };
 
@@ -299,6 +493,18 @@ function renderDemand(k) {
     </div>`).join("");
 }
 
+function renderSsb(k) {
+  const d = SSB[k.id] || {};
+  const rows = Object.entries(d).sort((a, b) => (a[0] === "Alle yrker" ? -1 : b[0] === "Alle yrker" ? 1 : 0));
+  $("ssb").innerHTML = rows.length ? `<table style="width:100%; border-collapse:collapse; font-size:14px;">
+    <thead><tr style="text-align:left; border-bottom:1px solid var(--line);"><th style="padding:6px 8px;">Occupation group</th><th style="padding:6px 8px;">2019</th><th style="padding:6px 8px;">2025</th><th style="padding:6px 8px;">Change</th></tr></thead>
+    <tbody>${rows.map(([name, y]) => {
+      const a = Number(y["2019"]), b = Number(y["2025"]);
+      const pct = a ? Math.round(((b - a) / a) * 100) : null;
+      return `<tr style="border-bottom:1px solid var(--line);"><td style="padding:6px 8px;">${esc(name)}</td><td style="padding:6px 8px;">${a.toLocaleString("en")}</td><td style="padding:6px 8px;">${b.toLocaleString("en")}</td><td style="padding:6px 8px;">${pct === null ? "n/a" : (pct > 0 ? "+" : "") + pct + "%"}</td></tr>`;
+    }).join("")}</tbody></table>` : `<p class="muted">No SSB data for this kommune.</p>`;
+}
+
 function renderBriefing(k) {
   $("briefing-body").innerHTML = k.briefing.map(([label, text]) =>
     `<p><span class="label">${esc(label)}</span>${esc(text)}</p>`).join("");
@@ -311,6 +517,7 @@ function render() {
   renderHead(k);
   renderSkills(k);
   renderDemand(k);
+  renderSsb(k);
   renderBriefing(k);
 }
 
