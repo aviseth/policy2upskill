@@ -124,11 +124,27 @@
   .legend { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 12px; color: var(--ink-2); margin: 8px 0 0; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend svg { width: 28px; height: 10px; }
-  .src { white-space: nowrap; }
+  .src { white-space: nowrap; display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+  .src-real { background: #e6f5ea; color: #067429; }
+  .src-synthetic { background: #fff3d6; color: #7a4a00; }
   .nodata { color: var(--muted); font-size: 12px; }
   .panel > .head h2, .head h1 { margin: 0; }
 
+  .ask-wrap { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; align-items: start; }
+  .ask-list { display: flex; flex-direction: column; gap: 4px; }
+  .ask-q { text-align: left; font: inherit; background: none; border: 1px solid transparent; border-radius: 8px; padding: 10px 12px; cursor: pointer; color: var(--ink-2); }
+  .ask-q:hover { background: #f1f0ec; }
+  .ask-q[aria-pressed="true"] { background: #fff; border-color: var(--line); color: var(--ink); font-weight: 600; }
+  .ask-controls { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; font-size: 13px; color: var(--ink-2); }
+  .ask-controls select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; margin-left: 6px; }
+  .ask-card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 22px 24px; }
+  .ask-card h2 { font-size: 18px; margin-bottom: 8px; }
+  .ask-card p { color: var(--ink-2); margin: 0 0 12px; }
+  .ask-meta { margin-bottom: 12px; }
+  .ask-card table { margin-top: 6px; }
+
   @media (max-width: 1100px) {
+    .ask-wrap { grid-template-columns: 1fr; }
     header { flex-wrap: wrap; height: auto; padding: 12px 20px; gap: 12px; }
     .layout { grid-template-columns: 1fr; gap: 0; padding: 20px; }
     .demand-row { grid-template-columns: 1fr; }
@@ -992,33 +1008,130 @@ function renderPaper() {
   </div>`;
 }
 
-const ASK = {
-  rising: { label: "Which skills are rising?", run: (m) => SKILLS.filter((r) => r.k === m && !r.sc && r.t === "rising").map((r) => `${r.o}: ${r.s}`) },
-  falling: { label: "Which skills are falling?", run: (m) => SKILLS.filter((r) => r.k === m && !r.sc && r.t === "falling").map((r) => `${r.o}: ${r.s}`) },
-  shortage: { label: "Which occupations are on a shortage list?", run: (m) => Object.entries(INDICATORS[m] || {}).filter(([, v]) => v.shortage).map(([o, v]) => `${o} (${v.ttf} days to fill)`) },
-  scenario: { label: "Which scenario assumptions are listed?", run: (m) => SKILLS.filter((r) => r.k === m && r.sc).map((r) => `${r.o}: ${r.s} (assumption)`) },
-};
+// ---- Ask the data: canned questions answered from the data. Real figures are labelled Real, the rest Synthetic. ----
+const ASK_QUESTIONS = [
+  { id: "workforce", label: "How big is the workforce, and how fast is it changing?" },
+  { id: "compare", label: "How does this municipality compare with its region?" },
+  { id: "rising", label: "Which skills are rising?" },
+  { id: "falling", label: "Which skills are falling?" },
+  { id: "shortage", label: "Which occupations are on a shortage list?" },
+  { id: "completions", label: "Is training output keeping up with population?" },
+  { id: "scenario", label: "What do the scenario assumptions say?" },
+];
+state.askQ = "workforce";
+state.askK2 = "";
+
+const askBadge = (kind) => kind === "real"
+  ? '<span class="src src-real">Real · Statistics Denmark</span>'
+  : '<span class="src src-synthetic">Synthetic</span>';
+
+function askTable(head, rows) {
+  return `<table class="stat-table"><thead><tr>${head.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+
+function askAnswer(qid, k, k2) {
+  const real = REAL_DATA[k.id] || {};
+  const emp = real.employees || {};
+  const pop = real.population || {};
+  const comp = real.completions || {};
+  const fmt = (n) => (n === undefined ? "–" : Number(n).toLocaleString("en"));
+  const skillRows = (t) => SKILLS.filter((r) => r.k === k.id && !r.sc && r.t === t);
+  const noReal = `<p class="muted">No real figures loaded for ${esc(k.name)} yet.</p>`;
+
+  if (qid === "workforce") {
+    if (!emp["2025"]) return { text: noReal, src: "real" };
+    const ch = ((emp["2025"] / emp["2023"] - 1) * 100).toFixed(1);
+    const text = `<p>${esc(k.name)} had ${fmt(emp["2025"])} employees in 2025 (annual average), ${ch > 0 ? "up" : "down"} ${Math.abs(ch)}% since 2023.</p>`;
+    const years = ["2023", "2024", "2025"];
+    return { text: text + askTable(["Year", "Employees", "Population (1 Jan)"],
+      years.map((y) => [y, fmt(emp[y]), fmt(pop[y])])), src: "real",
+      note: "Employees: LBESK354. Population: BEFOLK3." };
+  }
+  if (qid === "compare") {
+    const other = k2 && k2.id !== k.id ? k2 : MUNICIPALITIES.find((m) => m.region === k.region && m.id !== k.id);
+    if (!other) return { text: `<p class="muted">Pick a second municipality above.</p>`, src: "real" };
+    const a = municipalityStats(k.id), b = municipalityStats(other.id);
+    return { text: `<p>${esc(k.name)} against ${esc(other.name)}. The rows below show real employment and the synthetic skill counts side by side.</p>` +
+      askTable(["Measure", esc(k.name), esc(other.name)], [
+        ["Employed 2025 (real)", a.employed, b.employed],
+        ["Change 2023–25 (real)", a.change, b.change],
+        ["Rising skills (synthetic)", a.rising, b.rising],
+        ["Falling skills (synthetic)", a.falling, b.falling],
+        ["Shortage occupations (synthetic)", a.shortage, b.shortage]]),
+      src: "mixed" };
+  }
+  if (qid === "rising" || qid === "falling") {
+    const rows = skillRows(qid);
+    if (!rows.length) return { text: `<p class="muted">No ${qid} skills in the synthetic data for ${esc(k.name)}.</p>`, src: "synthetic" };
+    return { text: `<p>${rows.length} skill${rows.length > 1 ? "s" : ""} ${qid} in ${esc(k.name)}.</p>` +
+      askTable(["Occupation", "Skill", "Confidence", "Sources"], rows.map((r) => [esc(r.o), esc(r.s), r.p.toFixed(2), esc(r.src.join("; "))])),
+      src: "synthetic" };
+  }
+  if (qid === "shortage") {
+    const ind = Object.entries(INDICATORS[k.id] || {}).filter(([, v]) => v.shortage);
+    if (!ind.length) return { text: `<p class="muted">No occupations flagged in ${esc(k.name)}.</p>`, src: "synthetic" };
+    return { text: `<p>${ind.length} occupation${ind.length > 1 ? "s" : ""} flagged on the shortage list in ${esc(k.name)}.</p>` +
+      askTable(["Occupation", "Days to fill"], ind.map(([o, v]) => [esc(o), v.ttf])),
+      src: "synthetic", note: "Shortage flags and days to fill are synthetic. The national shortage list (Positivlisten) is real but not yet joined to municipalities." };
+  }
+  if (qid === "completions") {
+    if (!comp["2025"] || !pop["2025"]) return { text: noReal, src: "real" };
+    const per = ((comp["2025"] / pop["2025"]) * 1000).toFixed(1);
+    return { text: `<p>In 2025, ${fmt(comp["2025"])} education completions were recorded in ${esc(k.name)}: about ${per} per 1,000 residents.</p>` +
+      askTable(["Year", "Completions", "Population (1 Jan)"], ["2023", "2024", "2025"].map((y) => [y, fmt(comp[y]), fmt(pop[y])])),
+      src: "real", note: "Completions: UDDAKT10 (all fields of study, by municipality of residence)." };
+  }
+  if (qid === "scenario") {
+    const rows = SKILLS.filter((r) => r.k === k.id && r.sc);
+    if (!rows.length) return { text: `<p class="muted">No scenario assumptions for ${esc(k.name)}.</p>`, src: "synthetic" };
+    return { text: `<p>${rows.length} scenario assumption${rows.length > 1 ? "s" : ""} for ${esc(k.name)}. These are what-ifs, not observed data.</p>` +
+      askTable(["Occupation", "Assumption", "Confidence", "Source"], rows.map((r) => [esc(r.o), esc(r.s), r.p.toFixed(2), esc(r.src.join("; "))])),
+      src: "synthetic" };
+  }
+  return { text: "", src: "synthetic" };
+}
 
 function renderAsk() {
-  return `<div class="panel ask"><div class="head"><h2>Ask the data ${badge(false)}</h2></div>
-    <p class="muted">Canned questions answered from the data. A live version would use the Claude API on the server, with checks.</p>
-    <div style="margin: 12px 0;">
-      <select id="ask-k" aria-label="Municipality">${MUNICIPALITIES.map((k) => `<option value="${k.id}">${esc(k.name)}</option>`).join("")}</select>
-      <select id="ask-q" aria-label="Question">${Object.entries(ASK).map(([id, q]) => `<option value="${id}">${esc(q.label)}</option>`).join("")}</select>
-    </div>
-    <div id="ask-answer"></div></div>`;
+  const k = currentMunicipality();
+  const options = (sel, blank) => (blank ? `<option value="">None</option>` : "") +
+    MUNICIPALITIES.map((m) => `<option value="${m.id}" ${m.id === sel ? "selected" : ""}>${esc(m.name)}</option>`).join("");
+  return `<div class="ask-wrap">
+    <nav class="ask-list" aria-label="Questions">
+      ${ASK_QUESTIONS.map((q) => `<button class="ask-q" data-q="${q.id}" aria-pressed="${q.id === state.askQ}">${esc(q.label)}</button>`).join("")}
+    </nav>
+    <section class="ask-main">
+      <div class="ask-controls">
+        <label>Municipality <select id="ask-k">${options(k.id, false)}</select></label>
+        <label>Compare with <select id="ask-k2">${options(state.askK2, true)}</select></label>
+      </div>
+      <div id="ask-answer"></div>
+    </section>
+  </div>`;
 }
 
 function renderAskAnswer() {
-  const k = $("ask-k").value, q = ASK[$("ask-q").value];
-  const items = q.run(k);
-  $("ask-answer").innerHTML = items.length
-    ? `<ul>${items.map((t) => `<li style="margin-bottom:6px;">${esc(t)}</li>`).join("")}</ul>`
-    : `<p class="muted">No matching rows in the synthetic data.</p>`;
+  const k = currentMunicipality();
+  const k2 = MUNICIPALITIES.find((m) => m.id === state.askK2);
+  const q = ASK_QUESTIONS.find((x) => x.id === state.askQ);
+  const a = askAnswer(state.askQ, k, k2);
+  $("ask-answer").innerHTML = `<div class="ask-card">
+    <h2>${esc(q.label)}</h2>
+    <div class="ask-meta">${askBadge(a.src === "real" ? "real" : "synthetic")}${a.src === "mixed" ? askBadge("real") + askBadge("synthetic") : ""}</div>
+    ${a.text}
+    ${a.note ? `<p class="muted" style="margin-top:12px">${esc(a.note)}</p>` : ""}
+  </div>`;
 }
 
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".ask-q");
+  if (b) { state.askQ = b.dataset.q; document.querySelectorAll(".ask-q").forEach((x) => x.setAttribute("aria-pressed", x === b)); renderAskAnswer(); }
+});
+
 document.addEventListener("change", (e) => {
-  if (e.target.id === "ask-k" || e.target.id === "ask-q") renderAskAnswer();
+  if (e.target.id === "ask-k") { state.k = e.target.value; location.hash = e.target.value; }
+  if (e.target.id === "ask-k2") { state.askK2 = e.target.value; }
+  if (e.target.id === "ask-k" || e.target.id === "ask-k2") renderAskAnswer();
 });
 
 function renderRoute() {
