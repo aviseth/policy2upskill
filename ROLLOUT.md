@@ -24,7 +24,7 @@ Update this file as work lands. Each update gets a dated entry in the log at the
 | Day | Work | Owner | Gate |
 |---|---|---|---|
 | 1-2 | Agree the data contract (`data/contract.md`, `data/sample.json`; drafted 21 Oct) | Data + Method | Contract signed off by the team |
-| 2-3 | Pull real Danish employment data for the 4 demo municipalities (in progress: subagents fetching Danmarks Statistik data) | Data | Real employment layer loads in the explorer |
+| 2-3 | Pull real Danish employment data for the demo municipalities (done for 12 municipalities, employees only; no occupation breakdown yet) | Data | Real employment layer loads in the explorer |
 | 3-4 | Write the tagging rules as code, with thresholds marked proposed | Method | Rules reproduce the demo tags |
 | 4-5 | DONE 21 Oct: keyboard expand, narrow layout, contrast. Still open: decide English or Danish UI | Explorer | Decision on language recorded |
 | 5-7 | Send a request for a job-ad feed token (not the deprecated public token) | Data | Request sent |
@@ -80,4 +80,6 @@ Gate 3 (day 21): backtest result known. If the hit rate is no better than baseli
 - 2026-10-21: draft v1 written from the research outputs (data sources, method rigour, explorer UX, briefing, demo and pitch).
 - 2026-10-21 (evening): data contract v0.1 drafted and committed to `data/`. Contract published on the prototype page and on the Miro board.
 - 2026-10-21 (late): data-source research (first pass) superseded by the Denmark pivot. Danish sources are being fetched.
-- 2026-10-21 (18:25): prototype demo fixes applied and checked in the browser (`1823365`). Nothing pushed.
+- 2026-10-21 (18:25): prototype demo fixes applied and checked in the browser (`1823365`). Pushed to origin/main (this entry first said "Nothing pushed"; that was wrong).
+- 2026-10-21 (evening): pushed to origin/main: Danish pivot and Norway removal (`aab6433`, `75c2b86`), real LBESK354 employees (`fc2a5f8`), BEFOLK3 and UDDAKT10 extracts (`d4f8312`), Danish fact-check fixes and `briefing/` (`f1ef447`), LS02 and Positivlisten extracts (`30ef39b`), national/region/municipality views with the Lolland and Frederiksberg demo pair (`271aee4`, `5916d42`, `ee18596`).
+- 2026-10-21 (night): demo build pushed to origin/main. Real figures (`data/real/demo_municipalities.json`, 12 municipalities, embedded as `REAL_DATA`) now drive the totals, compare, region and national tables. Copenhagen corrected to the municipality figures (it was the wider Province Byen København). Synthetic employment totals removed. Past/future line chart at all three levels (trend extension, not a forecast). Per-panel Real/Synthetic badges. `DEMO.md`, `.gitignore`, `briefing/` rename fix. Still open: UI language, Danish briefing word list, real occupation series, Femern "after opening" framing.
