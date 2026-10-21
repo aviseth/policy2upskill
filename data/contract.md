@@ -16,18 +16,18 @@ Skill rows per (municipality, occupation, skill). Demand rows per (municipality,
 | confidence | number | 0 to 1. Below 0.5 renders as low |
 | scenario | bool | true = what-if assumption, not observed |
 | sources | string[] | non-empty. Scenario rows need an entry starting "Scenario:". Observed rows must have none |
-| index_municipality, index_county, index_national | int | 1 to 150. Base 2019=100 |
-| municipalities[] | object | id, name, county, briefing as [label, text] pairs |
+| index_municipality, index_region, index_national | int | 1 to 150. Base 2019=100 |
+| municipalities[] | object | id, name, region, briefing as [label, text] pairs |
 
 ## Decision: category vs trend
 Keep both as independent per-row fields.
 - The board lists two tag sets: skill tags (rising, falling, durable, transforming) and rising, falling, level.
-- The prototype comment says trend is the "occupation direction". The data contradicts it. Bodø Electricians has rising, falling and rising rows, so trend is per row.
-- Deriving trend from the demand index would contradict the Bodø briefing (heat-pump rising, Electricians index 104). Not in v0.1.
+- The prototype comment says trend is the "occupation direction". The data contradicts it. København Electricians has rising, falling and rising rows, so trend is per row.
+- Deriving trend from the demand index would contradict the København briefing (heat-pump rising, Electricians index 104). Not in v0.1.
 - Finding: in all 22 prototype rows, trend is a fixed function of category. The fields carry the same information today. Keep them separate anyway, because job-ad signals will split them. Open item.
 
-## County correction
-"Troms og Finnmark" is stale. Troms and Finnmark separated on 1 January 2024. The sample uses Troms for Tromsø. Harstad replaces Alta, so four counties remain. This is the only deliberate change to prototype values. The Tromsø demand numbers are unchanged.
+## Region correction
+"Syddanmark" is stale. Syddanmark and Finnmark separated on 1 January 2024. The sample uses Syddanmark for Odense. Harstad replaces Alta, so four regions remain. This is the only deliberate change to prototype values. The Odense demand numbers are unchanged.
 
 ## Synthetic vs scenario
 - `synthetic` (top-level flag): the whole file is fabricated demo data.
@@ -36,11 +36,11 @@ Keep both as independent per-row fields.
 ## Loader mapping for Lane 2 (explorer)
 - `MUNICIPALITIES` = `municipalities`, unchanged.
 - `SKILLS` rows: k=municipality, o=occupation, s=skill, c=category, t=trend, p=confidence, sc=scenario, src=sources.
-- `DEMAND[municipality][occupation]` = [index_municipality, index_county, index_national].
+- `DEMAND[municipality][occupation]` = [index_municipality, index_region, index_national].
 - No explorer code changes.
 
 ## Checks
-validate.py (outside the repo) passes: 8 municipalities, 4 counties, 8 occupations, 45 skill rows, 24 demand rows. The 22 prototype rows and 12 demand values match index.html exactly, except Tromsø's county. Indices are constant per occupation (national) and per county (county).
+validate.py (outside the repo) passes: 8 municipalities, 4 regions, 8 occupations, 45 skill rows, 24 demand rows. The 22 prototype rows and 12 demand values match index.html exactly, except Odense's region. Indices are constant per occupation (national) and per region (region).
 
 ## Open items
 - v0.2: derive trend from occupation demand, once job-ad data arrives.

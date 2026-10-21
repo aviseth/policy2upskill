@@ -6,10 +6,10 @@
   "municipalities": [
     {
       "id": "bodo",
-      "name": "Bodø",
-      "county": "Nordland",
+      "name": "København",
+      "region": "Hovedstaden",
       "briefing": [
-        ["What is changing", "Heat-pump installation demand is rising faster than the county average. Electric truck skills are transforming a licence-based role."],
+        ["What is changing", "Heat-pump installation demand is rising faster than the region average. Electric truck skills are transforming a licence-based role."],
         ["What to fund this year", "Heat-pump and electrical upskilling for existing electricians. Short digital-records (electronic patient record) courses for nurses."],
         ["What we are unsure about", "The electric truck signal rests on one source (confidence 0.38)."]
       ]
@@ -17,7 +17,7 @@
     {
       "id": "narvik",
       "name": "Narvik",
-      "county": "Nordland",
+      "region": "Hovedstaden",
       "briefing": [
         ["What is changing", "Care roles hold steady while digital records spread. The electric truck signal is weak."],
         ["What to fund this year", "Digital-records courses for nurses. Hold truck retraining until the signal firms up."],
@@ -26,8 +26,8 @@
     },
     {
       "id": "stavanger",
-      "name": "Stavanger",
-      "county": "Rogaland",
+      "name": "Aarhus",
+      "region": "Midtjylland",
       "briefing": [
         ["What is changing", "Automation is reshaping process-operator work. Cloud and data roles grow well above the national index."],
         ["What to fund this year", "Bridging courses from manual process control to automation monitoring."],
@@ -37,7 +37,7 @@
     {
       "id": "sandnes",
       "name": "Sandnes",
-      "county": "Rogaland",
+      "region": "Midtjylland",
       "briefing": [
         ["What is changing", "Process-operator work is moving toward automation monitoring. Software and heat-pump roles grow above the national index."],
         ["What to fund this year", "Bridging courses from manual process control to automation monitoring. Heat-pump certification for installers."],
@@ -46,8 +46,8 @@
     },
     {
       "id": "tromso",
-      "name": "Tromsø",
-      "county": "Troms",
+      "name": "Odense",
+      "region": "Syddanmark",
       "briefing": [
         ["What is changing", "Fish-processing roles fall below the national index. Data engineering grows fast."],
         ["What to fund this year", "Transition routes from fish processing into food safety and data roles."],
@@ -57,7 +57,7 @@
     {
       "id": "harstad",
       "name": "Harstad",
-      "county": "Troms",
+      "region": "Syddanmark",
       "briefing": [
         ["What is changing", "Fish-processing line work declines. Care roles add telemedicine tasks."],
         ["What to fund this year", "Food safety and HACCP training for fish-processing workers moving into care or quality roles."],
@@ -66,10 +66,10 @@
     },
     {
       "id": "kristiansand",
-      "name": "Kristiansand",
-      "county": "Agder",
+      "name": "Aalborg",
+      "region": "Nordjylland",
       "briefing": [
-        ["What is changing", "Heat-pump installation is rising above the county and national level. Timber-frame construction holds steady."],
+        ["What is changing", "Heat-pump installation is rising above the region and national level. Timber-frame construction holds steady."],
         ["What to fund this year", "Heat-pump certification for electricians. Plan retraining for scaffolding roles, which are declining."],
         ["What we are unsure about", "The hospital merger is a scenario assumption, not an observed trend."]
       ]
@@ -77,7 +77,7 @@
     {
       "id": "arendal",
       "name": "Arendal",
-      "county": "Agder",
+      "region": "Nordjylland",
       "briefing": [
         ["What is changing", "Heat-pump installation is rising. Manual scaffolding and legacy fuse-box work are declining."],
         ["What to fund this year", "Heat-pump certification for electricians. Retraining routes for scaffolding roles."],
@@ -86,30 +86,30 @@
     }
   ],
   "demand": [
-    { "municipality": "bodo", "occupation": "Nurses", "index_municipality": 118, "index_county": 109, "index_national": 114 },
-    { "municipality": "bodo", "occupation": "Electricians", "index_municipality": 104, "index_county": 101, "index_national": 103 },
-    { "municipality": "bodo", "occupation": "Truck drivers", "index_municipality": 96, "index_county": 99, "index_national": 102 },
-    { "municipality": "narvik", "occupation": "Nurses", "index_municipality": 111, "index_county": 109, "index_national": 114 },
-    { "municipality": "narvik", "occupation": "Electricians", "index_municipality": 107, "index_county": 101, "index_national": 103 },
-    { "municipality": "narvik", "occupation": "Truck drivers", "index_municipality": 101, "index_county": 99, "index_national": 102 },
-    { "municipality": "stavanger", "occupation": "Process operators", "index_municipality": 88, "index_county": 95, "index_national": 100 },
-    { "municipality": "stavanger", "occupation": "Software developers", "index_municipality": 131, "index_county": 118, "index_national": 121 },
-    { "municipality": "stavanger", "occupation": "Heat-pump installers", "index_municipality": 140, "index_county": 122, "index_national": 119 },
-    { "municipality": "sandnes", "occupation": "Process operators", "index_municipality": 92, "index_county": 95, "index_national": 100 },
-    { "municipality": "sandnes", "occupation": "Software developers", "index_municipality": 127, "index_county": 118, "index_national": 121 },
-    { "municipality": "sandnes", "occupation": "Heat-pump installers", "index_municipality": 136, "index_county": 122, "index_national": 119 },
-    { "municipality": "tromso", "occupation": "Nurses", "index_municipality": 109, "index_county": 104, "index_national": 114 },
-    { "municipality": "tromso", "occupation": "Software developers", "index_municipality": 125, "index_county": 112, "index_national": 121 },
-    { "municipality": "tromso", "occupation": "Fish processors", "index_municipality": 81, "index_county": 90, "index_national": 98 },
-    { "municipality": "harstad", "occupation": "Nurses", "index_municipality": 106, "index_county": 104, "index_national": 114 },
-    { "municipality": "harstad", "occupation": "Software developers", "index_municipality": 117, "index_county": 112, "index_national": 121 },
-    { "municipality": "harstad", "occupation": "Fish processors", "index_municipality": 86, "index_county": 90, "index_national": 98 },
-    { "municipality": "kristiansand", "occupation": "Electricians", "index_municipality": 121, "index_county": 113, "index_national": 103 },
-    { "municipality": "kristiansand", "occupation": "Truck drivers", "index_municipality": 107, "index_county": 103, "index_national": 102 },
-    { "municipality": "kristiansand", "occupation": "Construction workers", "index_municipality": 92, "index_county": 99, "index_national": 100 },
-    { "municipality": "arendal", "occupation": "Electricians", "index_municipality": 117, "index_county": 113, "index_national": 103 },
-    { "municipality": "arendal", "occupation": "Truck drivers", "index_municipality": 100, "index_county": 103, "index_national": 102 },
-    { "municipality": "arendal", "occupation": "Construction workers", "index_municipality": 96, "index_county": 99, "index_national": 100 }
+    { "municipality": "bodo", "occupation": "Nurses", "index_municipality": 118, "index_region": 109, "index_national": 114 },
+    { "municipality": "bodo", "occupation": "Electricians", "index_municipality": 104, "index_region": 101, "index_national": 103 },
+    { "municipality": "bodo", "occupation": "Truck drivers", "index_municipality": 96, "index_region": 99, "index_national": 102 },
+    { "municipality": "narvik", "occupation": "Nurses", "index_municipality": 111, "index_region": 109, "index_national": 114 },
+    { "municipality": "narvik", "occupation": "Electricians", "index_municipality": 107, "index_region": 101, "index_national": 103 },
+    { "municipality": "narvik", "occupation": "Truck drivers", "index_municipality": 101, "index_region": 99, "index_national": 102 },
+    { "municipality": "stavanger", "occupation": "Process operators", "index_municipality": 88, "index_region": 95, "index_national": 100 },
+    { "municipality": "stavanger", "occupation": "Software developers", "index_municipality": 131, "index_region": 118, "index_national": 121 },
+    { "municipality": "stavanger", "occupation": "Heat-pump installers", "index_municipality": 140, "index_region": 122, "index_national": 119 },
+    { "municipality": "sandnes", "occupation": "Process operators", "index_municipality": 92, "index_region": 95, "index_national": 100 },
+    { "municipality": "sandnes", "occupation": "Software developers", "index_municipality": 127, "index_region": 118, "index_national": 121 },
+    { "municipality": "sandnes", "occupation": "Heat-pump installers", "index_municipality": 136, "index_region": 122, "index_national": 119 },
+    { "municipality": "tromso", "occupation": "Nurses", "index_municipality": 109, "index_region": 104, "index_national": 114 },
+    { "municipality": "tromso", "occupation": "Software developers", "index_municipality": 125, "index_region": 112, "index_national": 121 },
+    { "municipality": "tromso", "occupation": "Fish processors", "index_municipality": 81, "index_region": 90, "index_national": 98 },
+    { "municipality": "harstad", "occupation": "Nurses", "index_municipality": 106, "index_region": 104, "index_national": 114 },
+    { "municipality": "harstad", "occupation": "Software developers", "index_municipality": 117, "index_region": 112, "index_national": 121 },
+    { "municipality": "harstad", "occupation": "Fish processors", "index_municipality": 86, "index_region": 90, "index_national": 98 },
+    { "municipality": "kristiansand", "occupation": "Electricians", "index_municipality": 121, "index_region": 113, "index_national": 103 },
+    { "municipality": "kristiansand", "occupation": "Truck drivers", "index_municipality": 107, "index_region": 103, "index_national": 102 },
+    { "municipality": "kristiansand", "occupation": "Construction workers", "index_municipality": 92, "index_region": 99, "index_national": 100 },
+    { "municipality": "arendal", "occupation": "Electricians", "index_municipality": 117, "index_region": 113, "index_national": 103 },
+    { "municipality": "arendal", "occupation": "Truck drivers", "index_municipality": 100, "index_region": 103, "index_national": 102 },
+    { "municipality": "arendal", "occupation": "Construction workers", "index_municipality": 96, "index_region": 99, "index_national": 100 }
   ],
   "skills": [
     { "municipality": "bodo", "occupation": "Nurses", "skill": "Digital patient records", "category": "transforming", "trend": "rising", "confidence": 0.72, "scenario": false, "sources": ["NAV job ads", "ESCO"] },

@@ -1,5 +1,8 @@
 # policy2upskill: 30-day rollout plan
 
+> **Denmark pivot (note added 21 Oct, 18:45):** the project is for Denmark. The Norwegian sources named below (NAV, SSB, Bedriftsundersøkelsen) must be re-researched for Denmark. Candidates to check: Danmarks Statistik (StatBank), Jobindex and Jobnet for job ads, and the government shortage list (Positivlisten). The prototype data is synthetic.
+
+
 Status: draft v1, 2026-10-21. Day 0 = demo (tonight, synthetic data). Day 1 = 2026-10-22. Day 30 = 2026-11-20.
 Update this file as work lands. Each update gets a dated entry in the log at the bottom.
 

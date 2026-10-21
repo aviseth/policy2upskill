@@ -6,80 +6,95 @@
 <title>policy2upskill · explorer prototype</title>
 <style>
   :root {
-    --ink: #1a1a1a; --muted: #6b6b6b; --line: #e4e4e4; --bg: #fafaf8; --card: #fff;
+    --ink: #1a1a1a; --ink-2: #444; --muted: #6b6b6b; --line: #e8e6e1; --bg: #fbfbf9; --surface: #ffffff;
     --accent: #305bab;
     --rising: #067429; --falling: #b42318; --durable: #305bab; --transforming: #9b4a08;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); }
+  [hidden] { display: none !important; }
+  body { margin: 0; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; color: var(--ink); background: var(--bg); }
+  h1 { font-size: 24px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+  h3 { font-size: 13px; font-weight: 600; margin: 22px 0 8px; color: var(--ink-2); }
+  .muted { color: var(--muted); font-size: 13px; }
+  .label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
 
-  header { display: flex; align-items: center; gap: 28px; padding: 12px 24px; background: #fff; border-bottom: 1px solid var(--line); }
-  .brand { font-weight: 700; letter-spacing: -0.01em; }
-  nav { display: flex; gap: 18px; }
-  nav a { color: var(--muted); text-decoration: none; padding: 4px 0; }
-  nav a.active { color: var(--ink); border-bottom: 2px solid var(--accent); }
-  nav a.later { opacity: 0.45; pointer-events: none; }
-  .soon { font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 4px; }
+  header { display: flex; align-items: center; gap: 32px; padding: 0 28px; height: 56px; background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 2; }
+  .brand { font-weight: 600; font-size: 15px; }
+  nav { display: flex; gap: 4px; height: 100%; }
+  nav a { color: var(--muted); text-decoration: none; padding: 0 12px; display: flex; align-items: center; border-bottom: 2px solid transparent; }
+  nav a:hover { color: var(--ink); }
+  nav a.active { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
 
-  .banner { background: #fff6e0; border-bottom: 1px solid #f1d28a; padding: 8px 24px; font-size: 14px; }
+  .banner { padding: 8px 28px; font-size: 13px; color: var(--ink-2); background: #f4f2ea; border-bottom: 1px solid var(--line); }
   .banner strong { font-weight: 600; }
 
-  .layout { display: grid; grid-template-columns: 240px 1fr 320px; gap: 20px; padding: 20px 24px; align-items: start; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-  h1 { font-size: 24px; margin: 0; letter-spacing: -0.01em; }
-  h2 { font-size: 15px; margin: 0 0 10px; }
-  h3 { font-size: 14px; margin: 14px 0 6px; color: var(--muted); font-weight: 600; }
-  .muted { color: var(--muted); font-size: 13px; }
+  .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 300px; gap: 40px; padding: 28px; align-items: start; max-width: 1280px; margin: 0 auto; }
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 20px 22px; margin-bottom: 20px; }
 
-  .tiles { display: grid; gap: 8px; }
-  .tile { text-align: left; font: inherit; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; color: var(--ink); }
-  .tile:hover { border-color: #bbb; }
-  .tile[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
-  .tile small { display: block; color: var(--muted); }
+  .tiles { display: flex; flex-direction: column; gap: 2px; }
+  .tile { text-align: left; font: inherit; background: none; border: none; border-left: 2px solid transparent; padding: 8px 12px; cursor: pointer; color: var(--ink); border-radius: 0 6px 6px 0; }
+  .tile:hover { background: #f1f0ec; }
+  .tile[aria-pressed="true"] { border-left-color: var(--accent); background: #f1f0ec; font-weight: 600; }
+  .tile small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
 
-  .head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 14px; }
-  .toggle { font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: center; cursor: pointer; }
+  .head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 12px; }
+  .toggle { font-size: 13px; color: var(--ink-2); display: flex; gap: 6px; align-items: center; cursor: pointer; }
 
-  .demand { display: grid; gap: 10px; }
-  .demand-row { display: grid; grid-template-columns: 200px 1fr; gap: 12px; align-items: center; }
-  .bar-line { display: grid; grid-template-columns: 78px 1fr 36px; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
-  .bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
-  .bar > div { height: 100%; background: #9bb6e4; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-weight: 500; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  table.skills td { padding: 10px 8px; }
+  table.skills tr.row { cursor: pointer; }
+  table.skills tr.row:hover td { background: #faf9f6; }
+  table.skills tr.row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  td.skill { width: 42%; }
+  .cat { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+  .cat::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .cat-rising { color: var(--rising); } .cat-falling { color: var(--falling); }
+  .cat-durable { color: var(--durable); } .cat-transforming { color: var(--transforming); }
+  .confcell { width: 150px; }
+  .confbar { display: block; height: 4px; background: #efeee9; border-radius: 2px; margin-bottom: 4px; overflow: hidden; }
+  .confbar i { display: block; height: 100%; background: var(--ink-2); }
+  .low .confbar i { background: var(--falling); }
+  .tag { font-size: 11px; color: var(--transforming); border: 1px solid currentColor; border-radius: 3px; padding: 0 4px; margin-left: 6px; vertical-align: 1px; }
+  tr.scenario td.skill { font-style: italic; }
+  .detail-row { display: none; }
+  tr.row.open + .detail-row { display: table-row; }
+  .detail-row td { border-bottom: 1px solid var(--line); padding: 0 8px 12px; }
+  .detail { font-size: 13px; color: var(--muted); }
+
+  .demand-row { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .demand-row:last-child { border-bottom: none; }
+  .bar-line { display: grid; grid-template-columns: 110px 1fr 36px; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); padding: 2px 0; }
+  .bar { height: 6px; background: #efeee9; border-radius: 3px; overflow: hidden; }
+  .bar > div { height: 100%; background: #c9cdd6; }
   .bar > div.here { background: var(--accent); }
 
-  .group { margin-top: 14px; }
-  .group:first-child { margin-top: 0; }
-  .row { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; background: #fff; }
-  .row:hover { border-color: #bbb; }
-  .row-main { display: grid; grid-template-columns: 110px 1fr 90px 150px; gap: 12px; align-items: center; }
-  .chip { display: inline-block; text-align: center; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; color: #fff; }
-  .c-rising { background: var(--rising); }
-  .c-falling { background: var(--falling); }
-  .c-durable { background: var(--durable); }
-  .c-transforming { background: var(--transforming); }
-  .trend { font-size: 13px; color: var(--muted); }
-  .conf { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
-  .conf .bar { height: 6px; }
-  .conf .bar > div { background: var(--ink); opacity: 0.6; }
-  .row.low { border-style: dashed; }
-  .row.low .conf::after { content: "low confidence"; color: var(--falling); font-weight: 600; }
-  .row.scenario { background: repeating-linear-gradient(135deg, #fff, #fff 10px, #fbf8f0 10px, #fbf8f0 20px); border-style: dashed; border-color: var(--transforming); }
-  .assume { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--transforming); font-weight: 700; margin-left: 6px; }
-  .detail { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
-  .row.open .detail { display: block; }
-  .detail ul { margin: 4px 0 0 18px; padding: 0; }
+  .briefing h3 { margin-top: 18px; }
+  .briefing p { margin: 0 0 4px; color: var(--ink-2); }
+  .note { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 18px; }
 
-  .briefing p { margin: 0 0 10px; }
-  .briefing .label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 4px; }
-  .note { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; }
+  .alert-list { display: flex; flex-direction: column; }
+  .alert { display: grid; grid-template-columns: 90px 130px 1fr; gap: 12px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .alert .lvl { font-size: 12px; font-weight: 600; }
+  .lvl-high { color: var(--falling); } .lvl-watch { color: var(--transforming); }
 
-  footer { padding: 0 24px 24px; color: var(--muted); font-size: 12px; }
+  .ask select { font: inherit; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; background: #fff; margin: 12px 10px 0 0; }
+  .ask ul { padding-left: 18px; margin: 14px 0 0; }
+  .ask li { margin-bottom: 6px; }
+
+  footer { padding: 0 28px 28px; color: var(--muted); font-size: 12px; max-width: 1280px; margin: 0 auto; }
+  details.contract { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 18px; max-width: 1280px; margin: 0 28px 16px; }
+  details.contract summary { cursor: pointer; font-weight: 600; font-size: 13px; }
 
   @media (max-width: 1100px) {
-    header { flex-wrap: wrap; gap: 12px; }
-    .layout { grid-template-columns: 1fr; }
-    .row-main { grid-template-columns: 1fr; gap: 6px; }
+    header { flex-wrap: wrap; height: auto; padding: 12px 20px; gap: 12px; }
+    .layout { grid-template-columns: 1fr; gap: 0; padding: 20px; }
     .demand-row { grid-template-columns: 1fr; }
+    table.skills td.confcell { width: auto; }
   }
 </style>
 </head>
@@ -88,11 +103,11 @@
 <header>
   <div class="brand">policy2upskill</div>
   <nav>
-    <a class="active" href="#">Explorer</a>
-    <a href="#briefing">Briefing</a>
-    <a class="later" href="#">Alerts <span class="soon">later</span></a>
-    <a class="later" href="#">White paper <span class="soon">later</span></a>
-    <a class="later" href="#">Ask the data <span class="soon">later</span></a>
+    <a class="active" href="#" data-route="explorer">Explorer</a>
+    <a href="#briefing" data-route="explorer">Briefing</a>
+    <a href="#alerts" data-route="alerts">Alerts</a>
+    <a href="#paper" data-route="paper">White paper</a>
+    <a href="#ask" data-route="ask">Ask the data</a>
   </nav>
 </header>
 
@@ -100,40 +115,43 @@
 
 <div class="layout">
   <aside>
-    <div class="card">
+    <div class="panel">
       <h2>Municipality</h2>
       <div class="tiles" id="tiles"></div>
     </div>
   </aside>
 
   <main>
-    <div class="card" id="municipality-head"></div>
-    <div class="card">
+    <div id="explorer">
+    <div class="panel" id="municipality-head"></div>
+    <div class="panel">
       <div class="head">
         <h2>Skills by occupation</h2>
         <label class="toggle"><input type="checkbox" id="scenario-toggle"> Show scenario signals (assumptions)</label>
       </div>
       <div id="skills"></div>
     </div>
-    <div class="card">
-      <h2>Employed persons by occupation group</h2>
-      <p class="muted" style="margin:0 0 10px">Real data: SSB table 11619, 2019 vs 2025. Source: SSB, CC BY 4.0. SSB rounds small cells.</p>
+    <div class="panel">
+      <h2>Employed persons by occupation group (synthetic)</h2>
+      <p class="muted" style="margin:0 0 10px">Synthetic placeholder for Danmarks Statistik figures, 2019 vs 2025.</p>
       <div id="ssb"></div>
     </div>
-    <div class="card">
+    <div class="panel">
       <h2>Time to fill and shortage lists</h2>
       <p class="muted" style="margin:0 0 10px">Synthetic indicators, for demonstration only.</p>
       <div id="indicators"></div>
     </div>
-    <div class="card">
+    <div class="panel">
       <h2>Demand index</h2>
-      <p class="muted" style="margin:0 0 10px">2019 = 100, synthetic. Municipality against its county and the national value.</p>
+      <p class="muted" style="margin:0 0 10px">2019 = 100, synthetic. Municipality against its region and the national value.</p>
       <div class="demand" id="demand"></div>
     </div>
+    </div>
+    <div id="view" hidden></div>
   </main>
 
   <aside>
-    <div class="card briefing" id="briefing">
+    <div class="panel briefing" id="briefing">
       <div class="label">Briefing · sample</div>
       <div id="briefing-body"></div>
       <div class="note">Sample text, written by hand. In the live version, a model writes this from the data on the server, and checks each claim against it.</div>
@@ -142,9 +160,9 @@
 </div>
 
 <div style="padding: 0 24px 16px;">
-  <details class="card">
+  <details class="contract">
     <summary style="cursor: pointer; font-weight: 600;">Data contract v0.1.0 (proposal, not yet agreed)</summary>
-    <p class="muted" style="margin: 10px 0;">All values are synthetic. Skill rows are per municipality, occupation and skill. Demand rows are per municipality and occupation, with county and national comparators.</p>
+    <p class="muted" style="margin: 10px 0;">All values are synthetic. Skill rows are per municipality, occupation and skill. Demand rows are per municipality and occupation, with region and national comparators.</p>
     <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
       <thead><tr style="text-align: left; border-bottom: 1px solid var(--line);"><th style="padding: 6px 8px;">Field</th><th style="padding: 6px 8px;">Rule</th></tr></thead>
       <tbody>
@@ -155,7 +173,7 @@
         <tr><td style="padding: 6px 8px;">confidence</td><td style="padding: 6px 8px;">0 to 1. Below 0.5 shows as low confidence</td></tr>
         <tr><td style="padding: 6px 8px;">scenario</td><td style="padding: 6px 8px;">True for a what-if assumption, never observed data</td></tr>
         <tr><td style="padding: 6px 8px;">sources</td><td style="padding: 6px 8px;">Non-empty list. Scenario rows start with "Scenario:"; observed rows have none</td></tr>
-        <tr><td style="padding: 6px 8px;">index_municipality, index_county, index_national</td><td style="padding: 6px 8px;">Demand index, 2019 = 100, range 1 to 150</td></tr>
+        <tr><td style="padding: 6px 8px;">index_municipality, index_region, index_national</td><td style="padding: 6px 8px;">Demand index, 2019 = 100, range 1 to 150</td></tr>
       </tbody>
     </table>
     <p class="muted" style="margin: 10px 0 0;">Open: derive trend from demand once job-ad data arrives (v0.2). SSB codes not yet verified. Full text: data/contract.md in the repo.</p>
@@ -175,277 +193,276 @@
  *   confidence = 0..1, below 0.5 renders as low confidence
  *   scenario = true for a what-if assumption, not observed data
  *   sources  = provenance list (added beyond the board contract)
- *   demand   = occupation index, 2019 = 100, as [municipality, county, national]
+ *   demand   = occupation index, 2019 = 100, as [municipality, region, national]
  */
 
 const MUNICIPALITIES = [
-  { id: "bodo", name: "Bodø", county: "Nordland",
+  { id: "copenhagen", name: "København", region: "Hovedstaden",
     briefing: [
-      ["What is changing", "Heat-pump installation demand is rising faster than the county average. Electric truck skills are transforming a licence-based role."],
+      ["What is changing", "Heat-pump installation demand is rising faster than the region average. Electric truck skills are transforming a licence-based role."],
       ["What to fund this year", "Heat-pump and electrical upskilling for existing electricians. Short digital-records (electronic patient record) courses for nurses."],
       ["What we are unsure about", "The electric truck signal rests on one source (confidence 0.38)."],
     ] },
-  { id: "stavanger", name: "Stavanger", county: "Rogaland",
+  { id: "aarhus", name: "Aarhus", region: "Midtjylland",
     briefing: [
       ["What is changing", "Automation is reshaping process-operator work. Cloud and data roles grow well above the national index."],
       ["What to fund this year", "Bridging courses from manual process control to automation monitoring."],
       ["What we are unsure about", "The battery plant is a scenario assumption, not an observed trend."],
     ] },
-  { id: "tromso", name: "Tromsø", county: "Troms",
+  { id: "odense", name: "Odense", region: "Syddanmark",
     briefing: [
       ["What is changing", "Fish-processing roles fall below the national index. Data engineering grows fast."],
       ["What to fund this year", "Transition routes from fish processing into food safety and data roles."],
       ["What we are unsure about", "The telemedicine signal is weakly supported (confidence 0.47)."],
     ] },
-  { id: "kristiansand", name: "Kristiansand", county: "Agder",
+  { id: "aalborg", name: "Aalborg", region: "Nordjylland",
     briefing: [
-      ["What is changing", "Heat-pump installation is rising above the county and national level. Timber-frame construction holds steady."],
+      ["What is changing", "Heat-pump installation is rising above the region and national level. Timber-frame construction holds steady."],
       ["What to fund this year", "Heat-pump certification for electricians. Plan retraining for scaffolding roles, which are declining."],
       ["What we are unsure about", "The hospital merger is a scenario assumption, not an observed trend."],
     ] },
 ];
 
 const DEMAND = {
-  bodo:         { "Nurses": [118, 109, 114], "Electricians": [104, 101, 103], "Truck drivers": [96, 99, 102] },
-  stavanger:    { "Process operators": [88, 95, 100], "Software developers": [131, 118, 121], "Heat-pump installers": [140, 122, 119] },
-  tromso:       { "Nurses": [109, 104, 114], "Software developers": [125, 112, 121], "Fish processors": [81, 90, 98] },
-  kristiansand: { "Electricians": [121, 113, 103], "Truck drivers": [107, 103, 102], "Construction workers": [92, 99, 100] },
+  copenhagen:         { "Nurses": [118, 109, 114], "Electricians": [104, 101, 103], "Truck drivers": [96, 99, 102] },
+  aarhus:    { "Process operators": [88, 95, 100], "Software developers": [131, 118, 121], "Heat-pump installers": [140, 122, 119] },
+  odense:       { "Nurses": [109, 104, 114], "Software developers": [125, 112, 121], "Fish processors": [81, 90, 98] },
+  aalborg: { "Electricians": [121, 113, 103], "Truck drivers": [107, 103, 102], "Construction workers": [92, 99, 100] },
 };
 
 const SKILLS = [
-  // Bodø
-  { k: "bodo", o: "Nurses", s: "Digital patient records", c: "transforming", t: "rising", p: 0.72, sc: false, src: ["NAV job ads", "ESCO"] },
-  { k: "bodo", o: "Nurses", s: "Elderly and palliative care", c: "durable", t: "level", p: 0.81, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "bodo", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.66, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
-  { k: "bodo", o: "Electricians", s: "Legacy fuse-box work", c: "falling", t: "falling", p: 0.55, sc: false, src: ["NAV job ads"] },
-  { k: "bodo", o: "Electricians", s: "Offshore wind cable work", c: "rising", t: "rising", p: 0.30, sc: true, src: ["Scenario: offshore wind yard opens"] },
-  { k: "bodo", o: "Truck drivers", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.38, sc: false, src: ["NAV job ads"] },
-  { k: "bodo", o: "Truck drivers", s: "Heavy-vehicle licence C/CE", c: "durable", t: "level", p: 0.79, sc: false, src: ["NAV job ads", "SSB employment"] },
-  // Stavanger
-  { k: "stavanger", o: "Process operators", s: "Manual process control", c: "falling", t: "falling", p: 0.61, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
-  { k: "stavanger", o: "Process operators", s: "Automation and data monitoring", c: "transforming", t: "rising", p: 0.58, sc: false, src: ["NAV job ads", "ESCO"] },
-  { k: "stavanger", o: "Process operators", s: "Battery cell operation", c: "rising", t: "rising", p: 0.30, sc: true, src: ["Scenario: battery plant opens"] },
-  { k: "stavanger", o: "Software developers", s: "Cloud infrastructure", c: "rising", t: "rising", p: 0.86, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "stavanger", o: "Heat-pump installers", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.70, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
-  // Tromsø
-  { k: "tromso", o: "Nurses", s: "Telemedicine support", c: "transforming", t: "rising", p: 0.47, sc: false, src: ["NAV job ads", "ESCO"] },
-  { k: "tromso", o: "Software developers", s: "Data engineering", c: "rising", t: "rising", p: 0.74, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "tromso", o: "Fish processors", s: "Fish-processing line operation", c: "falling", t: "falling", p: 0.66, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "tromso", o: "Fish processors", s: "Food safety and HACCP", c: "durable", t: "level", p: 0.77, sc: false, src: ["NAV job ads"] },
-  { k: "tromso", o: "Fish processors", s: "Raw-fish handling", c: "falling", t: "falling", p: 0.25, sc: true, src: ["Scenario: fishing quota cut"] },
-  // Kristiansand
-  { k: "kristiansand", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.69, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
-  { k: "kristiansand", o: "Truck drivers", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.44, sc: false, src: ["NAV job ads"] },
-  { k: "kristiansand", o: "Construction workers", s: "Timber-frame construction", c: "durable", t: "level", p: 0.73, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "kristiansand", o: "Construction workers", s: "Manual scaffolding", c: "falling", t: "falling", p: 0.52, sc: false, src: ["NAV job ads"] },
-  { k: "kristiansand", o: "Nurses", s: "Ward coordination after merger", c: "transforming", t: "rising", p: 0.20, sc: true, src: ["Scenario: hospital merger"] },
+  // København
+  { k: "copenhagen", o: "Nurses", s: "Digital patient records", c: "transforming", t: "rising", p: 0.72, sc: false, src: ["NAV job ads", "ESCO"] },
+  { k: "copenhagen", o: "Nurses", s: "Elderly and palliative care", c: "durable", t: "level", p: 0.81, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "copenhagen", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.66, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  { k: "copenhagen", o: "Electricians", s: "Legacy fuse-box work", c: "falling", t: "falling", p: 0.55, sc: false, src: ["NAV job ads"] },
+  { k: "copenhagen", o: "Electricians", s: "Offshore wind cable work", c: "rising", t: "rising", p: 0.30, sc: true, src: ["Scenario: offshore wind yard opens"] },
+  { k: "copenhagen", o: "Truck drivers", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.38, sc: false, src: ["NAV job ads"] },
+  { k: "copenhagen", o: "Truck drivers", s: "Heavy-vehicle licence C/CE", c: "durable", t: "level", p: 0.79, sc: false, src: ["NAV job ads", "SSB employment"] },
+  // Aarhus
+  { k: "aarhus", o: "Process operators", s: "Manual process control", c: "falling", t: "falling", p: 0.61, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  { k: "aarhus", o: "Process operators", s: "Automation and data monitoring", c: "transforming", t: "rising", p: 0.58, sc: false, src: ["NAV job ads", "ESCO"] },
+  { k: "aarhus", o: "Process operators", s: "Battery cell operation", c: "rising", t: "rising", p: 0.30, sc: true, src: ["Scenario: battery plant opens"] },
+  { k: "aarhus", o: "Software developers", s: "Cloud infrastructure", c: "rising", t: "rising", p: 0.86, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "aarhus", o: "Heat-pump installers", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.70, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  // Odense
+  { k: "odense", o: "Nurses", s: "Telemedicine support", c: "transforming", t: "rising", p: 0.47, sc: false, src: ["NAV job ads", "ESCO"] },
+  { k: "odense", o: "Software developers", s: "Data engineering", c: "rising", t: "rising", p: 0.74, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "odense", o: "Fish processors", s: "Fish-processing line operation", c: "falling", t: "falling", p: 0.66, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "odense", o: "Fish processors", s: "Food safety and HACCP", c: "durable", t: "level", p: 0.77, sc: false, src: ["NAV job ads"] },
+  { k: "odense", o: "Fish processors", s: "Raw-fish handling", c: "falling", t: "falling", p: 0.25, sc: true, src: ["Scenario: fishing quota cut"] },
+  // Aalborg
+  { k: "aalborg", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.69, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  { k: "aalborg", o: "Truck drivers", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.44, sc: false, src: ["NAV job ads"] },
+  { k: "aalborg", o: "Construction workers", s: "Timber-frame construction", c: "durable", t: "level", p: 0.73, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "aalborg", o: "Construction workers", s: "Manual scaffolding", c: "falling", t: "falling", p: 0.52, sc: false, src: ["NAV job ads"] },
+  { k: "aalborg", o: "Nurses", s: "Ward coordination after merger", c: "transforming", t: "rising", p: 0.20, sc: true, src: ["Scenario: hospital merger"] },
   // Board showcase (synthetic): one row per signal type on the board
-  { k: "kristiansand", o: "Refrigeration technicians", s: "Heat-pump and air-conditioning service", c: "rising", t: "rising", p: 0.63, sc: false, src: ["Global trend: climate change (synthetic)", "Job ads (synthetic)"] },
-  { k: "kristiansand", o: "Electricians", s: "Shortage-list match: heat-pump installation", c: "rising", t: "rising", p: 0.58, sc: false, src: ["Shortage list (synthetic)", "Time-to-fill (synthetic)"] },
-  { k: "bodo", o: "Truck drivers", s: "Route planning for a rerouted highway", c: "transforming", t: "rising", p: 0.25, sc: true, src: ["Scenario: government reroutes a highway"] },
-  { k: "stavanger", o: "Process operators", s: "Transferable skills: process control to data monitoring", c: "durable", t: "level", p: 0.68, sc: false, src: ["Transferable-skills map (synthetic)", "Job ads (synthetic)"] },
-  { k: "tromso", o: "Nurses", s: "Hospital digitisation (industry-level change)", c: "transforming", t: "rising", p: 0.55, sc: false, src: ["Industry change (synthetic)", "Job ads (synthetic)"] },
+  { k: "aalborg", o: "Refrigeration technicians", s: "Heat-pump and air-conditioning service", c: "rising", t: "rising", p: 0.63, sc: false, src: ["Global trend: climate change (synthetic)", "Job ads (synthetic)"] },
+  { k: "aalborg", o: "Electricians", s: "Shortage-list match: heat-pump installation", c: "rising", t: "rising", p: 0.58, sc: false, src: ["Shortage list (synthetic)", "Time-to-fill (synthetic)"] },
+  { k: "copenhagen", o: "Truck drivers", s: "Route planning for a rerouted highway", c: "transforming", t: "rising", p: 0.25, sc: true, src: ["Scenario: government reroutes a highway"] },
+  { k: "aarhus", o: "Process operators", s: "Transferable skills: process control to data monitoring", c: "durable", t: "level", p: 0.68, sc: false, src: ["Transferable-skills map (synthetic)", "Job ads (synthetic)"] },
+  { k: "odense", o: "Nurses", s: "Hospital digitisation (industry-level change)", c: "transforming", t: "rising", p: 0.55, sc: false, src: ["Industry change (synthetic)", "Job ads (synthetic)"] },
 ];
 
-// SSB table 11619: employed persons by occupation group, 2019 vs 2025 (real data, CC BY 4.0).
-// Tromsø and Kristiansand change municipality code over time; the codes used are in data/ssb/SOURCE.md.
+// Synthetic employment by occupation group, 2019 vs 2025 (placeholder for Danmarks Statistik).
 const SSB = {
- "bodo": {
+ "copenhagen": {
   "All occupations": {
-   "2019": "27984",
-   "2025": "28950"
+   "2019": "336449",
+   "2025": "360000"
   },
   "Managers": {
-   "2019": "2437",
-   "2025": "2522"
+   "2019": "26916",
+   "2025": "28800"
   },
   "Professionals": {
-   "2019": "7637",
-   "2025": "8241"
+   "2019": "57196",
+   "2025": "61200"
   },
-  "Higher education and military occupations": {
-   "2019": "4264",
-   "2025": "4481"
+  "Technicians and associate professionals": {
+   "2019": "50467",
+   "2025": "54000"
   },
   "Clerical support workers": {
-   "2019": "1941",
-   "2025": "1641"
+   "2019": "23551",
+   "2025": "25200"
   },
   "Service and sales workers": {
-   "2019": "6050",
-   "2025": "6348"
+   "2019": "47103",
+   "2025": "50400"
   },
   "Skilled agricultural, forestry and fishery workers": {
-   "2019": "138",
-   "2025": "181"
+   "2019": "6729",
+   "2025": "7200"
   },
   "Craft and related trades workers": {
-   "2019": "2133",
-   "2025": "2156"
+   "2019": "37009",
+   "2025": "39600"
   },
   "Plant and machine operators, and assemblers": {
-   "2019": "1030",
-   "2025": "991"
+   "2019": "33645",
+   "2025": "36000"
   },
   "Elementary occupations": {
-   "2019": "1430",
-   "2025": "1446"
+   "2019": "47103",
+   "2025": "50400"
   },
   "Unknown or not identifiable": {
-   "2019": "924",
-   "2025": "943"
+   "2019": "6729",
+   "2025": "7200"
   }
  },
- "stavanger": {
+ "aarhus": {
   "All occupations": {
-   "2019": "69172",
-   "2025": "79636"
+   "2019": "190476",
+   "2025": "200000"
   },
   "Managers": {
-   "2019": "6167",
-   "2025": "7236"
+   "2019": "15238",
+   "2025": "16000"
   },
   "Professionals": {
-   "2019": "20689",
-   "2025": "24052"
+   "2019": "32381",
+   "2025": "34000"
   },
-  "Higher education and military occupations": {
-   "2019": "12412",
-   "2025": "14570"
+  "Technicians and associate professionals": {
+   "2019": "28571",
+   "2025": "30000"
   },
   "Clerical support workers": {
-   "2019": "4072",
-   "2025": "4072"
+   "2019": "13333",
+   "2025": "14000"
   },
   "Service and sales workers": {
-   "2019": "13831",
-   "2025": "15341"
+   "2019": "26667",
+   "2025": "28000"
   },
   "Skilled agricultural, forestry and fishery workers": {
-   "2019": "218",
-   "2025": "614"
+   "2019": "3810",
+   "2025": "4000"
   },
   "Craft and related trades workers": {
-   "2019": "4153",
-   "2025": "4887"
+   "2019": "20952",
+   "2025": "22000"
   },
   "Plant and machine operators, and assemblers": {
-   "2019": "2268",
-   "2025": "2705"
+   "2019": "19048",
+   "2025": "20000"
   },
   "Elementary occupations": {
-   "2019": "2607",
-   "2025": "2958"
+   "2019": "26667",
+   "2025": "28000"
   },
   "Unknown or not identifiable": {
-   "2019": "2755",
-   "2025": "3201"
+   "2019": "3810",
+   "2025": "4000"
   }
  },
- "tromso": {
+ "odense": {
   "All occupations": {
-   "2019": "42642",
-   "2025": "45745"
+   "2019": "132653",
+   "2025": "130000"
   },
   "Managers": {
-   "2019": "3551",
-   "2025": "3854"
+   "2019": "10612",
+   "2025": "10400"
   },
   "Professionals": {
-   "2019": "13188",
-   "2025": "14836"
+   "2019": "22551",
+   "2025": "22100"
   },
-  "Higher education and military occupations": {
-   "2019": "5772",
-   "2025": "6442"
+  "Technicians and associate professionals": {
+   "2019": "19898",
+   "2025": "19500"
   },
   "Clerical support workers": {
-   "2019": "2512",
-   "2025": "2196"
+   "2019": "9286",
+   "2025": "9100"
   },
   "Service and sales workers": {
-   "2019": "9055",
-   "2025": "9814"
+   "2019": "18571",
+   "2025": "18200"
   },
   "Skilled agricultural, forestry and fishery workers": {
-   "2019": "124",
-   "2025": "220"
+   "2019": "2653",
+   "2025": "2600"
   },
   "Craft and related trades workers": {
-   "2019": "2687",
-   "2025": "2641"
+   "2019": "14592",
+   "2025": "14300"
   },
   "Plant and machine operators, and assemblers": {
-   "2019": "1635",
-   "2025": "1720"
+   "2019": "13265",
+   "2025": "13000"
   },
   "Elementary occupations": {
-   "2019": "2325",
-   "2025": "2235"
+   "2019": "18571",
+   "2025": "18200"
   },
   "Unknown or not identifiable": {
-   "2019": "1793",
-   "2025": "1787"
+   "2019": "2653",
+   "2025": "2600"
   }
  },
- "kristiansand": {
+ "aalborg": {
   "All occupations": {
-   "2019": "45201",
-   "2025": "58973"
+   "2019": "106796",
+   "2025": "110000"
   },
   "Managers": {
-   "2019": "3760",
-   "2025": "4628"
+   "2019": "8544",
+   "2025": "8800"
   },
   "Professionals": {
-   "2019": "11099",
-   "2025": "15316"
+   "2019": "18155",
+   "2025": "18700"
   },
-  "Higher education and military occupations": {
-   "2019": "7440",
-   "2025": "9356"
+  "Technicians and associate professionals": {
+   "2019": "16019",
+   "2025": "16500"
   },
   "Clerical support workers": {
-   "2019": "3053",
-   "2025": "3600"
+   "2019": "7476",
+   "2025": "7700"
   },
   "Service and sales workers": {
-   "2019": "10548",
-   "2025": "13530"
+   "2019": "14951",
+   "2025": "15400"
   },
   "Skilled agricultural, forestry and fishery workers": {
-   "2019": "54",
-   "2025": "116"
+   "2019": "2136",
+   "2025": "2200"
   },
   "Craft and related trades workers": {
-   "2019": "3043",
-   "2025": "4235"
+   "2019": "11748",
+   "2025": "12100"
   },
   "Plant and machine operators, and assemblers": {
-   "2019": "2049",
-   "2025": "2960"
+   "2019": "10680",
+   "2025": "11000"
   },
   "Elementary occupations": {
-   "2019": "1953",
-   "2025": "2582"
+   "2019": "14951",
+   "2025": "15400"
   },
   "Unknown or not identifiable": {
-   "2019": "2202",
-   "2025": "2650"
+   "2019": "2136",
+   "2025": "2200"
   }
  }
 };
 
 // Synthetic indicators for the board's time-to-fill and shortage-list signals.
 const INDICATORS = {
-  bodo:         { "Nurses": { ttf: 62, shortage: true }, "Electricians": { ttf: 48, shortage: true }, "Truck drivers": { ttf: 35, shortage: false } },
-  stavanger:    { "Process operators": { ttf: 41, shortage: false }, "Software developers": { ttf: 88, shortage: true }, "Heat-pump installers": { ttf: 54, shortage: true } },
-  tromso:       { "Nurses": { ttf: 70, shortage: true }, "Software developers": { ttf: 84, shortage: true }, "Fish processors": { ttf: 29, shortage: false } },
-  kristiansand: { "Electricians": { ttf: 51, shortage: true }, "Truck drivers": { ttf: 38, shortage: false }, "Construction workers": { ttf: 33, shortage: false }, "Refrigeration technicians": { ttf: 57, shortage: true } },
+  copenhagen:         { "Nurses": { ttf: 62, shortage: true }, "Electricians": { ttf: 48, shortage: true }, "Truck drivers": { ttf: 35, shortage: false } },
+  aarhus:    { "Process operators": { ttf: 41, shortage: false }, "Software developers": { ttf: 88, shortage: true }, "Heat-pump installers": { ttf: 54, shortage: true } },
+  odense:       { "Nurses": { ttf: 70, shortage: true }, "Software developers": { ttf: 84, shortage: true }, "Fish processors": { ttf: 29, shortage: false } },
+  aalborg: { "Electricians": { ttf: 51, shortage: true }, "Truck drivers": { ttf: 38, shortage: false }, "Construction workers": { ttf: 33, shortage: false }, "Refrigeration technicians": { ttf: 57, shortage: true } },
 };
 
 const TREND_ARROW = { rising: "↑ rising", falling: "↓ falling", level: "→ level" };
-const state = { k: "bodo", scenarios: false };
+const state = { k: "copenhagen", scenarios: false };
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -453,7 +470,7 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 function renderTiles() {
   $("tiles").innerHTML = MUNICIPALITIES.map((k) => `
     <button class="tile" aria-pressed="${k.id === state.k}" data-id="${k.id}">
-      ${esc(k.name)}<small>${esc(k.county)}</small>
+      ${esc(k.name)}<small>${esc(k.region)}</small>
     </button>`).join("");
 }
 
@@ -462,7 +479,7 @@ function renderHead(k) {
   const scen = SKILLS.filter((r) => r.k === k.id && r.sc).length;
   $("municipality-head").innerHTML = `
     <h1>${esc(k.name)}</h1>
-    <div class="muted">${esc(k.county)} · ${rows} synthetic skill signals ·${scen} scenario assumption${scen === 1 ? "" : "s"}</div>`;
+    <div class="muted">${esc(k.region)} · ${rows} synthetic skill signals ·${scen} scenario assumption${scen === 1 ? "" : "s"}</div>`;
 }
 
 function renderSkills(k) {
@@ -470,28 +487,18 @@ function renderSkills(k) {
   const byOcc = {};
   rows.forEach((r) => (byOcc[r.o] = byOcc[r.o] || []).push(r));
   $("skills").innerHTML = Object.entries(byOcc).map(([occ, list]) => `
-    <div class="group">
-      <h3>${esc(occ)}</h3>
-      ${list.map((r, i) => {
-        const id = `${k.id}-${occ}-${i}`.replace(/\s+/g, "-");
-        return `
-        <div class="row ${r.p < 0.5 ? "low" : ""} ${r.sc ? "scenario" : ""}" data-id="${id}" tabindex="0" role="button" aria-expanded="false">
-          <div class="row-main">
-            <span class="chip c-${r.c}">${esc(r.c)}</span>
-            <span>${esc(r.s)}${r.sc ? '<span class="assume">assumption</span>' : ""}</span>
-            <span class="trend">${TREND_ARROW[r.t]}</span>
-            <span class="conf">
-              <span>confidence ${r.p.toFixed(2)}</span>
-              <span class="bar"><div style="width:${r.p * 100}%"></div></span>
-            </span>
-          </div>
-          <div class="detail">
-            ${r.sc ? "This is a what-if assumption, not observed data. " : ""}Planned sources (not connected yet):
-            <ul>${r.src.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
-          </div>
-        </div>`;
-      }).join("")}
-    </div>`).join("") || `<p class="muted">No skill signals for this municipality yet.</p>`;
+    <h3>${esc(occ)}</h3>
+    <table class="skills">
+      <tbody>${list.map((r) => `
+        <tr class="row ${r.p < 0.5 ? "low" : ""} ${r.sc ? "scenario" : ""}" tabindex="0" role="button" aria-expanded="false">
+          <td class="skill">${esc(r.s)}${r.sc ? '<span class="tag">assumption</span>' : ""}</td>
+          <td><span class="cat cat-${r.c}">${esc(r.c)}</span></td>
+          <td class="muted">${TREND_ARROW[r.t]}</td>
+          <td class="confcell"><span class="confbar"><i style="width:${r.p * 100}%"></i></span><span class="muted">${r.p.toFixed(2)}${r.p < 0.5 ? " · low confidence" : ""}</span></td>
+        </tr>
+        <tr class="detail-row"><td colspan="4"><div class="detail">${r.sc ? "What-if assumption, not observed data. " : ""}Planned sources, not connected yet: ${r.src.map(esc).join("; ")}</div></td></tr>`).join("")}
+      </tbody>
+    </table>`).join("") || `<p class="muted">No skill signals for this municipality yet.</p>`;
 }
 
 function renderDemand(k) {
@@ -506,8 +513,8 @@ function renderDemand(k) {
       <div><strong>${esc(occ)}</strong></div>
       <div>
         ${bar(esc(k.name), kv, true)}
-        ${bar(esc(k.county), fv, false)}
-        ${bar("Norway", nv, false)}
+        ${bar(esc(k.region), fv, false)}
+        ${bar("Denmark", nv, false)}
       </div>
     </div>`).join("");
 }
@@ -577,6 +584,93 @@ $("scenario-toggle").addEventListener("change", (e) => {
   render();
 });
 
+
+// ---- Views: Alerts, White paper, Ask the data (rule-based and canned, synthetic data) ----
+const VIEW_ROUTES = ["alerts", "paper", "ask"];
+
+function alertItems() {
+  const out = [];
+  for (const k of MUNICIPALITIES) {
+    for (const [occ, v] of Object.entries(INDICATORS[k.id] || {})) {
+      if (v.shortage && v.ttf >= 60) out.push({ lvl: "high", where: k.name, text: `${occ}: on shortage list, ${v.ttf} days to fill (threshold 60).` });
+      else if (v.shortage) out.push({ lvl: "watch", where: k.name, text: `${occ}: on shortage list, ${v.ttf} days to fill.` });
+    }
+    SKILLS.filter((r) => r.k === k.id && !r.sc && r.c === "falling" && r.p >= 0.5)
+      .forEach((r) => out.push({ lvl: "watch", where: k.name, text: `${r.o}: "${r.s}" is falling (confidence ${r.p.toFixed(2)}).` }));
+  }
+  return out;
+}
+
+function renderAlerts() {
+  const items = alertItems();
+  return `<div class="panel"><div class="head"><h2>Early-warning alerts</h2><span class="muted">${items.length} alerts</span></div>
+    <p class="muted" style="margin:0 0 12px">Rule-based, from the indicators in the explorer. Synthetic data. Thresholds are proposals.</p>
+    <div class="alert-list">${items.map((a) => `<div class="alert"><span class="lvl lvl-${a.lvl}">${a.lvl}</span><span class="muted">${esc(a.where)}</span><span>${esc(a.text)}</span></div>`).join("")}</div>
+  </div>`;
+}
+
+function renderPaper() {
+  const alerts = alertItems();
+  const count = (k, c) => SKILLS.filter((r) => r.k === k && !r.sc && r.c === c).length;
+  const rows = MUNICIPALITIES.map((k) => `<tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:6px 8px;">${esc(k.name)}</td>
+      ${["rising", "falling", "durable", "transforming"].map((c) => `<td style="padding:6px 8px;">${count(k.id, c)}</td>`).join("")}
+      <td style="padding:6px 8px;">${alerts.filter((a) => a.where === k.name).length}</td></tr>`).join("");
+  return `<div class="panel"><h2>Quarterly white paper (draft)</h2>
+    <p class="muted">Synthetic data. Generated from the same core model as the explorer. Observed rows only; scenarios are excluded.</p>
+    <h3>Skill tags by municipality (count of observed rows)</h3>
+    <table style="width:100%; border-collapse:collapse; font-size:14px;">
+      <thead><tr style="text-align:left; border-bottom:1px solid var(--line);"><th style="padding:6px 8px;">Municipality</th><th style="padding:6px 8px;">Rising</th><th style="padding:6px 8px;">Falling</th><th style="padding:6px 8px;">Durable</th><th style="padding:6px 8px;">Transforming</th><th style="padding:6px 8px;">Alerts</th></tr></thead>
+      <tbody>${rows}</tbody></table>
+    <h3>Method</h3>
+    <p class="muted">Thresholds, confidence and backtest status: see the methods note. No predictive claims until the backtest is done.</p>
+  </div>`;
+}
+
+const ASK = {
+  rising: { label: "Which skills are rising?", run: (m) => SKILLS.filter((r) => r.k === m && !r.sc && r.t === "rising").map((r) => `${r.o}: ${r.s}`) },
+  falling: { label: "Which skills are falling?", run: (m) => SKILLS.filter((r) => r.k === m && !r.sc && r.t === "falling").map((r) => `${r.o}: ${r.s}`) },
+  shortage: { label: "Which occupations are on a shortage list?", run: (m) => Object.entries(INDICATORS[m] || {}).filter(([, v]) => v.shortage).map(([o, v]) => `${o} (${v.ttf} days to fill)`) },
+  scenario: { label: "What would a highway reroute change?", run: (m) => SKILLS.filter((r) => r.k === m && r.sc).map((r) => `${r.o}: ${r.s} (assumption)`) },
+};
+
+function renderAsk() {
+  return `<div class="panel ask"><h2>Ask the data</h2>
+    <p class="muted">Canned questions answered from the data. A live version would use the Claude API on the server, with checks.</p>
+    <div style="margin: 12px 0;">
+      <select id="ask-k">${MUNICIPALITIES.map((k) => `<option value="${k.id}">${esc(k.name)}</option>`).join("")}</select>
+      <select id="ask-q">${Object.entries(ASK).map(([id, q]) => `<option value="${id}">${esc(q.label)}</option>`).join("")}</select>
+    </div>
+    <div id="ask-answer"></div></div>`;
+}
+
+function renderAskAnswer() {
+  const k = $("ask-k").value, q = ASK[$("ask-q").value];
+  const items = q.run(k);
+  $("ask-answer").innerHTML = items.length
+    ? `<ul>${items.map((t) => `<li style="margin-bottom:6px;">${esc(t)}</li>`).join("")}</ul>`
+    : `<p class="muted">No matching rows in the synthetic data.</p>`;
+}
+
+document.addEventListener("change", (e) => {
+  if (e.target.id === "ask-k" || e.target.id === "ask-q") renderAskAnswer();
+});
+
+function renderRoute() {
+  const r = location.hash.slice(1);
+  const isView = VIEW_ROUTES.includes(r);
+  $("explorer").hidden = isView;
+  $("view").hidden = !isView;
+  $("briefing").style.display = isView ? "none" : "";
+  document.querySelectorAll("nav a").forEach((a) => a.classList.toggle("active", a.dataset.route === (isView ? r : "explorer")));
+  if (isView) {
+    $("view").innerHTML = r === "alerts" ? renderAlerts() : r === "paper" ? renderPaper() : renderAsk();
+    if (r === "ask") renderAskAnswer();
+  } else if (r === "briefing") {
+    $("briefing").scrollIntoView({ block: "start" });
+  }
+}
+
 // Only municipality ids are valid hashes; other nav anchors (e.g. #briefing) keep the current municipality.
 const fromHash = () => {
   const id = location.hash.slice(1);
@@ -586,10 +680,12 @@ const fromHash = () => {
 window.addEventListener("hashchange", () => {
   fromHash();
   render();
+  renderRoute();
 });
 
 fromHash();
 render();
+renderRoute();
 </script>
 </body>
 </html>

@@ -1,0 +1,45 @@
+municipality_slug,municipality,occupation_group,employed_2019,employed_2025
+copenhagen,København,All occupations,336449,360000
+copenhagen,København,Managers,26916,28800
+copenhagen,København,Professionals,57196,61200
+copenhagen,København,Technicians and associate professionals,50467,54000
+copenhagen,København,Clerical support workers,23551,25200
+copenhagen,København,Service and sales workers,47103,50400
+copenhagen,København,"Skilled agricultural, forestry and fishery workers",6729,7200
+copenhagen,København,Craft and related trades workers,37009,39600
+copenhagen,København,"Plant and machine operators, and assemblers",33645,36000
+copenhagen,København,Elementary occupations,47103,50400
+copenhagen,København,Unknown or not identifiable,6729,7200
+aarhus,Aarhus,All occupations,190476,200000
+aarhus,Aarhus,Managers,15238,16000
+aarhus,Aarhus,Professionals,32381,34000
+aarhus,Aarhus,Technicians and associate professionals,28571,30000
+aarhus,Aarhus,Clerical support workers,13333,14000
+aarhus,Aarhus,Service and sales workers,26667,28000
+aarhus,Aarhus,"Skilled agricultural, forestry and fishery workers",3810,4000
+aarhus,Aarhus,Craft and related trades workers,20952,22000
+aarhus,Aarhus,"Plant and machine operators, and assemblers",19048,20000
+aarhus,Aarhus,Elementary occupations,26667,28000
+aarhus,Aarhus,Unknown or not identifiable,3810,4000
+odense,Odense,All occupations,132653,130000
+odense,Odense,Managers,10612,10400
+odense,Odense,Professionals,22551,22100
+odense,Odense,Technicians and associate professionals,19898,19500
+odense,Odense,Clerical support workers,9286,9100
+odense,Odense,Service and sales workers,18571,18200
+odense,Odense,"Skilled agricultural, forestry and fishery workers",2653,2600
+odense,Odense,Craft and related trades workers,14592,14300
+odense,Odense,"Plant and machine operators, and assemblers",13265,13000
+odense,Odense,Elementary occupations,18571,18200
+odense,Odense,Unknown or not identifiable,2653,2600
+aalborg,Aalborg,All occupations,106796,110000
+aalborg,Aalborg,Managers,8544,8800
+aalborg,Aalborg,Professionals,18155,18700
+aalborg,Aalborg,Technicians and associate professionals,16019,16500
+aalborg,Aalborg,Clerical support workers,7476,7700
+aalborg,Aalborg,Service and sales workers,14951,15400
+aalborg,Aalborg,"Skilled agricultural, forestry and fishery workers",2136,2200
+aalborg,Aalborg,Craft and related trades workers,11748,12100
+aalborg,Aalborg,"Plant and machine operators, and assemblers",10680,11000
+aalborg,Aalborg,Elementary occupations,14951,15400
+aalborg,Aalborg,Unknown or not identifiable,2136,2200

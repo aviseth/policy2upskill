@@ -1,5 +1,8 @@
 # policy2upskill: ideas for the next 1-2 weeks
 
+> **Denmark pivot (note added 21 Oct, 18:45):** the project is for Denmark. The Norwegian sources named below (NAV, SSB, Bedriftsundersøkelsen) must be re-researched for Denmark. Candidates to check: Danmarks Statistik (StatBank), Jobindex and Jobnet for job ads, and the government shortage list (Positivlisten). The prototype data is synthetic.
+
+
 Brainstorm from Fable. Builds on the agreed architecture (signals -> core model -> views) and the three lanes. Effort is S/M/L. Nothing here changes the demo target.
 
 ## Data sources and signals

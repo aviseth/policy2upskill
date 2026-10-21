@@ -1,8 +1,8 @@
-"""Occupation trend from SSB table 11619 (employed persons, 2019 vs 2025).
+"""Occupation trend from synthetic Danish employment data (2019 vs 2025).
 
-Thresholds are PROPOSED (see research/method-rigour.md) and not validated.
+Thresholds are PROPOSED (see the method note) and not validated.
 Skill tags (rising / falling / durable / transforming) need skill-mix data,
-which this table does not have, so they are not computed here.
+which this file does not have, so they are not computed here.
 """
 import csv
 from pathlib import Path
@@ -25,23 +25,18 @@ def trend(start: int, end: int) -> str:
 
 
 def main() -> None:
-    here = Path(__file__).parent / "ssb"
-    rows = list(csv.DictReader((here / "11619-municipalities.csv").open()))
-    by = {}
-    for r in rows:
-        if r["year"] not in (START, END) or r["occupation_code"] == "0-9":
-            continue
-        # Tromsø and Kristiansand change code over time; SOURCE.md explains the mapping.
-        key = (r["municipality_slug"], r["occupation_label"])
-        by.setdefault(key, {})[r["year"]] = int(r["employed_persons"]) if r["employed_persons"] else 0
+    here = Path(__file__).parent / "synthetic"
+    rows = list(csv.DictReader((here / "employment_dk.csv").open()))
     out = here / "occupation_trend.csv"
     with out.open("w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["municipality_slug", "occupation_label", "employed_2019", "employed_2025", "annual_growth", "trend"])
-        for (slug, occ), v in sorted(by.items()):
-            a, b = v.get(START, 0), v.get(END, 0)
+        w.writerow(["municipality_slug", "occupation_group", "employed_2019", "employed_2025", "annual_growth", "trend"])
+        for r in rows:
+            if r["occupation_group"] == "All occupations":
+                continue
+            a, b = int(r["employed_2019"]), int(r["employed_2025"])
             g = "" if a == 0 else f"{(b / a) ** (1 / YEARS) - 1:.4f}"
-            w.writerow([slug, occ, a, b, g, trend(a, b)])
+            w.writerow([r["municipality_slug"], r["occupation_group"], a, b, g, trend(a, b)])
     print(f"wrote {out}")
 
 

@@ -1,0 +1,41 @@
+municipality_slug,occupation_group,employed_2019,employed_2025,annual_growth,trend
+copenhagen,Managers,26916,28800,0.0113,level
+copenhagen,Professionals,57196,61200,0.0113,level
+copenhagen,Technicians and associate professionals,50467,54000,0.0113,level
+copenhagen,Clerical support workers,23551,25200,0.0113,level
+copenhagen,Service and sales workers,47103,50400,0.0113,level
+copenhagen,"Skilled agricultural, forestry and fishery workers",6729,7200,0.0113,level
+copenhagen,Craft and related trades workers,37009,39600,0.0113,level
+copenhagen,"Plant and machine operators, and assemblers",33645,36000,0.0113,level
+copenhagen,Elementary occupations,47103,50400,0.0113,level
+copenhagen,Unknown or not identifiable,6729,7200,0.0113,level
+aarhus,Managers,15238,16000,0.0082,level
+aarhus,Professionals,32381,34000,0.0082,level
+aarhus,Technicians and associate professionals,28571,30000,0.0082,level
+aarhus,Clerical support workers,13333,14000,0.0082,level
+aarhus,Service and sales workers,26667,28000,0.0082,level
+aarhus,"Skilled agricultural, forestry and fishery workers",3810,4000,0.0081,level
+aarhus,Craft and related trades workers,20952,22000,0.0082,level
+aarhus,"Plant and machine operators, and assemblers",19048,20000,0.0082,level
+aarhus,Elementary occupations,26667,28000,0.0082,level
+aarhus,Unknown or not identifiable,3810,4000,0.0081,level
+odense,Managers,10612,10400,-0.0034,level
+odense,Professionals,22551,22100,-0.0034,level
+odense,Technicians and associate professionals,19898,19500,-0.0034,level
+odense,Clerical support workers,9286,9100,-0.0034,level
+odense,Service and sales workers,18571,18200,-0.0034,level
+odense,"Skilled agricultural, forestry and fishery workers",2653,2600,-0.0034,level
+odense,Craft and related trades workers,14592,14300,-0.0034,level
+odense,"Plant and machine operators, and assemblers",13265,13000,-0.0034,level
+odense,Elementary occupations,18571,18200,-0.0034,level
+odense,Unknown or not identifiable,2653,2600,-0.0034,level
+aalborg,Managers,8544,8800,0.0049,level
+aalborg,Professionals,18155,18700,0.0049,level
+aalborg,Technicians and associate professionals,16019,16500,0.0049,level
+aalborg,Clerical support workers,7476,7700,0.0049,level
+aalborg,Service and sales workers,14951,15400,0.0049,level
+aalborg,"Skilled agricultural, forestry and fishery workers",2136,2200,0.0049,level
+aalborg,Craft and related trades workers,11748,12100,0.0049,level
+aalborg,"Plant and machine operators, and assemblers",10680,11000,0.0049,level
+aalborg,Elementary occupations,14951,15400,0.0049,level
+aalborg,Unknown or not identifiable,2136,2200,0.0049,level
