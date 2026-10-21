@@ -198,7 +198,7 @@
 
   <aside>
     <div class="panel briefing" id="briefing">
-      <div class="label">Briefing · sample</div>
+      <div class="label">Briefing · sample <span class="badge synth">Synthetic</span></div>
       <div id="briefing-body"></div>
       <div class="note">Sample text, written by hand. In the live version, a model writes this from the data on the server, and checks each claim against it.</div>
     </div>
@@ -968,7 +968,7 @@ function alertItems() {
 
 function renderAlerts() {
   const items = alertItems();
-  return `<div class="panel"><div class="head"><h2>Early-warning alerts</h2><span class="muted">${items.length} alerts</span></div>
+  return `<div class="panel"><div class="head"><h2>Early-warning alerts ${badge(false)}</h2><span class="muted">${items.length} alerts</span></div>
     <p class="muted" style="margin:0 0 12px">Rule-based, from the indicators in the explorer. Synthetic data. Thresholds are proposals.</p>
     <div class="alert-list">${items.map((a) => `<div class="alert"><span class="lvl lvl-${a.lvl}">${a.lvl}</span><span class="muted">${esc(a.where)}</span><span>${esc(a.text)}</span></div>`).join("")}</div>
   </div>`;
@@ -981,7 +981,7 @@ function renderPaper() {
       <td style="padding:6px 8px;">${esc(k.name)}</td>
       ${["rising", "falling", "durable", "transforming"].map((c) => `<td style="padding:6px 8px;">${count(k.id, c)}</td>`).join("")}
       <td style="padding:6px 8px;">${alerts.filter((a) => a.where === k.name).length}</td></tr>`).join("");
-  return `<div class="panel"><h2>Quarterly white paper (draft)</h2>
+  return `<div class="panel"><div class="head"><h2>Quarterly white paper (draft) ${badge(false)}</h2></div>
     <p class="muted">Synthetic data. Generated from the same core model as the explorer. Synthetic skill rows only; scenarios are excluded.</p>
     <h3>Skill tags by municipality (count of synthetic rows)</h3>
     <table style="width:100%; border-collapse:collapse; font-size:14px;">
@@ -996,15 +996,15 @@ const ASK = {
   rising: { label: "Which skills are rising?", run: (m) => SKILLS.filter((r) => r.k === m && !r.sc && r.t === "rising").map((r) => `${r.o}: ${r.s}`) },
   falling: { label: "Which skills are falling?", run: (m) => SKILLS.filter((r) => r.k === m && !r.sc && r.t === "falling").map((r) => `${r.o}: ${r.s}`) },
   shortage: { label: "Which occupations are on a shortage list?", run: (m) => Object.entries(INDICATORS[m] || {}).filter(([, v]) => v.shortage).map(([o, v]) => `${o} (${v.ttf} days to fill)`) },
-  scenario: { label: "What would a highway reroute change?", run: (m) => SKILLS.filter((r) => r.k === m && r.sc).map((r) => `${r.o}: ${r.s} (assumption)`) },
+  scenario: { label: "Which scenario assumptions are listed?", run: (m) => SKILLS.filter((r) => r.k === m && r.sc).map((r) => `${r.o}: ${r.s} (assumption)`) },
 };
 
 function renderAsk() {
-  return `<div class="panel ask"><h2>Ask the data</h2>
+  return `<div class="panel ask"><div class="head"><h2>Ask the data ${badge(false)}</h2></div>
     <p class="muted">Canned questions answered from the data. A live version would use the Claude API on the server, with checks.</p>
     <div style="margin: 12px 0;">
-      <select id="ask-k">${MUNICIPALITIES.map((k) => `<option value="${k.id}">${esc(k.name)}</option>`).join("")}</select>
-      <select id="ask-q">${Object.entries(ASK).map(([id, q]) => `<option value="${id}">${esc(q.label)}</option>`).join("")}</select>
+      <select id="ask-k" aria-label="Municipality">${MUNICIPALITIES.map((k) => `<option value="${k.id}">${esc(k.name)}</option>`).join("")}</select>
+      <select id="ask-q" aria-label="Question">${Object.entries(ASK).map(([id, q]) => `<option value="${id}">${esc(q.label)}</option>`).join("")}</select>
     </div>
     <div id="ask-answer"></div></div>`;
 }
