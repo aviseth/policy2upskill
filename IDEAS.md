@@ -7,7 +7,7 @@ Brainstorm from Fable. Builds on the agreed architecture (signals -> core model 
 
 ## Data sources and signals
 
-- **Job-ad signal (real data, Danish source to confirm).** Adapter that pulls public job ads from Jobnet / open job-ad data, maps titles to STYRK-08 occupation codes and extracts skill mentions. Why: the most direct "demand" signal, and it is Danish, per municipality. Effort: M. Risk: licence and rate limits; title-to-occupation mapping is noisy.
+- **Job-ad signal (real data, Danish source to confirm).** Adapter that pulls public job ads from Jobnet / open job-ad data, maps titles to DISCO-08 occupation codes and extracts skill mentions. Why: the most direct "demand" signal, and it is Danish, per municipality. Effort: M. Risk: licence and rate limits; title-to-occupation mapping is noisy.
 - **Jobnet Shortage list (reported shortages).** Adapter for the annual enterprise survey that estimates unfilled positions by occupation and region. Why: the official shortage figure ministers already quote. Effort: S. Risk: region, not municipality, granularity; annual cadence.
 - **Danmarks Statistik employment-by-occupation and population projections.** Adapter via Danmarks Statistik's PxWeb API (registered employment by municipality and sector; population by age). Why: gives the supply side and lets us say "retirement wave in occupation X in municipality Y". Effort: M. Risk: occupation detail is thinner at municipality level than at region level.
 - **ESCO skills taxonomy as the skill dimension.** Use ESCO (EU, open) as the canonical skill list so ads, education data and foreign studies line up. Why: makes every signal comparable and makes the white paper citable. Effort: S. Risk: Danish-language matching is imperfect.
@@ -30,7 +30,7 @@ Brainstorm from Fable. Builds on the agreed architecture (signals -> core model 
 
 - **Three-question briefing.** Rewrite the briefing prompt around what a municipality director asks: what is changing here, what should we fund this budget year, what are we unsure about. Effort: S. Risk: generic LLM prose; needs strict grounding in the core model.
 - **Compare to neighbours and to the region.** In the explorer, every municipality figure sits next to its region and national value. Why: a municipality official's first question is "is this just us". Effort: S. Risk: small municipalities have noisy numbers.
-- **Action mapping.** Link a rising or transforming skill to concrete levers: fagskole courses, Jobnet training, apprenticeship quotas. Why: turns a chart into a decision. Effort: M. Risk: course data is scattered and partly unlicensed.
+- **Action mapping.** Link a rising or transforming skill to concrete levers: AMU courses, Jobnet training, apprenticeship quotas. Why: turns a chart into a decision. Effort: M. Risk: course data is scattered and partly unlicensed.
 - **Uncertainty shown as a range, not a dot.** Low-confidence tags render visibly different. Why: prevents over-reading. Effort: S. Risk: visual clutter.
 
 ## Presentation and distribution
