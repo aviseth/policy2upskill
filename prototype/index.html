@@ -121,6 +121,8 @@
   .chart .ext { fill: none; stroke: #305bab; stroke-width: 2; stroke-dasharray: 6 5; }
   .chart .fan { fill: #305bab; fill-opacity: 0.14; stroke: none; }
   .chart .divider { stroke: #b9b7b0; stroke-dasharray: 2 4; }
+  .trend-controls { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; font-size: 13px; margin: 6px 0 10px; color: var(--ink-2); }
+  .trend-controls select { font: inherit; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; margin-left: 6px; }
   .legend { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 12px; color: var(--ink-2); margin: 8px 0 0; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend svg { width: 28px; height: 10px; }
@@ -868,22 +870,50 @@ function renderCompare() {
     <p class="muted" style="margin:10px 0 0">Two contrasting municipalities show more than one number does. Green rows are Statistics Denmark figures; amber rows count synthetic skill signals and indicators.</p></div>`;
 }
 
-// ---- Past and future line chart: past = real (Statistics Denmark), 2026-2028 = trend extension, not a forecast ----
+// ---- Past and future chart. Past = real where marked real. 2026-28 = trend extension, not a forecast. Scenarios are assumptions. ----
 const FAN_PER_YEAR = 0.03; // illustrative range: +/-3% of the extended value per year of distance from 2025
+const TAX_WAGE = 52846 * 12; // national average standardised earnings, LONS20 2025 (real), times 12 months
+const TAX_RATE = 0.2505;     // national average municipal tax rate 2026, PSKAT (real); applied to every municipality: a simplification
+const YEARS_PAST = ["2023", "2024", "2025"];
+const MEASURES = {
+  employees: { label: "Employees", kind: "real", unit: "", get: (id) => realSeries(id, "employees") },
+  population: { label: "Population, 1 January", kind: "real", unit: "", get: (id) => realSeries(id, "population") },
+  completions: { label: "Education completions", kind: "real", unit: "", get: (id) => realSeries(id, "completions") },
+  tax: { label: "Income tax take, DKK (estimate)", kind: "synthetic", unit: " DKK", get: (id) => toTax(realSeries(id, "employees")) },
+};
+const SCENARIOS = {
+  femern: { label: "Femern link: construction jobs in Lolland", only: "lolland", delta: { 2026: 300, 2027: 600, 2028: 600 } },
+  retrain: { label: "Retrain 400 process operators", only: null, delta: { 2026: 400, 2027: 400, 2028: 400 } },
+};
+state.measure = "employees";
+state.scen = { femern: false, retrain: false };
 
-function trendSource() {
-  const complete = (ser) => ser && ["2023", "2024", "2025"].every((y) => typeof ser[y] === "number");
-  if (state.level === "national") return { title: "All Denmark", series: NATIONAL_EMPLOYEES };
+function toTax(ser) {
+  if (!ser || !YEARS_PAST.every((y) => typeof ser[y] === "number")) return null;
+  return Object.fromEntries(YEARS_PAST.map((y) => [y, ser[y] * TAX_WAGE * TAX_RATE]));
+}
+
+function completeSeries(ser) {
+  return ser && YEARS_PAST.every((y) => typeof ser[y] === "number") ? ser : null;
+}
+
+// The series the chart draws, for the current level.
+function chartSubject() {
+  const m = MEASURES[state.measure];
+  if (state.level === "national") {
+    if (state.measure === "employees") return { title: "Denmark, all municipalities (table LBESK354)", series: NATIONAL_EMPLOYEES, kind: "real" };
+    if (state.measure === "tax") return { title: "Denmark, estimate", series: toTax(NATIONAL_EMPLOYEES), kind: "synthetic" };
+    return { title: "Denmark", series: null, kind: m.kind };
+  }
   const k = currentMunicipality();
   if (state.level === "region") {
-    const ids = Object.keys(REAL_DATA).filter((id) => REGION_OF[id] === k.region && complete(realSeries(id, "employees")));
-    if (!ids.length) return { title: k.region, series: null };
+    const ids = Object.keys(REAL_DATA).filter((id) => REGION_OF[id] === k.region && completeSeries(m.get(id)));
+    if (!ids.length) return { title: k.region, series: null, kind: m.kind };
     const series = {};
-    ["2023", "2024", "2025"].forEach((y) => (series[y] = ids.reduce((t, id) => t + REAL_DATA[id].employees[y], 0)));
-    return { title: `${k.region}, sum of ${ids.length} loaded municipalities (${ids.map(nameOf).join(", ")}), not the whole region`, series };
+    YEARS_PAST.forEach((y) => (series[y] = ids.reduce((t, id) => t + m.get(id)[y], 0)));
+    return { title: `${k.region}: sum of ${ids.length} loaded municipalities (${ids.map(nameOf).join(", ")})`, series, kind: m.kind };
   }
-  const e = realSeries(k.id, "employees");
-  return { title: k.name, series: complete(e) ? e : null };
+  return { title: k.name, series: completeSeries(m.get(k.id)), kind: m.kind };
 }
 
 function niceTicks(lo, hi, n) {
@@ -897,17 +927,42 @@ function niceTicks(lo, hi, n) {
 }
 
 function renderTrend() {
-  const src = trendSource();
-  const head = `<div class="head"><h2>Employees: 2023–25 and trend extension to 2028</h2>${badge(true)}</div>`;
-  if (!src.series) { $("trend").innerHTML = `${head}<p class="muted">Employees: ${NO_REAL} for ${esc(src.title)}.</p>`; return; }
-  const s = src.series, v23 = s["2023"], v24 = s["2024"], v25 = s["2025"];
+  const subj = chartSubject();
+  const m = MEASURES[state.measure];
+  const other = state.level === "municipality" && state.compare ? MUNICIPALITIES.find((x) => x.id === state.compare) : null;
+  const otherSeries = other && other.id !== currentMunicipality().id ? completeSeries(m.get(other.id)) : null;
+  const indexed = !!otherSeries && !!subj.series;
+  const measureOpts = Object.entries(MEASURES).map(([id, x]) => `<option value="${id}" ${id === state.measure ? "selected" : ""}>${esc(x.label)}</option>`).join("");
+  const scenOpts = Object.entries(SCENARIOS).map(([id, sc]) => {
+    const applies = !sc.only || sc.only === currentMunicipality().id;
+    return `<label class="toggle"><input type="checkbox" class="trend-scen" data-s="${id}" ${state.scen[id] ? "checked" : ""} ${applies ? "" : "disabled"}> ${esc(sc.label)}${applies ? "" : " (not modelled here)"}</label>`;
+  }).join("");
+  const controls = `<div class="trend-controls">
+    <label>Measure <select id="trend-measure">${measureOpts}</select></label>
+    ${scenOpts}
+  </div>`;
+  const head = `<div class="head"><h2>${esc(m.label)}: 2023–25 and trend extension to 2028</h2>${badge(m.kind === "real")}</div>`;
+  if (!subj.series) {
+    $("trend").innerHTML = `${head}${controls}<p class="muted">${esc(m.label)}: ${NO_REAL} for ${esc(subj.title)}.</p>`;
+    return;
+  }
+  const base = indexed ? 100 / subj.series["2023"] : 1;
+  const sr = (ser) => (indexed ? Object.fromEntries(YEARS_PAST.map((y) => [y, ser[y] / ser["2023"] * 100])) : ser);
+  const s = sr(subj.series);
+  const v23 = s["2023"], v24 = s["2024"], v25 = s["2025"];
   const g = ((v24 / v23 - 1) + (v25 / v24 - 1)) / 2; // average annual change 2023-25
   const ext = [1, 2, 3].map((h) => {
     const mid = v25 * Math.pow(1 + g, h);
     return { year: 2025 + h, mid, lo: mid * (1 - FAN_PER_YEAR * h), hi: mid * (1 + FAN_PER_YEAR * h) };
   });
-  const W = 680, H = 300, L = 66, R = 84, T = 26, B = 40;
-  const all = [v23, v24, v25].concat(ext.map((e) => e.lo), ext.map((e) => e.hi));
+  // Scenario lines: the level delta is added to the trend value. Tax takes the delta in DKK.
+  const deltaValue = (d) => (state.measure === "tax" ? d * TAX_WAGE * TAX_RATE : d) * (indexed ? 0 : 1);
+  const scenLines = Object.keys(SCENARIOS).filter((id) => state.scen[id] && (!SCENARIOS[id].only || SCENARIOS[id].only === currentMunicipality().id) && !indexed && state.measure !== "population" && state.measure !== "completions")
+    .map((id) => ({ id, pts: [2025].concat([2026, 2027, 2028]).map((yr) => ({ year: yr, v: yr === 2025 ? v25 : ext[yr - 2026].mid + deltaValue(SCENARIOS[id].delta[yr]) })) }));
+  const otherS = otherSeries ? sr(otherSeries) : null;
+  const otherExt = otherS ? (() => { const gg = ((otherS["2024"] / otherS["2023"] - 1) + (otherS["2025"] / otherS["2024"] - 1)) / 2; return [1, 2, 3].map((h) => ({ year: 2025 + h, mid: otherS["2025"] * Math.pow(1 + gg, h) })); })() : null;
+  const W = 680, H = 320, L = 66, R = 96, T = 26, B = 40;
+  const all = [v23, v24, v25].concat(ext.map((e) => e.lo), ext.map((e) => e.hi), scenLines.flatMap((l) => l.pts.map((p) => p.v)), otherS ? [otherS["2023"], otherS["2024"], otherS["2025"]] : [], otherExt ? otherExt.map((e) => e.mid) : []);
   const ticks = niceTicks(Math.min(...all), Math.max(...all), 4);
   const t0 = ticks[0], t1 = ticks[ticks.length - 1];
   const X = (yr) => L + ((yr - 2023) / 5) * (W - L - R);
@@ -915,32 +970,42 @@ function renderTrend() {
   const pt = (yr, v) => `${X(yr).toFixed(1)},${Y(v).toFixed(1)}`;
   const past = [[2023, v23], [2024, v24], [2025, v25]];
   const fan = [pt(2025, v25)].concat(ext.map((e) => pt(e.year, e.hi)), ext.slice().reverse().map((e) => pt(e.year, e.lo))).join(" ");
+  const fmtV = (v) => (indexed ? v.toFixed(1) : m.kind === "synthetic" || state.measure === "tax" ? fmt(Math.round(v)) : fmt(Math.round(v)));
   const last = ext[2];
-  const alt = `Line chart of employees, ${src.title}. Real figures: ${past.map(([y, v]) => y + " " + fmt(v)).join(", ")}. Trend extension, not a forecast: 2028 about ${fmt(Math.round(last.mid))}, illustrative range ${fmt(Math.round(last.lo))} to ${fmt(Math.round(last.hi))}.`;
+  const alt = `Line chart of ${m.label}, ${subj.title}. Past: ${past.map(([y, v]) => y + " " + fmtV(v)).join(", ")}. Trend extension, not a forecast: 2028 about ${fmtV(last.mid)}.`;
   const svg = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(alt)}">
     ${ticks.map((v) => `<line class="grid" x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}"/><text x="${L - 8}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end">${fmt(Math.round(v))}</text>`).join("")}
     ${[2023, 2024, 2025, 2026, 2027, 2028].map((yr) => `<text x="${X(yr).toFixed(1)}" y="${H - B + 18}" text-anchor="middle">${yr}</text>`).join("")}
     <line class="divider" x1="${X(2025).toFixed(1)}" x2="${X(2025).toFixed(1)}" y1="${T - 4}" y2="${H - B}"/>
-    <text x="${(X(2025) - 6).toFixed(1)}" y="${T - 10}" text-anchor="end">Past (real)</text>
+    <text x="${(X(2025) - 6).toFixed(1)}" y="${T - 10}" text-anchor="end">Past</text>
     <text x="${(X(2025) + 6).toFixed(1)}" y="${T - 10}">Trend extension, not a forecast</text>
     <polygon class="fan" points="${fan}"/>
     <polyline class="ext" points="${[pt(2025, v25)].concat(ext.map((e) => pt(e.year, e.mid))).join(" ")}"/>
+    ${scenLines.map((l, i) => `<polyline points="${l.pts.map((p) => pt(p.year, p.v)).join(" ")}" fill="none" stroke="#b26a00" stroke-width="2" stroke-dasharray="3 4"/><text x="${(X(2028) + 8).toFixed(1)}" y="${(Y(l.pts[3].v) + 4 + i * 0).toFixed(1)}" fill="#9b4a08">${esc(SCENARIOS[l.id].label)}</text>`).join("")}
+    ${otherS ? `<polyline points="${[[2023, otherS["2023"]], [2024, otherS["2024"]], [2025, otherS["2025"]]].map(([y, v]) => pt(y, v)).join(" ")}" fill="none" stroke="#7a7770" stroke-width="2"/><polyline points="${[pt(2025, otherS["2025"])].concat(otherExt.map((e) => pt(e.year, e.mid))).join(" ")}" fill="none" stroke="#7a7770" stroke-width="2" stroke-dasharray="6 5"/><text x="${(X(2028) + 8).toFixed(1)}" y="${(Y(otherExt[2].mid) + 4).toFixed(1)}" fill="#55534e">${esc(other.name)}</text>` : ""}
     <polyline class="past" points="${past.map(([y, v]) => pt(y, v)).join(" ")}"/>
-    ${past.map(([y, v]) => `<circle cx="${X(y).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="4" fill="#305bab"/><text class="val" x="${X(y).toFixed(1)}" y="${(Y(v) - 10).toFixed(1)}" text-anchor="${y === 2025 ? "end" : y === 2023 ? "start" : "middle"}">${fmt(v)}</text>`).join("")}
-    ${ext.map((e) => `<circle cx="${X(e.year).toFixed(1)}" cy="${Y(e.mid).toFixed(1)}" r="3.5" fill="#fff" stroke="#305bab" stroke-width="2"/>`).join("")}
-    <text x="${(X(2028) + 8).toFixed(1)}" y="${(Y(last.hi) + 4).toFixed(1)}">${fmt(Math.round(last.hi))}</text>
-    <text class="val" x="${(X(2028) + 8).toFixed(1)}" y="${(Y(last.mid) + 4).toFixed(1)}">${fmt(Math.round(last.mid))}</text>
-    <text x="${(X(2028) + 8).toFixed(1)}" y="${(Y(last.lo) + 4).toFixed(1)}">${fmt(Math.round(last.lo))}</text>
+    ${past.map(([y, v]) => `<circle cx="${X(y).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="4" fill="#305bab"/><text class="val" x="${X(y).toFixed(1)}" y="${(Y(v) - 10).toFixed(1)}" text-anchor="${y === 2025 ? "end" : y === 2023 ? "start" : "middle"}">${fmtV(v)}</text>`).join("")}
+    <text x="${(X(2028) + 8).toFixed(1)}" y="${(Y(last.hi) + 4).toFixed(1)}">${fmtV(last.hi)}</text>
+    <text class="val" x="${(X(2028) + 8).toFixed(1)}" y="${(Y(last.mid) + 4).toFixed(1)}">${fmtV(last.mid)}</text>
+    <text x="${(X(2028) + 8).toFixed(1)}" y="${(Y(last.lo) + 4).toFixed(1)}">${fmtV(last.lo)}</text>
   </svg>`;
   const legend = `<div class="legend">
-    <span><svg viewBox="0 0 28 10"><line x1="0" x2="28" y1="5" y2="5" stroke="#305bab" stroke-width="2.5"/></svg>2023–25: employees, annual average (Statistics Denmark)</span>
-    <span><svg viewBox="0 0 28 10"><line x1="0" x2="28" y1="5" y2="5" stroke="#305bab" stroke-width="2" stroke-dasharray="6 5"/></svg>2026–28: trend extension, not a forecast (our calculation from the real 2023–25 figures)</span>
-    <span><svg viewBox="0 0 28 10"><rect x="0" y="0" width="28" height="10" fill="#305bab" fill-opacity="0.14"/></svg>Illustrative range, ±3% per year of distance from 2025</span></div>`;
-  $("trend").innerHTML = `${head}
-    <p class="muted" style="margin:0 0 6px"><strong style="color:var(--ink)">${esc(src.title)}</strong>. Employees by municipality of residence (table LBESK354). The vertical axis does not start at zero.</p>
+    <span><svg viewBox="0 0 28 10"><line x1="0" x2="28" y1="5" y2="5" stroke="#305bab" stroke-width="2.5"/></svg>2023–25: ${esc(m.kind === "real" ? "Statistics Denmark figures" : "synthetic estimate")}</span>
+    <span><svg viewBox="0 0 28 10"><line x1="0" x2="28" y1="5" y2="5" stroke="#305bab" stroke-width="2" stroke-dasharray="6 5"/></svg>2026–28: trend extension, not a forecast</span>
+    <span><svg viewBox="0 0 28 10"><rect x="0" y="0" width="28" height="10" fill="#305bab" fill-opacity="0.14"/></svg>Illustrative range, ±3% per year</span>
+    ${scenLines.length ? `<span><svg viewBox="0 0 28 10"><line x1="0" x2="28" y1="5" y2="5" stroke="#b26a00" stroke-width="2" stroke-dasharray="3 4"/></svg>Scenario (assumption)</span>` : ""}
+    ${otherS ? `<span><svg viewBox="0 0 28 10"><line x1="0" x2="28" y1="5" y2="5" stroke="#7a7770" stroke-width="2"/></svg>${esc(other.name)} (indexed, 2023 = 100)</span>` : ""}
+  </div>`;
+  $("trend").innerHTML = `${head}${controls}
+    <p class="muted" style="margin:0 0 6px"><strong style="color:var(--ink)">${esc(subj.title)}</strong>${indexed ? ". Both lines indexed to 2023 = 100, so the two municipalities share one axis" : ""}. The vertical axis does not start at zero.</p>
     ${svg}${legend}
-    <p class="muted" style="margin:10px 0 0">The extension repeats the average annual change of 2023–25 (${fmtPct(g * 100)} a year) from the 2025 level. The range widens by ±3% a year (±9% by 2028). It is not a statistical interval, and the extension is not a forecast.</p>`;
+    <p class="muted" style="margin:10px 0 0">The extension repeats the average annual change of 2023–25 (${fmtPct(g * 100)} a year) from the 2025 level. Scenario lines add a stated assumption to that extension. Nothing here is a forecast.</p>`;
 }
+
+document.addEventListener("change", (e) => {
+  if (e.target.id === "trend-measure") { state.measure = e.target.value; renderTrend(); }
+  if (e.target.classList && e.target.classList.contains("trend-scen")) { state.scen[e.target.dataset.s] = e.target.checked; renderTrend(); }
+});
 
 function renderLevel() {
   document.querySelectorAll("#levels button[data-level]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.level === state.level));
