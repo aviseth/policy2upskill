@@ -5,157 +5,896 @@
   "demand_base": "2019=100",
   "municipalities": [
     {
-      "id": "bodo",
+      "id": "copenhagen",
       "name": "København",
       "region": "Hovedstaden",
       "briefing": [
-        ["What is changing", "Heat-pump installation demand is rising faster than the region average. Electric truck skills are transforming a licence-based role."],
-        ["What to fund this year", "Heat-pump and electrical upskilling for existing electricians. Short digital-records (electronic patient record) courses for nurses."],
-        ["What we are unsure about", "The electric truck signal rests on one source (confidence 0.38)."]
+        [
+          "What is changing",
+          "Heat-pump installation demand is rising faster than the region average. Electric truck skills are transforming a licence-based role."
+        ],
+        [
+          "What to fund this year",
+          "Heat-pump and electrical upskilling for existing electricians. Short digital-records (electronic patient record) courses for nurses."
+        ],
+        [
+          "What we are unsure about",
+          "The electric truck signal rests on one source (confidence 0.38)."
+        ]
       ]
     },
     {
-      "id": "narvik",
-      "name": "Narvik",
+      "id": "randers",
+      "name": "Randers",
       "region": "Hovedstaden",
       "briefing": [
-        ["What is changing", "Care roles hold steady while digital records spread. The electric truck signal is weak."],
-        ["What to fund this year", "Digital-records courses for nurses. Hold truck retraining until the signal firms up."],
-        ["What we are unsure about", "The hydropower grid upgrade is a scenario assumption, not an observed trend."]
+        [
+          "What is changing",
+          "Care roles hold steady while digital records spread. The electric truck signal is weak."
+        ],
+        [
+          "What to fund this year",
+          "Digital-records courses for nurses. Hold truck retraining until the signal firms up."
+        ],
+        [
+          "What we are unsure about",
+          "The hydropower grid upgrade is a scenario assumption, not an observed trend."
+        ]
       ]
     },
     {
-      "id": "stavanger",
+      "id": "aarhus",
       "name": "Aarhus",
       "region": "Midtjylland",
       "briefing": [
-        ["What is changing", "Automation is reshaping process-operator work. Cloud and data roles grow well above the national index."],
-        ["What to fund this year", "Bridging courses from manual process control to automation monitoring."],
-        ["What we are unsure about", "The battery plant is a scenario assumption, not an observed trend."]
+        [
+          "What is changing",
+          "Automation is reshaping process-operator work. Cloud and data roles grow well above the national index."
+        ],
+        [
+          "What to fund this year",
+          "Bridging courses from manual process control to automation monitoring."
+        ],
+        [
+          "What we are unsure about",
+          "The battery plant is a scenario assumption, not an observed trend."
+        ]
       ]
     },
     {
-      "id": "sandnes",
-      "name": "Sandnes",
+      "id": "vejle",
+      "name": "Vejle",
       "region": "Midtjylland",
       "briefing": [
-        ["What is changing", "Process-operator work is moving toward automation monitoring. Software and heat-pump roles grow above the national index."],
-        ["What to fund this year", "Bridging courses from manual process control to automation monitoring. Heat-pump certification for installers."],
-        ["What we are unsure about", "The hydrogen plant is a scenario assumption, not an observed trend."]
+        [
+          "What is changing",
+          "Process-operator work is moving toward automation monitoring. Software and heat-pump roles grow above the national index."
+        ],
+        [
+          "What to fund this year",
+          "Bridging courses from manual process control to automation monitoring. Heat-pump certification for installers."
+        ],
+        [
+          "What we are unsure about",
+          "The hydrogen plant is a scenario assumption, not an observed trend."
+        ]
       ]
     },
     {
-      "id": "tromso",
+      "id": "odense",
       "name": "Odense",
       "region": "Syddanmark",
       "briefing": [
-        ["What is changing", "Fish-processing roles fall below the national index. Data engineering grows fast."],
-        ["What to fund this year", "Transition routes from fish processing into food safety and data roles."],
-        ["What we are unsure about", "The telemedicine signal is weakly supported (confidence 0.47)."]
+        [
+          "What is changing",
+          "Fish-processing roles fall below the national index. Data engineering grows fast."
+        ],
+        [
+          "What to fund this year",
+          "Transition routes from fish processing into food safety and data roles."
+        ],
+        [
+          "What we are unsure about",
+          "The telemedicine signal is weakly supported (confidence 0.47)."
+        ]
       ]
     },
     {
-      "id": "harstad",
-      "name": "Harstad",
+      "id": "esbjerg",
+      "name": "Esbjerg",
       "region": "Syddanmark",
       "briefing": [
-        ["What is changing", "Fish-processing line work declines. Care roles add telemedicine tasks."],
-        ["What to fund this year", "Food safety and HACCP training for fish-processing workers moving into care or quality roles."],
-        ["What we are unsure about", "The telemedicine signal is weakly supported (confidence 0.51)."]
+        [
+          "What is changing",
+          "Fish-processing line work declines. Care roles add telemedicine tasks."
+        ],
+        [
+          "What to fund this year",
+          "Food safety and HACCP training for fish-processing workers moving into care or quality roles."
+        ],
+        [
+          "What we are unsure about",
+          "The telemedicine signal is weakly supported (confidence 0.51)."
+        ]
       ]
     },
     {
-      "id": "kristiansand",
+      "id": "aalborg",
       "name": "Aalborg",
       "region": "Nordjylland",
       "briefing": [
-        ["What is changing", "Heat-pump installation is rising above the region and national level. Timber-frame construction holds steady."],
-        ["What to fund this year", "Heat-pump certification for electricians. Plan retraining for scaffolding roles, which are declining."],
-        ["What we are unsure about", "The hospital merger is a scenario assumption, not an observed trend."]
+        [
+          "What is changing",
+          "Heat-pump installation is rising above the region and national level. Timber-frame construction holds steady."
+        ],
+        [
+          "What to fund this year",
+          "Heat-pump certification for electricians. Plan retraining for scaffolding roles, which are declining."
+        ],
+        [
+          "What we are unsure about",
+          "The hospital merger is a scenario assumption, not an observed trend."
+        ]
       ]
     },
     {
-      "id": "arendal",
-      "name": "Arendal",
+      "id": "horsens",
+      "name": "Horsens",
       "region": "Nordjylland",
       "briefing": [
-        ["What is changing", "Heat-pump installation is rising. Manual scaffolding and legacy fuse-box work are declining."],
-        ["What to fund this year", "Heat-pump certification for electricians. Retraining routes for scaffolding roles."],
-        ["What we are unsure about", "The battery storage tender is a scenario assumption, not an observed trend."]
+        [
+          "What is changing",
+          "Heat-pump installation is rising. Manual scaffolding and legacy fuse-box work are declining."
+        ],
+        [
+          "What to fund this year",
+          "Heat-pump certification for electricians. Retraining routes for scaffolding roles."
+        ],
+        [
+          "What we are unsure about",
+          "The battery storage tender is a scenario assumption, not an observed trend."
+        ]
       ]
     }
   ],
   "demand": [
-    { "municipality": "bodo", "occupation": "Nurses", "index_municipality": 118, "index_region": 109, "index_national": 114 },
-    { "municipality": "bodo", "occupation": "Electricians", "index_municipality": 104, "index_region": 101, "index_national": 103 },
-    { "municipality": "bodo", "occupation": "Truck drivers", "index_municipality": 96, "index_region": 99, "index_national": 102 },
-    { "municipality": "narvik", "occupation": "Nurses", "index_municipality": 111, "index_region": 109, "index_national": 114 },
-    { "municipality": "narvik", "occupation": "Electricians", "index_municipality": 107, "index_region": 101, "index_national": 103 },
-    { "municipality": "narvik", "occupation": "Truck drivers", "index_municipality": 101, "index_region": 99, "index_national": 102 },
-    { "municipality": "stavanger", "occupation": "Process operators", "index_municipality": 88, "index_region": 95, "index_national": 100 },
-    { "municipality": "stavanger", "occupation": "Software developers", "index_municipality": 131, "index_region": 118, "index_national": 121 },
-    { "municipality": "stavanger", "occupation": "Heat-pump installers", "index_municipality": 140, "index_region": 122, "index_national": 119 },
-    { "municipality": "sandnes", "occupation": "Process operators", "index_municipality": 92, "index_region": 95, "index_national": 100 },
-    { "municipality": "sandnes", "occupation": "Software developers", "index_municipality": 127, "index_region": 118, "index_national": 121 },
-    { "municipality": "sandnes", "occupation": "Heat-pump installers", "index_municipality": 136, "index_region": 122, "index_national": 119 },
-    { "municipality": "tromso", "occupation": "Nurses", "index_municipality": 109, "index_region": 104, "index_national": 114 },
-    { "municipality": "tromso", "occupation": "Software developers", "index_municipality": 125, "index_region": 112, "index_national": 121 },
-    { "municipality": "tromso", "occupation": "Fish processors", "index_municipality": 81, "index_region": 90, "index_national": 98 },
-    { "municipality": "harstad", "occupation": "Nurses", "index_municipality": 106, "index_region": 104, "index_national": 114 },
-    { "municipality": "harstad", "occupation": "Software developers", "index_municipality": 117, "index_region": 112, "index_national": 121 },
-    { "municipality": "harstad", "occupation": "Fish processors", "index_municipality": 86, "index_region": 90, "index_national": 98 },
-    { "municipality": "kristiansand", "occupation": "Electricians", "index_municipality": 121, "index_region": 113, "index_national": 103 },
-    { "municipality": "kristiansand", "occupation": "Truck drivers", "index_municipality": 107, "index_region": 103, "index_national": 102 },
-    { "municipality": "kristiansand", "occupation": "Construction workers", "index_municipality": 92, "index_region": 99, "index_national": 100 },
-    { "municipality": "arendal", "occupation": "Electricians", "index_municipality": 117, "index_region": 113, "index_national": 103 },
-    { "municipality": "arendal", "occupation": "Truck drivers", "index_municipality": 100, "index_region": 103, "index_national": 102 },
-    { "municipality": "arendal", "occupation": "Construction workers", "index_municipality": 96, "index_region": 99, "index_national": 100 }
+    {
+      "municipality": "copenhagen",
+      "occupation": "Nurses",
+      "index_municipality": 118,
+      "index_region": 109,
+      "index_national": 114
+    },
+    {
+      "municipality": "copenhagen",
+      "occupation": "Electricians",
+      "index_municipality": 104,
+      "index_region": 101,
+      "index_national": 103
+    },
+    {
+      "municipality": "copenhagen",
+      "occupation": "Truck drivers",
+      "index_municipality": 96,
+      "index_region": 99,
+      "index_national": 102
+    },
+    {
+      "municipality": "randers",
+      "occupation": "Nurses",
+      "index_municipality": 111,
+      "index_region": 109,
+      "index_national": 114
+    },
+    {
+      "municipality": "randers",
+      "occupation": "Electricians",
+      "index_municipality": 107,
+      "index_region": 101,
+      "index_national": 103
+    },
+    {
+      "municipality": "randers",
+      "occupation": "Truck drivers",
+      "index_municipality": 101,
+      "index_region": 99,
+      "index_national": 102
+    },
+    {
+      "municipality": "aarhus",
+      "occupation": "Process operators",
+      "index_municipality": 88,
+      "index_region": 95,
+      "index_national": 100
+    },
+    {
+      "municipality": "aarhus",
+      "occupation": "Software developers",
+      "index_municipality": 131,
+      "index_region": 118,
+      "index_national": 121
+    },
+    {
+      "municipality": "aarhus",
+      "occupation": "Heat-pump installers",
+      "index_municipality": 140,
+      "index_region": 122,
+      "index_national": 119
+    },
+    {
+      "municipality": "vejle",
+      "occupation": "Process operators",
+      "index_municipality": 92,
+      "index_region": 95,
+      "index_national": 100
+    },
+    {
+      "municipality": "vejle",
+      "occupation": "Software developers",
+      "index_municipality": 127,
+      "index_region": 118,
+      "index_national": 121
+    },
+    {
+      "municipality": "vejle",
+      "occupation": "Heat-pump installers",
+      "index_municipality": 136,
+      "index_region": 122,
+      "index_national": 119
+    },
+    {
+      "municipality": "odense",
+      "occupation": "Nurses",
+      "index_municipality": 109,
+      "index_region": 104,
+      "index_national": 114
+    },
+    {
+      "municipality": "odense",
+      "occupation": "Software developers",
+      "index_municipality": 125,
+      "index_region": 112,
+      "index_national": 121
+    },
+    {
+      "municipality": "odense",
+      "occupation": "Fish processors",
+      "index_municipality": 81,
+      "index_region": 90,
+      "index_national": 98
+    },
+    {
+      "municipality": "esbjerg",
+      "occupation": "Nurses",
+      "index_municipality": 106,
+      "index_region": 104,
+      "index_national": 114
+    },
+    {
+      "municipality": "esbjerg",
+      "occupation": "Software developers",
+      "index_municipality": 117,
+      "index_region": 112,
+      "index_national": 121
+    },
+    {
+      "municipality": "esbjerg",
+      "occupation": "Fish processors",
+      "index_municipality": 86,
+      "index_region": 90,
+      "index_national": 98
+    },
+    {
+      "municipality": "aalborg",
+      "occupation": "Electricians",
+      "index_municipality": 121,
+      "index_region": 113,
+      "index_national": 103
+    },
+    {
+      "municipality": "aalborg",
+      "occupation": "Truck drivers",
+      "index_municipality": 107,
+      "index_region": 103,
+      "index_national": 102
+    },
+    {
+      "municipality": "aalborg",
+      "occupation": "Construction workers",
+      "index_municipality": 92,
+      "index_region": 99,
+      "index_national": 100
+    },
+    {
+      "municipality": "horsens",
+      "occupation": "Electricians",
+      "index_municipality": 117,
+      "index_region": 113,
+      "index_national": 103
+    },
+    {
+      "municipality": "horsens",
+      "occupation": "Truck drivers",
+      "index_municipality": 100,
+      "index_region": 103,
+      "index_national": 102
+    },
+    {
+      "municipality": "horsens",
+      "occupation": "Construction workers",
+      "index_municipality": 96,
+      "index_region": 99,
+      "index_national": 100
+    }
   ],
   "skills": [
-    { "municipality": "bodo", "occupation": "Nurses", "skill": "Digital patient records", "category": "transforming", "trend": "rising", "confidence": 0.72, "scenario": false, "sources": ["NAV job ads", "ESCO"] },
-    { "municipality": "bodo", "occupation": "Nurses", "skill": "Elderly and palliative care", "category": "durable", "trend": "level", "confidence": 0.81, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "bodo", "occupation": "Electricians", "skill": "Heat-pump installation", "category": "transforming", "trend": "rising", "confidence": 0.66, "scenario": false, "sources": ["NAV job ads", "NAV shortage survey"] },
-    { "municipality": "bodo", "occupation": "Electricians", "skill": "Legacy fuse-box work", "category": "falling", "trend": "falling", "confidence": 0.55, "scenario": false, "sources": ["NAV job ads"] },
-    { "municipality": "bodo", "occupation": "Electricians", "skill": "Offshore wind cable work", "category": "rising", "trend": "rising", "confidence": 0.41, "scenario": true, "sources": ["Scenario: offshore wind yard opens"] },
-    { "municipality": "bodo", "occupation": "Truck drivers", "skill": "Electric truck operation", "category": "transforming", "trend": "rising", "confidence": 0.38, "scenario": false, "sources": ["NAV job ads"] },
-    { "municipality": "bodo", "occupation": "Truck drivers", "skill": "Heavy-vehicle licence C/CE", "category": "durable", "trend": "level", "confidence": 0.79, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "stavanger", "occupation": "Process operators", "skill": "Manual process control", "category": "falling", "trend": "falling", "confidence": 0.61, "scenario": false, "sources": ["NAV job ads", "NAV shortage survey"] },
-    { "municipality": "stavanger", "occupation": "Process operators", "skill": "Automation and data monitoring", "category": "transforming", "trend": "rising", "confidence": 0.58, "scenario": false, "sources": ["NAV job ads", "ESCO"] },
-    { "municipality": "stavanger", "occupation": "Process operators", "skill": "Battery cell operation", "category": "rising", "trend": "rising", "confidence": 0.30, "scenario": true, "sources": ["Scenario: battery plant opens"] },
-    { "municipality": "stavanger", "occupation": "Software developers", "skill": "Cloud infrastructure", "category": "rising", "trend": "rising", "confidence": 0.86, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "stavanger", "occupation": "Heat-pump installers", "skill": "Heat-pump installation", "category": "rising", "trend": "rising", "confidence": 0.70, "scenario": false, "sources": ["NAV job ads", "NAV shortage survey"] },
-    { "municipality": "tromso", "occupation": "Nurses", "skill": "Telemedicine support", "category": "transforming", "trend": "rising", "confidence": 0.47, "scenario": false, "sources": ["NAV job ads", "ESCO"] },
-    { "municipality": "tromso", "occupation": "Software developers", "skill": "Data engineering", "category": "rising", "trend": "rising", "confidence": 0.74, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "tromso", "occupation": "Fish processors", "skill": "Fish-processing line operation", "category": "falling", "trend": "falling", "confidence": 0.66, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "tromso", "occupation": "Fish processors", "skill": "Food safety and HACCP", "category": "durable", "trend": "level", "confidence": 0.77, "scenario": false, "sources": ["NAV job ads"] },
-    { "municipality": "tromso", "occupation": "Fish processors", "skill": "Raw-fish handling", "category": "falling", "trend": "falling", "confidence": 0.25, "scenario": true, "sources": ["Scenario: fishing quota cut"] },
-    { "municipality": "kristiansand", "occupation": "Electricians", "skill": "Heat-pump installation", "category": "rising", "trend": "rising", "confidence": 0.69, "scenario": false, "sources": ["NAV job ads", "NAV shortage survey"] },
-    { "municipality": "kristiansand", "occupation": "Truck drivers", "skill": "Electric truck operation", "category": "transforming", "trend": "rising", "confidence": 0.44, "scenario": false, "sources": ["NAV job ads"] },
-    { "municipality": "kristiansand", "occupation": "Construction workers", "skill": "Timber-frame construction", "category": "durable", "trend": "level", "confidence": 0.73, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "kristiansand", "occupation": "Construction workers", "skill": "Manual scaffolding", "category": "falling", "trend": "falling", "confidence": 0.52, "scenario": false, "sources": ["NAV job ads"] },
-    { "municipality": "kristiansand", "occupation": "Nurses", "skill": "Ward coordination after merger", "category": "transforming", "trend": "rising", "confidence": 0.20, "scenario": true, "sources": ["Scenario: hospital merger"] },
-    { "municipality": "narvik", "occupation": "Nurses", "skill": "Digital patient records", "category": "transforming", "trend": "rising", "confidence": 0.69, "scenario": false, "sources": ["NAV job ads", "ESCO"] },
-    { "municipality": "narvik", "occupation": "Nurses", "skill": "Elderly and palliative care", "category": "durable", "trend": "level", "confidence": 0.78, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "narvik", "occupation": "Electricians", "skill": "Heat-pump installation", "category": "rising", "trend": "rising", "confidence": 0.63, "scenario": false, "sources": ["NAV job ads", "NAV shortage survey"] },
-    { "municipality": "narvik", "occupation": "Electricians", "skill": "Hydropower grid upgrade", "category": "rising", "trend": "rising", "confidence": 0.35, "scenario": true, "sources": ["Scenario: grid reinforcement programme"] },
-    { "municipality": "narvik", "occupation": "Truck drivers", "skill": "Electric truck operation", "category": "transforming", "trend": "rising", "confidence": 0.42, "scenario": false, "sources": ["NAV job ads"] },
-    { "municipality": "narvik", "occupation": "Truck drivers", "skill": "Heavy-vehicle licence C/CE", "category": "durable", "trend": "level", "confidence": 0.74, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "sandnes", "occupation": "Process operators", "skill": "Manual process control", "category": "falling", "trend": "falling", "confidence": 0.57, "scenario": false, "sources": ["NAV job ads", "NAV shortage survey"] },
-    { "municipality": "sandnes", "occupation": "Process operators", "skill": "Automation and data monitoring", "category": "transforming", "trend": "rising", "confidence": 0.60, "scenario": false, "sources": ["NAV job ads", "ESCO"] },
-    { "municipality": "sandnes", "occupation": "Process operators", "skill": "Hydrogen plant operation", "category": "rising", "trend": "rising", "confidence": 0.28, "scenario": true, "sources": ["Scenario: hydrogen plant opens"] },
-    { "municipality": "sandnes", "occupation": "Software developers", "skill": "Cloud infrastructure", "category": "rising", "trend": "rising", "confidence": 0.82, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "sandnes", "occupation": "Software developers", "skill": "Software testing and QA", "category": "durable", "trend": "rising", "confidence": 0.58, "scenario": false, "sources": ["NAV job ads"] },
-    { "municipality": "sandnes", "occupation": "Heat-pump installers", "skill": "Heat-pump installation", "category": "rising", "trend": "rising", "confidence": 0.71, "scenario": false, "sources": ["NAV job ads", "NAV shortage survey"] },
-    { "municipality": "harstad", "occupation": "Nurses", "skill": "Telemedicine support", "category": "transforming", "trend": "rising", "confidence": 0.51, "scenario": false, "sources": ["NAV job ads", "ESCO"] },
-    { "municipality": "harstad", "occupation": "Nurses", "skill": "Elderly and palliative care", "category": "durable", "trend": "level", "confidence": 0.79, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "harstad", "occupation": "Software developers", "skill": "Data engineering", "category": "rising", "trend": "rising", "confidence": 0.71, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "harstad", "occupation": "Fish processors", "skill": "Fish-processing line operation", "category": "falling", "trend": "falling", "confidence": 0.60, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "harstad", "occupation": "Fish processors", "skill": "Food safety and HACCP", "category": "durable", "trend": "level", "confidence": 0.75, "scenario": false, "sources": ["NAV job ads"] },
-    { "municipality": "arendal", "occupation": "Electricians", "skill": "Heat-pump installation", "category": "rising", "trend": "rising", "confidence": 0.68, "scenario": false, "sources": ["NAV job ads", "NAV shortage survey"] },
-    { "municipality": "arendal", "occupation": "Electricians", "skill": "Legacy fuse-box work", "category": "falling", "trend": "falling", "confidence": 0.56, "scenario": false, "sources": ["NAV job ads"] },
-    { "municipality": "arendal", "occupation": "Electricians", "skill": "Battery storage installation", "category": "transforming", "trend": "rising", "confidence": 0.33, "scenario": true, "sources": ["Scenario: battery storage tender"] },
-    { "municipality": "arendal", "occupation": "Truck drivers", "skill": "Heavy-vehicle licence C/CE", "category": "durable", "trend": "level", "confidence": 0.77, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "arendal", "occupation": "Construction workers", "skill": "Timber-frame construction", "category": "durable", "trend": "level", "confidence": 0.72, "scenario": false, "sources": ["NAV job ads", "SSB employment"] },
-    { "municipality": "arendal", "occupation": "Construction workers", "skill": "Manual scaffolding", "category": "falling", "trend": "falling", "confidence": 0.49, "scenario": false, "sources": ["NAV job ads"] }
+    {
+      "municipality": "copenhagen",
+      "occupation": "Nurses",
+      "skill": "Digital patient records",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.72,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "ESCO"
+      ]
+    },
+    {
+      "municipality": "copenhagen",
+      "occupation": "Nurses",
+      "skill": "Elderly and palliative care",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.81,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "copenhagen",
+      "occupation": "Electricians",
+      "skill": "Heat-pump installation",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.66,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Shortage list"
+      ]
+    },
+    {
+      "municipality": "copenhagen",
+      "occupation": "Electricians",
+      "skill": "Legacy fuse-box work",
+      "category": "falling",
+      "trend": "falling",
+      "confidence": 0.55,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    },
+    {
+      "municipality": "copenhagen",
+      "occupation": "Electricians",
+      "skill": "Offshore wind cable work",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.41,
+      "scenario": true,
+      "sources": [
+        "Scenario: offshore wind yard opens"
+      ]
+    },
+    {
+      "municipality": "copenhagen",
+      "occupation": "Truck drivers",
+      "skill": "Electric truck operation",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.38,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    },
+    {
+      "municipality": "copenhagen",
+      "occupation": "Truck drivers",
+      "skill": "Heavy-vehicle licence C/CE",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.79,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "aarhus",
+      "occupation": "Process operators",
+      "skill": "Manual process control",
+      "category": "falling",
+      "trend": "falling",
+      "confidence": 0.61,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Shortage list"
+      ]
+    },
+    {
+      "municipality": "aarhus",
+      "occupation": "Process operators",
+      "skill": "Automation and data monitoring",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.58,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "ESCO"
+      ]
+    },
+    {
+      "municipality": "aarhus",
+      "occupation": "Process operators",
+      "skill": "Battery cell operation",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.3,
+      "scenario": true,
+      "sources": [
+        "Scenario: battery plant opens"
+      ]
+    },
+    {
+      "municipality": "aarhus",
+      "occupation": "Software developers",
+      "skill": "Cloud infrastructure",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.86,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "aarhus",
+      "occupation": "Heat-pump installers",
+      "skill": "Heat-pump installation",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.7,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Shortage list"
+      ]
+    },
+    {
+      "municipality": "odense",
+      "occupation": "Nurses",
+      "skill": "Telemedicine support",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.47,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "ESCO"
+      ]
+    },
+    {
+      "municipality": "odense",
+      "occupation": "Software developers",
+      "skill": "Data engineering",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.74,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "odense",
+      "occupation": "Fish processors",
+      "skill": "Fish-processing line operation",
+      "category": "falling",
+      "trend": "falling",
+      "confidence": 0.66,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "odense",
+      "occupation": "Fish processors",
+      "skill": "Food safety and HACCP",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.77,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    },
+    {
+      "municipality": "odense",
+      "occupation": "Fish processors",
+      "skill": "Raw-fish handling",
+      "category": "falling",
+      "trend": "falling",
+      "confidence": 0.25,
+      "scenario": true,
+      "sources": [
+        "Scenario: fishing quota cut"
+      ]
+    },
+    {
+      "municipality": "aalborg",
+      "occupation": "Electricians",
+      "skill": "Heat-pump installation",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.69,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Shortage list"
+      ]
+    },
+    {
+      "municipality": "aalborg",
+      "occupation": "Truck drivers",
+      "skill": "Electric truck operation",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.44,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    },
+    {
+      "municipality": "aalborg",
+      "occupation": "Construction workers",
+      "skill": "Timber-frame construction",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.73,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "aalborg",
+      "occupation": "Construction workers",
+      "skill": "Manual scaffolding",
+      "category": "falling",
+      "trend": "falling",
+      "confidence": 0.52,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    },
+    {
+      "municipality": "aalborg",
+      "occupation": "Nurses",
+      "skill": "Ward coordination after merger",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.2,
+      "scenario": true,
+      "sources": [
+        "Scenario: hospital merger"
+      ]
+    },
+    {
+      "municipality": "randers",
+      "occupation": "Nurses",
+      "skill": "Digital patient records",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.69,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "ESCO"
+      ]
+    },
+    {
+      "municipality": "randers",
+      "occupation": "Nurses",
+      "skill": "Elderly and palliative care",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.78,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "randers",
+      "occupation": "Electricians",
+      "skill": "Heat-pump installation",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.63,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Shortage list"
+      ]
+    },
+    {
+      "municipality": "randers",
+      "occupation": "Electricians",
+      "skill": "Hydropower grid upgrade",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.35,
+      "scenario": true,
+      "sources": [
+        "Scenario: grid reinforcement programme"
+      ]
+    },
+    {
+      "municipality": "randers",
+      "occupation": "Truck drivers",
+      "skill": "Electric truck operation",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.42,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    },
+    {
+      "municipality": "randers",
+      "occupation": "Truck drivers",
+      "skill": "Heavy-vehicle licence C/CE",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.74,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "vejle",
+      "occupation": "Process operators",
+      "skill": "Manual process control",
+      "category": "falling",
+      "trend": "falling",
+      "confidence": 0.57,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Shortage list"
+      ]
+    },
+    {
+      "municipality": "vejle",
+      "occupation": "Process operators",
+      "skill": "Automation and data monitoring",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.6,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "ESCO"
+      ]
+    },
+    {
+      "municipality": "vejle",
+      "occupation": "Process operators",
+      "skill": "Hydrogen plant operation",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.28,
+      "scenario": true,
+      "sources": [
+        "Scenario: hydrogen plant opens"
+      ]
+    },
+    {
+      "municipality": "vejle",
+      "occupation": "Software developers",
+      "skill": "Cloud infrastructure",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.82,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "vejle",
+      "occupation": "Software developers",
+      "skill": "Software testing and QA",
+      "category": "durable",
+      "trend": "rising",
+      "confidence": 0.58,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    },
+    {
+      "municipality": "vejle",
+      "occupation": "Heat-pump installers",
+      "skill": "Heat-pump installation",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.71,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Shortage list"
+      ]
+    },
+    {
+      "municipality": "esbjerg",
+      "occupation": "Nurses",
+      "skill": "Telemedicine support",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.51,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "ESCO"
+      ]
+    },
+    {
+      "municipality": "esbjerg",
+      "occupation": "Nurses",
+      "skill": "Elderly and palliative care",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.79,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "esbjerg",
+      "occupation": "Software developers",
+      "skill": "Data engineering",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.71,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "esbjerg",
+      "occupation": "Fish processors",
+      "skill": "Fish-processing line operation",
+      "category": "falling",
+      "trend": "falling",
+      "confidence": 0.6,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "esbjerg",
+      "occupation": "Fish processors",
+      "skill": "Food safety and HACCP",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.75,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    },
+    {
+      "municipality": "horsens",
+      "occupation": "Electricians",
+      "skill": "Heat-pump installation",
+      "category": "rising",
+      "trend": "rising",
+      "confidence": 0.68,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Shortage list"
+      ]
+    },
+    {
+      "municipality": "horsens",
+      "occupation": "Electricians",
+      "skill": "Legacy fuse-box work",
+      "category": "falling",
+      "trend": "falling",
+      "confidence": 0.56,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    },
+    {
+      "municipality": "horsens",
+      "occupation": "Electricians",
+      "skill": "Battery storage installation",
+      "category": "transforming",
+      "trend": "rising",
+      "confidence": 0.33,
+      "scenario": true,
+      "sources": [
+        "Scenario: battery storage tender"
+      ]
+    },
+    {
+      "municipality": "horsens",
+      "occupation": "Truck drivers",
+      "skill": "Heavy-vehicle licence C/CE",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.77,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "horsens",
+      "occupation": "Construction workers",
+      "skill": "Timber-frame construction",
+      "category": "durable",
+      "trend": "level",
+      "confidence": 0.72,
+      "scenario": false,
+      "sources": [
+        "Job ads",
+        "Danmarks Statistik employment"
+      ]
+    },
+    {
+      "municipality": "horsens",
+      "occupation": "Construction workers",
+      "skill": "Manual scaffolding",
+      "category": "falling",
+      "trend": "falling",
+      "confidence": 0.49,
+      "scenario": false,
+      "sources": [
+        "Job ads"
+      ]
+    }
   ]
 }

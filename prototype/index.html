@@ -134,7 +134,7 @@
     <div class="panel">
       <h2>Employed persons by occupation group (synthetic)</h2>
       <p class="muted" style="margin:0 0 10px">Synthetic placeholder for Danmarks Statistik figures, 2019 vs 2025.</p>
-      <div id="ssb"></div>
+      <div id="employment"></div>
     </div>
     <div class="panel">
       <h2>Time to fill and shortage lists</h2>
@@ -176,7 +176,7 @@
         <tr><td style="padding: 6px 8px;">index_municipality, index_region, index_national</td><td style="padding: 6px 8px;">Demand index, 2019 = 100, range 1 to 150</td></tr>
       </tbody>
     </table>
-    <p class="muted" style="margin: 10px 0 0;">Open: derive trend from demand once job-ad data arrives (v0.2). SSB codes not yet verified. Full text: data/contract.md in the repo.</p>
+    <p class="muted" style="margin: 10px 0 0;">Open: derive trend from demand once job-ad data arrives (v0.2). Danmarks Statistik codes not yet verified. Full text: data/contract.md in the repo.</p>
   </details>
 </div>
 
@@ -232,30 +232,30 @@ const DEMAND = {
 
 const SKILLS = [
   // København
-  { k: "copenhagen", o: "Nurses", s: "Digital patient records", c: "transforming", t: "rising", p: 0.72, sc: false, src: ["NAV job ads", "ESCO"] },
-  { k: "copenhagen", o: "Nurses", s: "Elderly and palliative care", c: "durable", t: "level", p: 0.81, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "copenhagen", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.66, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
-  { k: "copenhagen", o: "Electricians", s: "Legacy fuse-box work", c: "falling", t: "falling", p: 0.55, sc: false, src: ["NAV job ads"] },
+  { k: "copenhagen", o: "Nurses", s: "Digital patient records", c: "transforming", t: "rising", p: 0.72, sc: false, src: ["Job ads", "ESCO"] },
+  { k: "copenhagen", o: "Nurses", s: "Elderly and palliative care", c: "durable", t: "level", p: 0.81, sc: false, src: ["Job ads", "Danmarks Statistik employment"] },
+  { k: "copenhagen", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.66, sc: false, src: ["Job ads", "Shortage list"] },
+  { k: "copenhagen", o: "Electricians", s: "Legacy fuse-box work", c: "falling", t: "falling", p: 0.55, sc: false, src: ["Job ads"] },
   { k: "copenhagen", o: "Electricians", s: "Offshore wind cable work", c: "rising", t: "rising", p: 0.30, sc: true, src: ["Scenario: offshore wind yard opens"] },
-  { k: "copenhagen", o: "Truck drivers", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.38, sc: false, src: ["NAV job ads"] },
-  { k: "copenhagen", o: "Truck drivers", s: "Heavy-vehicle licence C/CE", c: "durable", t: "level", p: 0.79, sc: false, src: ["NAV job ads", "SSB employment"] },
+  { k: "copenhagen", o: "Truck drivers", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.38, sc: false, src: ["Job ads"] },
+  { k: "copenhagen", o: "Truck drivers", s: "Heavy-vehicle licence C/CE", c: "durable", t: "level", p: 0.79, sc: false, src: ["Job ads", "Danmarks Statistik employment"] },
   // Aarhus
-  { k: "aarhus", o: "Process operators", s: "Manual process control", c: "falling", t: "falling", p: 0.61, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
-  { k: "aarhus", o: "Process operators", s: "Automation and data monitoring", c: "transforming", t: "rising", p: 0.58, sc: false, src: ["NAV job ads", "ESCO"] },
+  { k: "aarhus", o: "Process operators", s: "Manual process control", c: "falling", t: "falling", p: 0.61, sc: false, src: ["Job ads", "Shortage list"] },
+  { k: "aarhus", o: "Process operators", s: "Automation and data monitoring", c: "transforming", t: "rising", p: 0.58, sc: false, src: ["Job ads", "ESCO"] },
   { k: "aarhus", o: "Process operators", s: "Battery cell operation", c: "rising", t: "rising", p: 0.30, sc: true, src: ["Scenario: battery plant opens"] },
-  { k: "aarhus", o: "Software developers", s: "Cloud infrastructure", c: "rising", t: "rising", p: 0.86, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "aarhus", o: "Heat-pump installers", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.70, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
+  { k: "aarhus", o: "Software developers", s: "Cloud infrastructure", c: "rising", t: "rising", p: 0.86, sc: false, src: ["Job ads", "Danmarks Statistik employment"] },
+  { k: "aarhus", o: "Heat-pump installers", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.70, sc: false, src: ["Job ads", "Shortage list"] },
   // Odense
-  { k: "odense", o: "Nurses", s: "Telemedicine support", c: "transforming", t: "rising", p: 0.47, sc: false, src: ["NAV job ads", "ESCO"] },
-  { k: "odense", o: "Software developers", s: "Data engineering", c: "rising", t: "rising", p: 0.74, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "odense", o: "Fish processors", s: "Fish-processing line operation", c: "falling", t: "falling", p: 0.66, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "odense", o: "Fish processors", s: "Food safety and HACCP", c: "durable", t: "level", p: 0.77, sc: false, src: ["NAV job ads"] },
+  { k: "odense", o: "Nurses", s: "Telemedicine support", c: "transforming", t: "rising", p: 0.47, sc: false, src: ["Job ads", "ESCO"] },
+  { k: "odense", o: "Software developers", s: "Data engineering", c: "rising", t: "rising", p: 0.74, sc: false, src: ["Job ads", "Danmarks Statistik employment"] },
+  { k: "odense", o: "Fish processors", s: "Fish-processing line operation", c: "falling", t: "falling", p: 0.66, sc: false, src: ["Job ads", "Danmarks Statistik employment"] },
+  { k: "odense", o: "Fish processors", s: "Food safety and HACCP", c: "durable", t: "level", p: 0.77, sc: false, src: ["Job ads"] },
   { k: "odense", o: "Fish processors", s: "Raw-fish handling", c: "falling", t: "falling", p: 0.25, sc: true, src: ["Scenario: fishing quota cut"] },
   // Aalborg
-  { k: "aalborg", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.69, sc: false, src: ["NAV job ads", "NAV shortage survey"] },
-  { k: "aalborg", o: "Truck drivers", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.44, sc: false, src: ["NAV job ads"] },
-  { k: "aalborg", o: "Construction workers", s: "Timber-frame construction", c: "durable", t: "level", p: 0.73, sc: false, src: ["NAV job ads", "SSB employment"] },
-  { k: "aalborg", o: "Construction workers", s: "Manual scaffolding", c: "falling", t: "falling", p: 0.52, sc: false, src: ["NAV job ads"] },
+  { k: "aalborg", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.69, sc: false, src: ["Job ads", "Shortage list"] },
+  { k: "aalborg", o: "Truck drivers", s: "Electric truck operation", c: "transforming", t: "rising", p: 0.44, sc: false, src: ["Job ads"] },
+  { k: "aalborg", o: "Construction workers", s: "Timber-frame construction", c: "durable", t: "level", p: 0.73, sc: false, src: ["Job ads", "Danmarks Statistik employment"] },
+  { k: "aalborg", o: "Construction workers", s: "Manual scaffolding", c: "falling", t: "falling", p: 0.52, sc: false, src: ["Job ads"] },
   { k: "aalborg", o: "Nurses", s: "Ward coordination after merger", c: "transforming", t: "rising", p: 0.20, sc: true, src: ["Scenario: hospital merger"] },
   // Board showcase (synthetic): one row per signal type on the board
   { k: "aalborg", o: "Refrigeration technicians", s: "Heat-pump and air-conditioning service", c: "rising", t: "rising", p: 0.63, sc: false, src: ["Global trend: climate change (synthetic)", "Job ads (synthetic)"] },
@@ -266,7 +266,7 @@ const SKILLS = [
 ];
 
 // Synthetic employment by occupation group, 2019 vs 2025 (placeholder for Danmarks Statistik).
-const SSB = {
+const EMPLOYMENT = {
  "copenhagen": {
   "All occupations": {
    "2019": "336449",
@@ -519,16 +519,16 @@ function renderDemand(k) {
     </div>`).join("");
 }
 
-function renderSsb(k) {
-  const d = SSB[k.id] || {};
+function renderEmployment(k) {
+  const d = EMPLOYMENT[k.id] || {};
   const rows = Object.entries(d).sort((a, b) => (a[0] === "All occupations" ? -1 : b[0] === "All occupations" ? 1 : 0));
-  $("ssb").innerHTML = rows.length ? `<table style="width:100%; border-collapse:collapse; font-size:14px;">
+  $("employment").innerHTML = rows.length ? `<table style="width:100%; border-collapse:collapse; font-size:14px;">
     <thead><tr style="text-align:left; border-bottom:1px solid var(--line);"><th style="padding:6px 8px;">Occupation group</th><th style="padding:6px 8px;">2019</th><th style="padding:6px 8px;">2025</th><th style="padding:6px 8px;">Change</th></tr></thead>
     <tbody>${rows.map(([name, y]) => {
       const a = Number(y["2019"]), b = Number(y["2025"]);
       const pct = a ? Math.round(((b - a) / a) * 100) : null;
       return `<tr style="border-bottom:1px solid var(--line);"><td style="padding:6px 8px;">${esc(name)}</td><td style="padding:6px 8px;">${a.toLocaleString("en")}</td><td style="padding:6px 8px;">${b.toLocaleString("en")}</td><td style="padding:6px 8px;">${pct === null ? "n/a" : (pct > 0 ? "+" : "") + pct + "%"}</td></tr>`;
-    }).join("")}</tbody></table>` : `<p class="muted">No SSB data for this municipality.</p>`;
+    }).join("")}</tbody></table>` : `<p class="muted">No Danmarks Statistik data for this municipality.</p>`;
 }
 
 function renderIndicators(k) {
@@ -551,7 +551,7 @@ function render() {
   renderHead(k);
   renderSkills(k);
   renderDemand(k);
-  renderSsb(k);
+  renderEmployment(k);
   renderIndicators(k);
   renderBriefing(k);
 }

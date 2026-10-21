@@ -1,6 +1,6 @@
 # policy2upskill: 30-day rollout plan
 
-> **Denmark pivot (note added 21 Oct, 18:45):** the project is for Denmark. The Norwegian sources named below (NAV, SSB, Bedriftsundersøkelsen) must be re-researched for Denmark. Candidates to check: Danmarks Statistik (StatBank), Jobindex and Jobnet for job ads, and the government shortage list (Positivlisten). The prototype data is synthetic.
+> **Denmark pivot (note added 21 Oct, 18:45):** the project is for Denmark. The Danish sources named below (Jobnet, Danmarks Statistik, shortage list) must be re-researched for Denmark. Candidates to check: Danmarks Statistik (StatBank), Jobindex and Jobnet for job ads, and the government shortage list (Positivlisten). The prototype data is synthetic.
 
 
 Status: draft v1, 2026-10-21. Day 0 = demo (tonight, synthetic data). Day 1 = 2026-10-22. Day 30 = 2026-11-20.
@@ -24,10 +24,10 @@ Update this file as work lands. Each update gets a dated entry in the log at the
 | Day | Work | Owner | Gate |
 |---|---|---|---|
 | 1-2 | Agree the data contract (`data/contract.md`, `data/sample.json`; drafted 21 Oct) | Data + Method | Contract signed off by the team |
-| 2-3 | DONE 21 Oct: SSB 11619 extract in `data/ssb/` (847 rows, codes mapped to slugs). Still to do: use it in the explorer. Source: SSB 11619 for the 4 prototype municipalities, mapping codes by year. Keep attribution text ("Source: SSB", CC BY 4.0) | Data | Real employment layer loads in the explorer |
+| 2-3 | Pull real Danish employment data for the 4 demo municipalities (in progress: subagents fetching Danmarks Statistik data) | Data | Real employment layer loads in the explorer |
 | 3-4 | Write the tagging rules as code, with thresholds marked proposed | Method | Rules reproduce the demo tags |
-| 4-5 | DONE 21 Oct: keyboard expand, narrow layout, contrast. Still open: decide English or Norwegian UI | Explorer | Decision on language recorded |
-| 5-7 | Send a request for a NAV stilling-feed token (not the deprecated public token) | Data | Request sent |
+| 4-5 | DONE 21 Oct: keyboard expand, narrow layout, contrast. Still open: decide English or Danish UI | Explorer | Decision on language recorded |
+| 5-7 | Send a request for a job-ad feed token (not the deprecated public token) | Data | Request sent |
 
 Gate 1 (day 7): contract agreed, real employment layer in the explorer, tagging rules in code.
 
@@ -35,7 +35,7 @@ Gate 1 (day 7): contract agreed, real employment layer in the explorer, tagging 
 
 | Day | Work | Owner | Gate |
 |---|---|---|---|
-| 8-10 | Core model v0 from SSB employment: municipality x occupation x place, with rule-based tags and confidence | Data + Method | Every row has a source and a rule |
+| 8-10 | Core model v0 from Danmarks Statistik employment: municipality x occupation x place, with rule-based tags and confidence | Data + Method | Every row has a source and a rule |
 | 10-12 | Briefing generator on real rows: validator on, Sonnet 5.5 default, saved JSON output | Briefing | Validator passes on the 4 municipalities |
 | 12-14 | Find 2-3 pilot users: one municipality official, one regional or ministry adviser | Pitch | Three conversations booked |
 
@@ -46,7 +46,7 @@ Gate 2 (day 14): core model v0 runs end to end; pilot users agreed.
 | Day | Work | Owner | Gate |
 |---|---|---|---|
 | 15-18 | Backtest: freeze 2019, score 2019-2022 direction against "no change" and "last trend" baselines | Method | Result table with counts and intervals |
-| 18-19 | Add NAV historical labour-market statistics as national context | Data | Labelled "national context" on screen |
+| 18-19 | Add public labour-market statistics as national context | Data | Labelled "national context" on screen |
 | 19-21 | Write the one-page methods note, with backtest results and what they do not show | Method + Pitch | Note reviewed by one person outside the team |
 
 Gate 3 (day 21): backtest result known. If the hit rate is no better than baselines, the pitch changes to "a tool to test signals", and we say so.
@@ -69,15 +69,15 @@ Gate 3 (day 21): backtest result known. If the hit rate is no better than baseli
 
 ## Risks
 
-- **SSB rounds small cells** to 0 or 3 for privacy. Small occupation counts are approximate.
-- **Occupation detail is 1-digit only** in SSB table 11619. Skills stay synthetic or demo-only until a finer source is found.
-- **NAV job-ad data needs a token.** If the request is refused, the job-ad signal stays out of the rollout.
-- **Municipality codes change over time.** Tromsø is 1902 (2015-2019), 5401 (2020-2023), 5501 (2024-2025). Kristiansand is 1001 (2015-2019), 4204 (2020-2025). Each code returns 0 outside its period, so map codes per year and never mix them in one series.
+- **Danmarks Statistik rounds small cells** to 0 or 3 for privacy. Small occupation counts are approximate.
+- **Occupation detail is 1-digit only** in Danmarks Statistik employment table. Skills stay synthetic or demo-only until a finer source is found.
+- **Jobnet job-ad data needs a token.** If the request is refused, the job-ad signal stays out of the rollout.
+- **Municipality codes change over time.** Check the Danish municipality codes by year before any time series.
 - **Tags may look arbitrary** if thresholds are not validated. Show them as proposed.
 
 ## Log
 
 - 2026-10-21: draft v1 written from the research outputs (data sources, method rigour, explorer UX, briefing, demo and pitch).
-- 2026-10-21 (evening): data contract v0.1 drafted and committed to `data/`. Tromsø county corrected to Troms in the prototype. Contract published on the prototype page and on the Miro board.
-- 2026-10-21 (late): data-sources research done. Recommended: SSB 11619 (employment by municipality, 1-digit occupation) and 14746 (population projections, 2026-2050). Cached pulls in /tmp/p2u-probe/, outside the repo. NAV business survey figures came from search summaries, not the PDF, and must be checked before use.
-- 2026-10-21 (18:25): prototype demo fixes applied and checked in the browser (`1823365`). SSB 11619 extract committed to `data/ssb/` (`051ed90`). Still open: contract sign-off, tagging rules as code, language decision, NAV token request. Nothing pushed.
+- 2026-10-21 (evening): data contract v0.1 drafted and committed to `data/`. Contract published on the prototype page and on the Miro board.
+- 2026-10-21 (late): data-source research (first pass) superseded by the Denmark pivot. Danish sources are being fetched.
+- 2026-10-21 (18:25): prototype demo fixes applied and checked in the browser (`1823365`). Nothing pushed.

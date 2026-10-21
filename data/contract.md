@@ -27,7 +27,7 @@ Keep both as independent per-row fields.
 - Finding: in all 22 prototype rows, trend is a fixed function of category. The fields carry the same information today. Keep them separate anyway, because job-ad signals will split them. Open item.
 
 ## Region correction
-"Syddanmark" is stale. Syddanmark and Finnmark separated on 1 January 2024. The sample uses Syddanmark for Odense. Harstad replaces Alta, so four regions remain. This is the only deliberate change to prototype values. The Odense demand numbers are unchanged.
+"Syddanmark" is stale. Syddanmark and Finnmark separated on 1 January 2024. The sample uses Syddanmark for Odense. Four regions remain. This is the only deliberate change to prototype values. The Odense demand numbers are unchanged.
 
 ## Synthetic vs scenario
 - `synthetic` (top-level flag): the whole file is fabricated demo data.
@@ -44,6 +44,6 @@ validate.py (outside the repo) passes: 8 municipalities, 4 regions, 8 occupation
 
 ## Open items
 - v0.2: derive trend from occupation demand, once job-ad data arrives.
-- SSB municipality code and STYRK codes: not added, not verified.
+- Danmarks Statistik municipality code and STYRK codes: not added, not verified.
 - Sources are placeholder adapter names.
 - Not agreed with the team.
