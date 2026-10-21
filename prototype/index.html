@@ -109,6 +109,12 @@
   .stat-table td:not(:first-child), .stat-table th:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
 
   .real { margin-bottom: 4px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; line-height: 1; padding: 4px 8px; border-radius: 10px; white-space: nowrap; vertical-align: middle; }
+  .badge.real { background: #e6f5ea; color: #05601f; border: 1px solid #b9e0c3; }
+  .badge.synth { background: #fdf0d5; color: #7a4800; border: 1px solid #f0d08a; }
+  .src { white-space: nowrap; }
+  .nodata { color: var(--muted); font-size: 12px; }
+  .panel > .head h2, .head h1 { margin: 0; }
 
   @media (max-width: 1100px) {
     header { flex-wrap: wrap; height: auto; padding: 12px 20px; gap: 12px; }
@@ -131,7 +137,7 @@
   </nav>
 </header>
 
-<div class="banner"><strong>Synthetic data.</strong> This shows the pipeline and the user experience, not predictive power. Predictive claims wait for the backtest.</div>
+<div class="banner"><strong>Part real, part synthetic.</strong> Employee totals, change in employees, population and completions are <span class="badge real">Real · Statistics Denmark</span>. Occupation-level skill rows, demand indices, shortage flags, time to fill, briefings, alerts and scenarios are <span class="badge synth">Synthetic</span>. The prototype shows the pipeline and the user experience, not predictive power. Lines after 2025 are a trend extension, not a forecast.</div>
 
 <div class="layout">
   <aside>
@@ -147,30 +153,30 @@
       <button data-level="national" aria-pressed="false">National</button>
       <button data-level="region" aria-pressed="false">Region</button>
       <button data-level="municipality" aria-pressed="true">Municipality</button>
-      <label class="toggle">Compare with <select id="compare"></select></label>
+      <label class="toggle" id="compare-wrap">Compare with <select id="compare"></select></label>
     </div>
+    <div class="panel" id="trend"></div>
     <div id="levelview"></div>
-    <div class="panel" id="municipality-head"></div>
-    <div class="panel">
+    <div class="panel muni-only" id="municipality-head"></div>
+    <div class="panel muni-only">
       <div class="head">
-        <h2>Skills by occupation</h2>
+        <h2>Skills by occupation <span class="badge synth">Synthetic</span></h2>
         <label class="toggle"><input type="checkbox" id="scenario-toggle"> Show scenario signals (assumptions)</label>
       </div>
       <div id="skills"></div>
     </div>
-    <div class="panel">
-      <h2>Employed persons by occupation group (synthetic)</h2>
-      <p class="muted" style="margin:0 0 10px">Synthetic placeholder for Danmarks Statistik figures, 2019 vs 2025.</p>
+    <div class="panel muni-only">
+      <div class="head"><h2>Employees, population and completions <span class="badge real">Real · Statistics Denmark</span></h2></div>
       <div id="real-totals"></div>
       <div id="employment"></div>
     </div>
-    <div class="panel">
-      <h2>Time to fill and shortage lists</h2>
+    <div class="panel muni-only">
+      <div class="head"><h2>Time to fill and shortage lists <span class="badge synth">Synthetic</span></h2></div>
       <p class="muted" style="margin:0 0 10px">Synthetic indicators, for demonstration only.</p>
       <div id="indicators"></div>
     </div>
-    <div class="panel">
-      <h2>Demand index</h2>
+    <div class="panel muni-only">
+      <div class="head"><h2>Demand index <span class="badge synth">Synthetic</span></h2></div>
       <p class="muted" style="margin:0 0 10px">2019 = 100, synthetic. Municipality against its region and the national value.</p>
       <div class="demand" id="demand"></div>
     </div>
@@ -190,7 +196,7 @@
 <div style="padding: 0 24px 16px;">
   <details class="contract">
     <summary style="cursor: pointer; font-weight: 600;">Data contract v0.1.0 (proposal, not yet agreed)</summary>
-    <p class="muted" style="margin: 10px 0;">All values are synthetic. Skill rows are per municipality, occupation and skill. Demand rows are per municipality and occupation, with region and national comparators.</p>
+    <p class="muted" style="margin: 10px 0;">Skill, demand and indicator values are synthetic; employee, population and completion figures are real (Statistics Denmark). Skill rows are per municipality, occupation and skill. Demand rows are per municipality and occupation, with region and national comparators.</p>
     <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
       <thead><tr style="text-align: left; border-bottom: 1px solid var(--line);"><th style="padding: 6px 8px;">Field</th><th style="padding: 6px 8px;">Rule</th></tr></thead>
       <tbody>
@@ -200,7 +206,7 @@
         <tr><td style="padding: 6px 8px;">trend</td><td style="padding: 6px 8px;">Direction of demand for this skill in this occupation: rising, falling, level</td></tr>
         <tr><td style="padding: 6px 8px;">confidence</td><td style="padding: 6px 8px;">0 to 1. Below 0.5 shows as low confidence</td></tr>
         <tr><td style="padding: 6px 8px;">scenario</td><td style="padding: 6px 8px;">True for a what-if assumption, never observed data</td></tr>
-        <tr><td style="padding: 6px 8px;">sources</td><td style="padding: 6px 8px;">Non-empty list. Scenario rows start with "Scenario:"; observed rows have none</td></tr>
+        <tr><td style="padding: 6px 8px;">sources</td><td style="padding: 6px 8px;">Non-empty list. Scenario rows start with "Scenario:"; other rows name their planned sources</td></tr>
         <tr><td style="padding: 6px 8px;">index_municipality, index_region, index_national</td><td style="padding: 6px 8px;">Demand index, 2019 = 100, range 1 to 150</td></tr>
       </tbody>
     </table>
@@ -209,12 +215,13 @@
 </div>
 
 <footer>
-  Prototype with synthetic data. Data contract is a proposal: municipality · occupation · skill · category · trend · confidence · scenario · sources.
+  Prototype. Employee, population and completion figures are real (Statistics Denmark, CC BY 4.0); skill, demand and indicator values are synthetic. Data contract is a proposal: municipality · occupation · skill · category · trend · confidence · scenario · sources.
 </footer>
 
 <script>
 /*
- * DATA CONTRACT (proposal, not yet agreed with the team). All numbers are synthetic.
+ * DATA CONTRACT (proposal, not yet agreed with the team). Skill, demand and indicator values are synthetic.
+ * Employee, population and completion figures are real (REAL_DATA, Statistics Denmark).
  *   skills rows:  municipality · occupation · skill · category · trend · confidence · scenario · sources
  *   category = the skill tag: rising | falling | durable | transforming
  *   trend    = the occupation direction: rising | falling | level
@@ -239,8 +246,8 @@ const MUNICIPALITIES = [
     ] },
   { id: "odense", name: "Odense", region: "Syddanmark",
     briefing: [
-      ["What is changing", "Fish-processing roles fall below the national index. Data engineering grows fast."],
-      ["What to fund this year", "Transition routes from fish processing into food safety and data roles."],
+      ["What is changing", "Data engineering demand sits above the region and the national index (125 against 112 and 121). Hospital digitisation is changing nursing work."],
+      ["What to fund this year", "Data-engineering upskilling for existing software staff. Short digital-records courses for nurses."],
       ["What we are unsure about", "The telemedicine signal is weakly supported (confidence 0.47)."],
     ] },
   { id: "aalborg", name: "Aalborg", region: "Nordjylland",
@@ -293,193 +300,226 @@ const SKILLS = [
   { k: "odense", o: "Nurses", s: "Hospital digitisation (industry-level change)", c: "transforming", t: "rising", p: 0.55, sc: false, src: ["Industry change (synthetic)", "Job ads (synthetic)"] },
 ];
 
-// Synthetic employment by occupation group, 2019 vs 2025 (placeholder for Danmarks Statistik).
-const EMPLOYMENT = {
+// Real data: Statistics Denmark (Danmarks Statistik), CC BY 4.0, processed by us. Copy of data/real/demo_municipalities.json.
+//   employees   = LBESK354, employees by municipality of residence, annual average of four quarters
+//   population  = BEFOLK3, persons on 1 January
+//   completions = UDDAKT10, completed education, all levels, by municipality of residence
+// Copenhagen has employees only. There is no real occupation-group breakdown loaded.
+const REAL_DATA = {
  "copenhagen": {
-  "All occupations": {
-   "2019": "336449",
-   "2025": "360000"
-  },
-  "Managers": {
-   "2019": "26916",
-   "2025": "28800"
-  },
-  "Professionals": {
-   "2019": "57196",
-   "2025": "61200"
-  },
-  "Technicians and associate professionals": {
-   "2019": "50467",
-   "2025": "54000"
-  },
-  "Clerical support workers": {
-   "2019": "23551",
-   "2025": "25200"
-  },
-  "Service and sales workers": {
-   "2019": "47103",
-   "2025": "50400"
-  },
-  "Skilled agricultural, forestry and fishery workers": {
-   "2019": "6729",
-   "2025": "7200"
-  },
-  "Craft and related trades workers": {
-   "2019": "37009",
-   "2025": "39600"
-  },
-  "Plant and machine operators, and assemblers": {
-   "2019": "33645",
-   "2025": "36000"
-  },
-  "Elementary occupations": {
-   "2019": "47103",
-   "2025": "50400"
-  },
-  "Unknown or not identifiable": {
-   "2019": "6729",
-   "2025": "7200"
+  "employees": {
+   "2023": 368220,
+   "2024": 373979,
+   "2025": 378725
   }
  },
  "aarhus": {
-  "All occupations": {
-   "2019": "190476",
-   "2025": "200000"
+  "employees": {
+   "2023": 188364,
+   "2024": 192462,
+   "2025": 197646
   },
-  "Managers": {
-   "2019": "15238",
-   "2025": "16000"
+  "population": {
+   "2023": 361544,
+   "2024": 367095,
+   "2025": 373388,
+   "2026": 378361
   },
-  "Professionals": {
-   "2019": "32381",
-   "2025": "34000"
-  },
-  "Technicians and associate professionals": {
-   "2019": "28571",
-   "2025": "30000"
-  },
-  "Clerical support workers": {
-   "2019": "13333",
-   "2025": "14000"
-  },
-  "Service and sales workers": {
-   "2019": "26667",
-   "2025": "28000"
-  },
-  "Skilled agricultural, forestry and fishery workers": {
-   "2019": "3810",
-   "2025": "4000"
-  },
-  "Craft and related trades workers": {
-   "2019": "20952",
-   "2025": "22000"
-  },
-  "Plant and machine operators, and assemblers": {
-   "2019": "19048",
-   "2025": "20000"
-  },
-  "Elementary occupations": {
-   "2019": "26667",
-   "2025": "28000"
-  },
-  "Unknown or not identifiable": {
-   "2019": "3810",
-   "2025": "4000"
+  "completions": {
+   "2023": 22380,
+   "2024": 22315,
+   "2025": 22259
   }
  },
  "odense": {
-  "All occupations": {
-   "2019": "132653",
-   "2025": "130000"
+  "employees": {
+   "2023": 101961,
+   "2024": 103352,
+   "2025": 105317
   },
-  "Managers": {
-   "2019": "10612",
-   "2025": "10400"
+  "population": {
+   "2023": 207762,
+   "2024": 209078,
+   "2025": 210803,
+   "2026": 213168
   },
-  "Professionals": {
-   "2019": "22551",
-   "2025": "22100"
-  },
-  "Technicians and associate professionals": {
-   "2019": "19898",
-   "2025": "19500"
-  },
-  "Clerical support workers": {
-   "2019": "9286",
-   "2025": "9100"
-  },
-  "Service and sales workers": {
-   "2019": "18571",
-   "2025": "18200"
-  },
-  "Skilled agricultural, forestry and fishery workers": {
-   "2019": "2653",
-   "2025": "2600"
-  },
-  "Craft and related trades workers": {
-   "2019": "14592",
-   "2025": "14300"
-  },
-  "Plant and machine operators, and assemblers": {
-   "2019": "13265",
-   "2025": "13000"
-  },
-  "Elementary occupations": {
-   "2019": "18571",
-   "2025": "18200"
-  },
-  "Unknown or not identifiable": {
-   "2019": "2653",
-   "2025": "2600"
+  "completions": {
+   "2023": 11997,
+   "2024": 11926,
+   "2025": 11576
   }
  },
  "aalborg": {
-  "All occupations": {
-   "2019": "106796",
-   "2025": "110000"
+  "employees": {
+   "2023": 112226,
+   "2024": 113522,
+   "2025": 115127
   },
-  "Managers": {
-   "2019": "8544",
-   "2025": "8800"
+  "population": {
+   "2023": 222571,
+   "2024": 223174,
+   "2025": 224612,
+   "2026": 226033
   },
-  "Professionals": {
-   "2019": "18155",
-   "2025": "18700"
+  "completions": {
+   "2023": 12246,
+   "2024": 12416,
+   "2025": 12120
+  }
+ },
+ "frederiksberg": {
+  "employees": {
+   "2023": 56228,
+   "2024": 56879,
+   "2025": 57703
   },
-  "Technicians and associate professionals": {
-   "2019": "16019",
-   "2025": "16500"
+  "population": {
+   "2023": 104664,
+   "2024": 104899,
+   "2025": 105840,
+   "2026": 106150
   },
-  "Clerical support workers": {
-   "2019": "7476",
-   "2025": "7700"
+  "completions": {
+   "2023": 5448,
+   "2024": 5595,
+   "2025": 5467
+  }
+ },
+ "lolland": {
+  "employees": {
+   "2023": 15585,
+   "2024": 15536,
+   "2025": 15487
   },
-  "Service and sales workers": {
-   "2019": "14951",
-   "2025": "15400"
+  "population": {
+   "2023": 39921,
+   "2024": 39632,
+   "2025": 39122,
+   "2026": 38533
   },
-  "Skilled agricultural, forestry and fishery workers": {
-   "2019": "2136",
-   "2025": "2200"
+  "completions": {
+   "2023": 1033,
+   "2024": 1016,
+   "2025": 956
+  }
+ },
+ "guldborgsund": {
+  "employees": {
+   "2023": 25942,
+   "2024": 25879,
+   "2025": 25829
   },
-  "Craft and related trades workers": {
-   "2019": "11748",
-   "2025": "12100"
+  "population": {
+   "2023": 60231,
+   "2024": 59759,
+   "2025": 59350,
+   "2026": 59119
   },
-  "Plant and machine operators, and assemblers": {
-   "2019": "10680",
-   "2025": "11000"
+  "completions": {
+   "2023": 1928,
+   "2024": 1935,
+   "2025": 1748
+  }
+ },
+ "naestved": {
+  "employees": {
+   "2023": 40690,
+   "2024": 40915,
+   "2025": 41126
   },
-  "Elementary occupations": {
-   "2019": "14951",
-   "2025": "15400"
+  "population": {
+   "2023": 84574,
+   "2024": 84747,
+   "2025": 84895,
+   "2026": 85163
   },
-  "Unknown or not identifiable": {
-   "2019": "2136",
-   "2025": "2200"
+  "completions": {
+   "2023": 3118,
+   "2024": 3157,
+   "2025": 3030
+  }
+ },
+ "randers": {
+  "employees": {
+   "2023": 48292,
+   "2024": 48328,
+   "2025": 48545
+  },
+  "population": {
+   "2023": 99931,
+   "2024": 99974,
+   "2025": 100356,
+   "2026": 100564
+  },
+  "completions": {
+   "2023": 3972,
+   "2024": 3906,
+   "2025": 3714
+  }
+ },
+ "vejle": {
+  "employees": {
+   "2023": 61010,
+   "2024": 61457,
+   "2025": 62407
+  },
+  "population": {
+   "2023": 120949,
+   "2024": 121696,
+   "2025": 122433,
+   "2026": 123250
+  },
+  "completions": {
+   "2023": 4886,
+   "2024": 4955,
+   "2025": 4680
+  }
+ },
+ "esbjerg": {
+  "employees": {
+   "2023": 56807,
+   "2024": 56951,
+   "2025": 57058
+  },
+  "population": {
+   "2023": 115758,
+   "2024": 115423,
+   "2025": 115157,
+   "2026": 114947
+  },
+  "completions": {
+   "2023": 4474,
+   "2024": 4595,
+   "2025": 4396
+  }
+ },
+ "horsens": {
+  "employees": {
+   "2023": 48474,
+   "2024": 49026,
+   "2025": 49492
+  },
+  "population": {
+   "2023": 96480,
+   "2024": 97392,
+   "2025": 97921,
+   "2026": 98806
+  },
+  "completions": {
+   "2023": 3679,
+   "2024": 3646,
+   "2025": 3786
   }
  }
 };
+
+// "All Denmark" employees (LBESK354), annual average of four quarters, computed from data/real/lbesk354_raw.csv.
+const NATIONAL_EMPLOYEES = { "2023": 2994702, "2024": 3024145, "2025": 3061004 };
+
+// Region of every municipality in REAL_DATA. Municipalities without a tile still count in region sums.
+const REGION_OF = { copenhagen: "Hovedstaden", frederiksberg: "Hovedstaden", aarhus: "Midtjylland", randers: "Midtjylland", horsens: "Midtjylland",
+  odense: "Syddanmark", vejle: "Syddanmark", esbjerg: "Syddanmark", aalborg: "Nordjylland", lolland: "Sjælland", guldborgsund: "Sjælland", naestved: "Sjælland" };
+const REAL_NAMES = { randers: "Randers", vejle: "Vejle", esbjerg: "Esbjerg", horsens: "Horsens" };
 
 // Synthetic indicators for the board's time-to-fill and shortage-list signals.
 const INDICATORS = {
@@ -507,7 +547,7 @@ function renderHead(k) {
   const scen = SKILLS.filter((r) => r.k === k.id && r.sc).length;
   $("municipality-head").innerHTML = `
     <h1>${esc(k.name)}</h1>
-    <div class="muted">${esc(k.region)} · ${rows} synthetic skill signals ·${scen} scenario assumption${scen === 1 ? "" : "s"}</div>`;
+    <div class="muted">${esc(k.region)} · ${rows} skill signal${rows === 1 ? "" : "s"} · ${scen} scenario assumption${scen === 1 ? "" : "s"} ${badge(false)}</div>`;
 }
 
 function renderSkills(k) {
@@ -530,12 +570,13 @@ function renderSkills(k) {
 }
 
 function renderDemand(k) {
-  const d = DEMAND[k.id];
+  const d = DEMAND[k.id] || {};
   const max = 150;
   const bar = (label, v, here) => `
     <div class="bar-line"><span>${label}</span>
       <span class="bar"><div class="${here ? "here" : ""}" style="width:${(v / max) * 100}%"></div></span>
       <span>${v}</span></div>`;
+  if (!Object.keys(d).length) { $("demand").innerHTML = `<p class="muted">No demand-index rows for ${esc(k.name)} yet.</p>`; return; }
   $("demand").innerHTML = Object.entries(d).map(([occ, [kv, fv, nv]]) => `
     <div class="demand-row">
       <div><strong>${esc(occ)}</strong></div>
@@ -545,18 +586,6 @@ function renderDemand(k) {
         ${bar("Denmark", nv, false)}
       </div>
     </div>`).join("");
-}
-
-function renderEmployment(k) {
-  const d = EMPLOYMENT[k.id] || {};
-  const rows = Object.entries(d).sort((a, b) => (a[0] === "All occupations" ? -1 : b[0] === "All occupations" ? 1 : 0));
-  $("employment").innerHTML = rows.length ? `<table style="width:100%; border-collapse:collapse; font-size:14px;">
-    <thead><tr style="text-align:left; border-bottom:1px solid var(--line);"><th style="padding:6px 8px;">Occupation group</th><th style="padding:6px 8px;">2019</th><th style="padding:6px 8px;">2025</th><th style="padding:6px 8px;">Change</th></tr></thead>
-    <tbody>${rows.map(([name, y]) => {
-      const a = Number(y["2019"]), b = Number(y["2025"]);
-      const pct = a ? Math.round(((b - a) / a) * 100) : null;
-      return `<tr style="border-bottom:1px solid var(--line);"><td style="padding:6px 8px;">${esc(name)}</td><td style="padding:6px 8px;">${a.toLocaleString("en")}</td><td style="padding:6px 8px;">${b.toLocaleString("en")}</td><td style="padding:6px 8px;">${pct === null ? "n/a" : (pct > 0 ? "+" : "") + pct + "%"}</td></tr>`;
-    }).join("")}</tbody></table>` : `<p class="muted">No Danmarks Statistik data for this municipality.</p>`;
 }
 
 function renderIndicators(k) {
@@ -589,9 +618,9 @@ function render() {
 document.addEventListener("click", (e) => {
   const tile = e.target.closest(".tile");
   if (tile) {
-    state.k = tile.dataset.id;
-    history.replaceState(null, "", `#${state.k}`);
-    render();
+    // Setting the hash fires hashchange, which sets state.k, renders and leaves Alerts, White paper and Ask.
+    if (location.hash.slice(1) === tile.dataset.id) { state.k = tile.dataset.id; render(); renderRoute(); }
+    else location.hash = tile.dataset.id;
     return;
   }
   const row = e.target.closest(".row");
@@ -638,42 +667,37 @@ DEMAND.frederiksberg = { "Software developers": [124, 119, 121], "Clerical suppo
 DEMAND.lolland = { "Process operators": [79, 92, 100], "Construction workers": [83, 94, 100] };
 INDICATORS.frederiksberg = { "Software developers": { ttf: 72, shortage: true }, "Clerical support workers": { ttf: 31, shortage: false } };
 INDICATORS.lolland = { "Construction workers": { ttf: 58, shortage: true }, "Heat-pump installers": { ttf: 50, shortage: true }, "Process operators": { ttf: 35, shortage: false } };
-const synthEmployment = (total2025, growth) => ({ "All occupations": { "2019": String(Math.round(total2025 / (1 + growth))), "2025": String(total2025) } });
-EMPLOYMENT.frederiksberg = synthEmployment(105000, 0.06);
-EMPLOYMENT.lolland = synthEmployment(40000, -0.06);
 
-// Real totals: Statistics Denmark table LBESK354, employees by municipality, annual average of quarters.
-// Note: the municipality of Copenhagen is named "Byen København" in the source.
-const REAL_TOTALS = {
- "copenhagen": {
-  "2023": 452920,
-  "2024": 459700,
-  "2025": 465525
- },
- "odense": {
-  "2023": 101961,
-  "2024": 103352,
-  "2025": 105317
- },
- "aarhus": {
-  "2023": 188364,
-  "2024": 192462,
-  "2025": 197646
- },
- "aalborg": {
-  "2023": 112226,
-  "2024": 113522,
-  "2025": 115127
- }
-};
+const REAL_BADGE = '<span class="badge real">Real · Statistics Denmark</span>';
+const SYNTH_BADGE = '<span class="badge synth">Synthetic</span>';
+const badge = (real) => (real ? REAL_BADGE : SYNTH_BADGE);
+const NO_REAL = "no real figure loaded";
+const fmt = (n) => Number(n).toLocaleString("en");
+const pctChange = (a, b) => (a ? (b / a - 1) * 100 : null);
+const fmtPct = (p, d = 1) => (p === null || p === undefined || Number.isNaN(p) ? NO_REAL : (p > 0 ? "+" : p < 0 ? "−" : "") + Math.abs(p).toFixed(d) + "%");
+const cellVal = (v) => (v === NO_REAL ? `<span class="nodata">${NO_REAL}</span>` : v);
+const nameOf = (id) => (MUNICIPALITIES.find((m) => m.id === id) || {}).name || REAL_NAMES[id] || id;
+const realSeries = (id, measure) => (REAL_DATA[id] && REAL_DATA[id][measure]) || null;
 
 function renderRealTotals(k) {
-  const t = REAL_TOTALS[k.id];
-  $("real-totals").innerHTML = t ? `<div class="real">
-    <div class="label">Employees, real data (Statistics Denmark, table LBESK354, annual average)</div>
-    <table class="stat-table"><thead><tr><th>Year</th><th>Employees</th></tr></thead>
-    <tbody>${Object.entries(t).map(([y, v]) => `<tr><td>${y}</td><td>${v.toLocaleString("en")}</td></tr>`).join("")}</tbody></table>
-    <p class="muted" style="margin:8px 0 14px">Source: Statistics Denmark (Danmarks Statistik), CC BY 4.0. Processed by us.</p></div>` : `<p class="muted">No real totals loaded for this municipality.</p>`;
+  const e = realSeries(k.id, "employees");
+  $("real-totals").innerHTML = e ? `<div class="real">
+    <div class="label">Employees by municipality of residence, annual average of four quarters (table LBESK354)</div>
+    <table class="stat-table"><thead><tr><th>Year</th><th>Employees</th><th>Change on previous year</th></tr></thead>
+    <tbody>${["2023", "2024", "2025"].map((y, i, ys) => `<tr><td>${y}</td><td>${e[y] === undefined ? NO_REAL : fmt(e[y])}</td><td>${i && e[y] !== undefined && e[ys[i - 1]] !== undefined ? fmtPct(pctChange(e[ys[i - 1]], e[y])) : "–"}</td></tr>`).join("")}</tbody></table>
+    <p class="muted" style="margin:8px 0 14px">Source: Statistics Denmark (Danmarks Statistik), CC BY 4.0. Annual averages are our calculation.</p></div>` : `<p class="muted">Employees: ${NO_REAL} for ${esc(k.name)}.</p>`;
+}
+
+function renderEmployment(k) {
+  const p = realSeries(k.id, "population"), c = realSeries(k.id, "completions");
+  const years = ["2023", "2024", "2025", "2026"];
+  const cell = (s, y) => (s && s[y] !== undefined ? fmt(s[y]) : "–");
+  $("employment").innerHTML = (p || c) ? `<div class="real">
+    <div class="label">Population and completed education</div>
+    <table class="stat-table"><thead><tr><th>Year</th><th>Population, 1 January</th><th>Completed education, all levels</th></tr></thead>
+    <tbody>${years.map((y) => `<tr><td>${y}</td><td>${cell(p, y)}</td><td>${cell(c, y)}</td></tr>`).join("")}</tbody></table>
+    <p class="muted" style="margin:8px 0 0">Source: Statistics Denmark tables BEFOLK3 and UDDAKT10 (by municipality of residence).${p ? "" : " Population: " + NO_REAL + "."}${c ? "" : " Completions: " + NO_REAL + "."} Employment by occupation group: ${NO_REAL} (no real source yet).</p></div>`
+    : `<p class="muted">Population and completions: ${NO_REAL} for ${esc(k.name)}. Employment by occupation group: ${NO_REAL} (no real source yet).</p>`;
 }
 
 const LEVEL_READERS = {
@@ -687,21 +711,17 @@ function currentMunicipality() {
 }
 
 function municipalityStats(id) {
-  const r = REAL_TOTALS[id];
-  const change = r ? ((+r["2025"]) / (+r["2023"]) - 1) * 100 : null;
-  const t = r ? { "2025": r["2025"] } : null;
+  const e = realSeries(id, "employees"), p = realSeries(id, "population"), c = realSeries(id, "completions");
   const skills = SKILLS.filter((r) => r.k === id && !r.sc);
   return {
-    employed: t ? (+t["2025"]).toLocaleString("en") : "n/a",
-    change: change === null ? "n/a" : (change > 0 ? "+" : "") + change.toFixed(0) + "%",
+    employed: e && e["2025"] !== undefined ? fmt(e["2025"]) : NO_REAL,
+    change: e ? fmtPct(pctChange(e["2023"], e["2025"])) : NO_REAL,
+    population: p && p["2025"] !== undefined ? fmt(p["2025"]) : NO_REAL,
+    completions: c && c["2025"] !== undefined ? fmt(c["2025"]) : NO_REAL,
     rising: skills.filter((r) => r.t === "rising").length,
     falling: skills.filter((r) => r.t === "falling").length,
     shortage: Object.values(INDICATORS[id] || {}).filter((v) => v.shortage).length,
   };
-}
-
-function statRow(name, st) {
-  return `<tr><td>${esc(name)}</td><td>${st.employed}</td><td>${st.change}</td><td>${st.rising}</td><td>${st.falling}</td><td>${st.shortage}</td></tr>`;
 }
 
 function netDirection(id, occ) {
@@ -729,7 +749,8 @@ function nationalLeague() {
       conf: conf.length ? (conf.reduce((a, r) => a + r.p, 0) / conf.length).toFixed(2) : "–",
     };
   }).sort((a, b) => (b.up - b.down) - (a.up - a.down));
-  return `<table class="stat-table"><thead><tr><th>Occupation</th><th>National index (2019=100)</th><th>Municipalities rising</th><th>Municipalities falling</th><th>Avg confidence</th></tr></thead>
+  return `<p class="muted" style="margin:0 0 10px">Built from the ${MUNICIPALITIES.length} of 98 municipalities that have skill rows here, not from all of Denmark. Index and counts are synthetic.</p>
+    <table class="stat-table"><thead><tr><th>Occupation</th><th>National index (2019=100)</th><th>Municipalities rising</th><th>Municipalities falling</th><th>Avg confidence</th></tr></thead>
     <tbody>${rows.map((r) => `<tr><td>${esc(r.occ)}</td><td>${r.index}</td><td>${r.up}</td><td>${r.down}</td><td>${r.conf}</td></tr>`).join("")}</tbody></table>`;
 }
 
@@ -744,36 +765,71 @@ function regionHeatGrid(region) {
   }).join("");
   return `<table class="heat"><thead><tr><th>Municipality</th>${head}</tr></thead>
     <tbody>${body}<tr class="total"><td>Region (net)</td>${total}</tr></tbody></table>
-    <p class="muted" style="margin:10px 0 0">Cell = number of rising skills minus falling skills (observed rows only). Green: net rising. Red: net falling.</p>`;
+    <p class="muted" style="margin:10px 0 0">Cell = number of rising skills minus falling skills (synthetic rows; scenario assumptions excluded). Green: net rising. Red: net falling.</p>`;
+}
+
+function panelHead(title, real) {
+  return `<div class="head"><h2>${esc(title)} ${badge(real)}</h2></div>`;
+}
+
+function regionRealPanel(region) {
+  const ids = Object.keys(REAL_DATA).filter((id) => REGION_OF[id] === region && realSeries(id, "employees"));
+  if (!ids.length) return `<div class="panel">${panelHead("Employees in " + region, true)}<p class="muted">Employees: ${NO_REAL} for ${esc(region)}.</p></div>`;
+  const sum = (y) => ids.reduce((t, id) => t + REAL_DATA[id].employees[y], 0);
+  const row = (name, a, b, bold) => `<tr${bold ? ' class="total"' : ""}><td>${name}</td><td>${fmt(a)}</td><td>${fmt(b)}</td><td>${fmtPct(pctChange(a, b))}</td></tr>`;
+  return `<div class="panel">${panelHead("Employees in " + region, true)}
+    <p class="muted" style="margin:0 0 10px">Sum of the ${ids.length} municipalities with figures loaded here (${ids.map(nameOf).map(esc).join(", ")}). It is not the total for the whole region.</p>
+    <table class="stat-table"><thead><tr><th>Municipality</th><th>Employees 2023</th><th>Employees 2025</th><th>Change 2023–25</th></tr></thead>
+    <tbody>${ids.map((id) => row(esc(nameOf(id)), REAL_DATA[id].employees["2023"], REAL_DATA[id].employees["2025"], false)).join("")}${row("Sum of " + ids.length + " loaded", sum("2023"), sum("2025"), true)}</tbody></table>
+    <p class="muted" style="margin:10px 0 0">Source: Statistics Denmark, table LBESK354, employees by municipality of residence, annual average. Sums are our calculation.</p></div>`;
+}
+
+function nationalRealPanel() {
+  const n = NATIONAL_EMPLOYEES;
+  const ids = Object.keys(REAL_DATA).filter((id) => realSeries(id, "employees"));
+  const row = (name, e, share) => `<tr><td>${name}</td><td>${fmt(e["2023"])}</td><td>${fmt(e["2025"])}</td><td>${fmtPct(pctChange(e["2023"], e["2025"]))}</td><td>${share}</td></tr>`;
+  return `<div class="panel">${panelHead("Employees in Denmark", true)}
+    <table class="stat-table"><thead><tr><th>Area</th><th>Employees 2023</th><th>Employees 2025</th><th>Change 2023–25</th><th>Share of Denmark 2025</th></tr></thead>
+    <tbody>${row("<strong>All Denmark</strong>", n, "100%")}${ids.map((id) => row(esc(nameOf(id)), REAL_DATA[id].employees, (REAL_DATA[id].employees["2025"] / n["2025"] * 100).toFixed(1) + "%")).join("")}</tbody></table>
+    <p class="muted" style="margin:10px 0 0">Source: Statistics Denmark, table LBESK354, employees by municipality of residence, annual average. Shares are our calculation.</p></div>`;
 }
 
 function renderLevelView() {
   const r = LEVEL_READERS[state.level];
   const caption = `<p class="muted" style="margin:-8px 0 18px">${esc(r.question)}</p>`;
   if (state.level === "national") {
-    return `<div class="levelview"><h1>National</h1>${caption}<div class="panel">${nationalLeague()}</div></div>`;
+    return `<div class="levelview"><h1>National</h1>${caption}${nationalRealPanel()}<div class="panel">${panelHead("Occupation league table", false)}${nationalLeague()}</div></div>`;
   }
   const k = currentMunicipality();
-  return `<div class="levelview"><h1>${esc(k.region)} region</h1>${caption}<div class="panel">${regionHeatGrid(k.region)}</div></div>`;
+  return `<div class="levelview"><h1>${esc(k.region)} region</h1>${caption}${regionRealPanel(k.region)}<div class="panel">${panelHead("Skill signals by municipality", false)}${regionHeatGrid(k.region)}</div></div>`;
 }
 
 function renderCompare() {
   const other = MUNICIPALITIES.find((m) => m.id === state.compare);
-  if (!other || other.id === state.k) return "";
+  if (!other) return "";
   const k = currentMunicipality();
+  if (other.id === k.id) return `<div class="panel"><p class="muted" style="margin:0">Choose a municipality other than ${esc(k.name)} to compare with.</p></div>`;
   const a = municipalityStats(k.id), b = municipalityStats(other.id);
-  const rows = [["Employed 2025", a.employed, b.employed], ["Change 2023–25", a.change, b.change], ["Rising skills", a.rising, b.rising], ["Falling skills", a.falling, b.falling], ["Shortage occupations", a.shortage, b.shortage]];
-  return `<div class="panel"><h2>${esc(k.name)} compared with ${esc(other.name)}</h2>
-    <table class="stat-table"><thead><tr><th>Measure</th><th>${esc(k.name)}</th><th>${esc(other.name)}</th></tr></thead>
-    <tbody>${rows.map(([m, x, y]) => `<tr><td>${m}</td><td>${x}</td><td>${y}</td></tr>`).join("")}</tbody></table>
-    <p class="muted" style="margin:10px 0 0">Two contrasting municipalities show more than one number does. Synthetic data.</p></div>`;
+  const rows = [
+    ["Employees 2025", a.employed, b.employed, true],
+    ["Change in employees 2023–25", a.change, b.change, true],
+    ["Population, 1 January 2025", a.population, b.population, true],
+    ["Completed education 2025, all levels", a.completions, b.completions, true],
+    ["Rising skills", a.rising, b.rising, false],
+    ["Falling skills", a.falling, b.falling, false],
+    ["Shortage occupations", a.shortage, b.shortage, false],
+  ];
+  return `<div class="panel"><div class="head"><h2>${esc(k.name)} compared with ${esc(other.name)}</h2></div>
+    <table class="stat-table"><thead><tr><th>Measure</th><th>${esc(k.name)}</th><th>${esc(other.name)}</th><th>Source</th></tr></thead>
+    <tbody>${rows.map(([m, x, y, real]) => `<tr><td>${m}</td><td>${cellVal(x)}</td><td>${cellVal(y)}</td><td class="src" style="text-align:left">${badge(real)}</td></tr>`).join("")}</tbody></table>
+    <p class="muted" style="margin:10px 0 0">Two contrasting municipalities show more than one number does. Green rows are Statistics Denmark figures; amber rows count synthetic skill signals and indicators.</p></div>`;
 }
 
 function renderLevel() {
   document.querySelectorAll("#levels button[data-level]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.level === state.level));
   const isMuni = state.level === "municipality";
-  document.querySelectorAll("#explorer > .panel").forEach((p) => (p.hidden = !isMuni));
-  $("compare").hidden = !isMuni;
+  document.querySelectorAll("#explorer .muni-only").forEach((p) => (p.hidden = !isMuni));
+  $("compare-wrap").hidden = !isMuni;
   $("levelview").innerHTML = isMuni ? renderCompare() : renderLevelView();
 }
 
@@ -804,7 +860,7 @@ SKILLS.push(
   { k: "guldborgsund", o: "Nurses", s: "Elderly care", c: "durable", t: "level", p: 0.74, sc: false, src: ["Job ads (synthetic)"] },
   { k: "naestved", o: "Software developers", s: "Cloud infrastructure", c: "rising", t: "rising", p: 0.55, sc: false, src: ["Job ads (synthetic)"] },
   { k: "naestved", o: "Nurses", s: "Digital patient records", c: "transforming", t: "rising", p: 0.66, sc: false, src: ["Job ads (synthetic)"] },
-  { k: "naestved", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "level", p: 0.48, sc: false, src: ["Job ads (synthetic)"] }
+  { k: "naestved", o: "Electricians", s: "Heat-pump installation", c: "rising", t: "rising", p: 0.48, sc: false, src: ["Job ads (synthetic)"] }
 );
 
 // ---- Views: Alerts, White paper, Ask the data (rule-based and canned, synthetic data) ----
@@ -839,8 +895,8 @@ function renderPaper() {
       ${["rising", "falling", "durable", "transforming"].map((c) => `<td style="padding:6px 8px;">${count(k.id, c)}</td>`).join("")}
       <td style="padding:6px 8px;">${alerts.filter((a) => a.where === k.name).length}</td></tr>`).join("");
   return `<div class="panel"><h2>Quarterly white paper (draft)</h2>
-    <p class="muted">Synthetic data. Generated from the same core model as the explorer. Observed rows only; scenarios are excluded.</p>
-    <h3>Skill tags by municipality (count of observed rows)</h3>
+    <p class="muted">Synthetic data. Generated from the same core model as the explorer. Synthetic skill rows only; scenarios are excluded.</p>
+    <h3>Skill tags by municipality (count of synthetic rows)</h3>
     <table style="width:100%; border-collapse:collapse; font-size:14px;">
       <thead><tr style="text-align:left; border-bottom:1px solid var(--line);"><th style="padding:6px 8px;">Municipality</th><th style="padding:6px 8px;">Rising</th><th style="padding:6px 8px;">Falling</th><th style="padding:6px 8px;">Durable</th><th style="padding:6px 8px;">Transforming</th><th style="padding:6px 8px;">Alerts</th></tr></thead>
       <tbody>${rows}</tbody></table>
