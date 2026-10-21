@@ -121,6 +121,11 @@
       <div id="ssb"></div>
     </div>
     <div class="card">
+      <h2>Time to fill and shortage lists</h2>
+      <p class="muted" style="margin:0 0 10px">Synthetic indicators, for demonstration only.</p>
+      <div id="indicators"></div>
+    </div>
+    <div class="card">
       <h2>Demand index</h2>
       <p class="muted" style="margin:0 0 10px">2019 = 100, synthetic. Kommune against its fylke and the national value.</p>
       <div class="demand" id="demand"></div>
@@ -234,6 +239,12 @@ const SKILLS = [
   { k: "kristiansand", o: "Byggarbeidere", s: "Timber-frame construction", c: "durable", t: "level", p: 0.73, sc: false, src: ["NAV job ads", "SSB employment"] },
   { k: "kristiansand", o: "Byggarbeidere", s: "Manual scaffolding", c: "falling", t: "falling", p: 0.52, sc: false, src: ["NAV job ads"] },
   { k: "kristiansand", o: "Sykepleiere", s: "Ward coordination after merger", c: "transforming", t: "rising", p: 0.20, sc: true, src: ["Scenario: hospital merger"] },
+  // Board showcase (synthetic): one row per signal type on the board
+  { k: "kristiansand", o: "Kjøleteknikere", s: "Heat-pump and air-conditioning service", c: "rising", t: "rising", p: 0.63, sc: false, src: ["Global trend: climate change (synthetic)", "Job ads (synthetic)"] },
+  { k: "kristiansand", o: "Elektrikere", s: "Shortage-list match: heat-pump installation", c: "rising", t: "rising", p: 0.58, sc: false, src: ["Shortage list (synthetic)", "Time-to-fill (synthetic)"] },
+  { k: "bodo", o: "Lastebilsjåfører", s: "Route planning for a rerouted highway", c: "transforming", t: "rising", p: 0.25, sc: true, src: ["Scenario: government reroutes a highway"] },
+  { k: "stavanger", o: "Prosessoperatører", s: "Transferable skills: process control to data monitoring", c: "durable", t: "level", p: 0.68, sc: false, src: ["Transferable-skills map (synthetic)", "Job ads (synthetic)"] },
+  { k: "tromso", o: "Sykepleiere", s: "Hospital digitisation (industry-level change)", c: "transforming", t: "rising", p: 0.55, sc: false, src: ["Industry change (synthetic)", "Job ads (synthetic)"] },
 ];
 
 // SSB table 11619: employed persons by occupation group, 2019 vs 2025 (real data, CC BY 4.0).
@@ -425,6 +436,14 @@ const SSB = {
  }
 };
 
+// Synthetic indicators for the board's time-to-fill and shortage-list signals.
+const INDICATORS = {
+  bodo:         { "Sykepleiere": { ttf: 62, shortage: true }, "Elektrikere": { ttf: 48, shortage: true }, "Lastebilsjåfører": { ttf: 35, shortage: false } },
+  stavanger:    { "Prosessoperatører": { ttf: 41, shortage: false }, "Programvareutviklere": { ttf: 88, shortage: true }, "Varmepumpeinstallatører": { ttf: 54, shortage: true } },
+  tromso:       { "Sykepleiere": { ttf: 70, shortage: true }, "Programvareutviklere": { ttf: 84, shortage: true }, "Fiskeforedlere": { ttf: 29, shortage: false } },
+  kristiansand: { "Elektrikere": { ttf: 51, shortage: true }, "Lastebilsjåfører": { ttf: 38, shortage: false }, "Byggarbeidere": { ttf: 33, shortage: false }, "Kjøleteknikere": { ttf: 57, shortage: true } },
+};
+
 const TREND_ARROW = { rising: "↑ rising", falling: "↓ falling", level: "→ level" };
 const state = { k: "bodo", scenarios: false };
 
@@ -505,6 +524,14 @@ function renderSsb(k) {
     }).join("")}</tbody></table>` : `<p class="muted">No SSB data for this kommune.</p>`;
 }
 
+function renderIndicators(k) {
+  const d = INDICATORS[k.id] || {};
+  const rows = Object.entries(d);
+  $("indicators").innerHTML = rows.length ? `<table style="width:100%; border-collapse:collapse; font-size:14px;">
+    <thead><tr style="text-align:left; border-bottom:1px solid var(--line);"><th style="padding:6px 8px;">Occupation</th><th style="padding:6px 8px;">Days to fill</th><th style="padding:6px 8px;">Shortage list</th></tr></thead>
+    <tbody>${rows.map(([occ, v]) => `<tr style="border-bottom:1px solid var(--line);"><td style="padding:6px 8px;">${esc(occ)}</td><td style="padding:6px 8px;">${v.ttf}</td><td style="padding:6px 8px;">${v.shortage ? "yes" : "no"}</td></tr>`).join("")}</tbody></table>` : `<p class="muted">No indicators for this kommune.</p>`;
+}
+
 function renderBriefing(k) {
   $("briefing-body").innerHTML = k.briefing.map(([label, text]) =>
     `<p><span class="label">${esc(label)}</span>${esc(text)}</p>`).join("");
@@ -518,6 +545,7 @@ function render() {
   renderSkills(k);
   renderDemand(k);
   renderSsb(k);
+  renderIndicators(k);
   renderBriefing(k);
 }
 
