@@ -26,18 +26,18 @@ def trend(start: int, end: int) -> str:
 
 def main() -> None:
     here = Path(__file__).parent / "ssb"
-    rows = list(csv.DictReader((here / "11619-kommuner.csv").open()))
+    rows = list(csv.DictReader((here / "11619-municipalities.csv").open()))
     by = {}
     for r in rows:
         if r["year"] not in (START, END) or r["occupation_code"] == "0-9":
             continue
         # Tromsø and Kristiansand change code over time; SOURCE.md explains the mapping.
-        key = (r["kommune_slug"], r["occupation_label"])
+        key = (r["municipality_slug"], r["occupation_label"])
         by.setdefault(key, {})[r["year"]] = int(r["employed_persons"]) if r["employed_persons"] else 0
     out = here / "occupation_trend.csv"
     with out.open("w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["kommune_slug", "occupation_label", "employed_2019", "employed_2025", "annual_growth", "trend"])
+        w.writerow(["municipality_slug", "occupation_label", "employed_2019", "employed_2025", "annual_growth", "trend"])
         for (slug, occ), v in sorted(by.items()):
             a, b = v.get(START, 0), v.get(END, 0)
             g = "" if a == 0 else f"{(b / a) ** (1 / YEARS) - 1:.4f}"

@@ -4,9 +4,9 @@ Brainstorm from Fable. Builds on the agreed architecture (signals -> core model 
 
 ## Data sources and signals
 
-- **NAV job-ad signal (real data).** Adapter that pulls public job ads from arbeidsplassen.no / NAV open data, maps titles to STYRK-08 occupation codes and extracts skill mentions. Why: the most direct "demand" signal, and it is Norwegian, per kommune. Effort: M. Risk: licence and rate limits; title-to-occupation mapping is noisy.
-- **NAV Bedriftsundersøkelsen (reported shortages).** Adapter for the annual enterprise survey that estimates unfilled positions by occupation and county. Why: the official shortage figure ministers already quote. Effort: S. Risk: county, not kommune, granularity; annual cadence.
-- **SSB employment-by-occupation and population projections.** Adapter via SSB's PxWeb API (registered employment by kommune and sector; population by age). Why: gives the supply side and lets us say "retirement wave in occupation X in kommune Y". Effort: M. Risk: occupation detail is thinner at kommune level than at county level.
+- **NAV job-ad signal (real data).** Adapter that pulls public job ads from arbeidsplassen.no / NAV open data, maps titles to STYRK-08 occupation codes and extracts skill mentions. Why: the most direct "demand" signal, and it is Norwegian, per municipality. Effort: M. Risk: licence and rate limits; title-to-occupation mapping is noisy.
+- **NAV NAV business survey (reported shortages).** Adapter for the annual enterprise survey that estimates unfilled positions by occupation and county. Why: the official shortage figure ministers already quote. Effort: S. Risk: county, not municipality, granularity; annual cadence.
+- **SSB employment-by-occupation and population projections.** Adapter via SSB's PxWeb API (registered employment by municipality and sector; population by age). Why: gives the supply side and lets us say "retirement wave in occupation X in municipality Y". Effort: M. Risk: occupation detail is thinner at municipality level than at county level.
 - **ESCO skills taxonomy as the skill dimension.** Use ESCO (EU, open) as the canonical skill list so ads, education data and foreign studies line up. Why: makes every signal comparable and makes the white paper citable. Effort: S. Risk: Norwegian-language matching is imperfect.
 - **Scenario signal library.** Three or four hand-built what-ifs (highway rerouted, battery plant opens, hospital merger, fishing quota cut) encoded as the same signal interface. Why: this is what a minister will ask for first. Effort: S. Risk: easy to mistake for a forecast; must be labelled as assumptions.
 
@@ -14,7 +14,7 @@ Brainstorm from Fable. Builds on the agreed architecture (signals -> core model 
 
 - **Written tagging rules.** One page defining rising / falling / durable / transforming in measurable terms (for example demand growth, skill-mix churn), with worked examples. Why: policy makers will ask what "transforming" means, and the answer must be stable. Effort: S. Risk: thresholds chosen on synthetic data will not transfer.
 - **Confidence derived from signal agreement.** Confidence = how many independent signals point the same way, weighted by coverage and lag, not a hand-typed number. Why: honest and explainable. Effort: M. Risk: with one real signal the score is trivially low; it must still display well.
-- **Provenance on every cell.** Each kommune x occupation x skill row keeps the list of signals that touched it. Why: ministers get challenged in parliament, and "where does that come from" needs a one-click answer. Effort: S. Risk: none serious; the data contract gains a field.
+- **Provenance on every cell.** Each municipality x occupation x skill row keeps the list of signals that touched it. Why: ministers get challenged in parliament, and "where does that come from" needs a one-click answer. Effort: S. Risk: none serious; the data contract gains a field.
 
 ## Evaluation and rigour
 
@@ -25,8 +25,8 @@ Brainstorm from Fable. Builds on the agreed architecture (signals -> core model 
 
 ## Policy-maker experience
 
-- **Three-question briefing.** Rewrite the briefing prompt around what a kommune director asks: what is changing here, what should we fund this budget year, what are we unsure about. Effort: S. Risk: generic LLM prose; needs strict grounding in the core model.
-- **Compare to neighbours and to the county.** In the explorer, every kommune figure sits next to its region and national value. Why: a kommune official's first question is "is this just us". Effort: S. Risk: small kommuner have noisy numbers.
+- **Three-question briefing.** Rewrite the briefing prompt around what a municipality director asks: what is changing here, what should we fund this budget year, what are we unsure about. Effort: S. Risk: generic LLM prose; needs strict grounding in the core model.
+- **Compare to neighbours and to the county.** In the explorer, every municipality figure sits next to its region and national value. Why: a municipality official's first question is "is this just us". Effort: S. Risk: small municipalities have noisy numbers.
 - **Action mapping.** Link a rising or transforming skill to concrete levers: fagskole courses, NAV training, apprenticeship quotas. Why: turns a chart into a decision. Effort: M. Risk: course data is scattered and partly unlicensed.
 - **Uncertainty shown as a range, not a dot.** Low-confidence tags render visibly different. Why: prevents over-reading. Effort: S. Risk: visual clutter.
 
@@ -46,9 +46,9 @@ Brainstorm from Fable. Builds on the agreed architecture (signals -> core model 
 
 1. Which NAV job-ad source is allowed: the arbeidsplassen.no API, NAV open data exports, or scraped Finn.no (likely not permitted under its terms)?
 2. Is SSB data under NLOD / CC BY 4.0 sufficient for redistribution inside our dataset, and do we need attribution text in the explorer?
-3. Does SSB publish occupation-by-kommune at the detail we need, or must we model down from county level and say so?
-4. Which kommune do we commit to for the demo, and does it have a documented shock we can show in the backtest?
-5. Can Kompetansebehovsutvalget or HK-dir sanity-check the tagging definitions before the white paper?
+3. Does SSB publish occupation-by-municipality at the detail we need, or must we model down from county level and say so?
+4. Which municipality do we commit to for the demo, and does it have a documented shock we can show in the backtest?
+5. Can Competence Needs Committee or HK-dir sanity-check the tagging definitions before the white paper?
 6. Who owns the Claude API cost and prompt-grounding checks for the briefing lane?
 
 ## Research learnings (2026-10-21, 18:05)
@@ -59,7 +59,7 @@ From the demo-pitch and method-rigour research. Data-sources, data-contract, exp
 - Skill-row sources read as connected data. Relabel them as planned sources.
 - Header says "observed skill signals". All values are synthetic, so say so.
 - Offshore wind scenario has confidence 0.41, above the proposed 0.30 scenario cap.
-- Heat-pump tag differs by kommune (transforming in Bodø, rising in Stavanger and Kristiansand). Tags are hand-set; derive them from rules.
+- Heat-pump tag differs by municipality (transforming in Bodø, rising in Stavanger and Kristiansand). Tags are hand-set; derive them from rules.
 - Briefing is hand-written sample text. Say so in the demo.
 
 ### Method (proposed, not validated)
@@ -69,8 +69,8 @@ From the demo-pitch and method-rigour research. Data-sources, data-contract, exp
 - Scenario rows cap at 0.30 and never count as observed.
 - Smallest real backtest (about one week): freeze at 2019 using SSB employment by occupation; score 2019–2022 direction against "no change" and "last trend" baselines.
   - Can claim: directional hit rates with counts and intervals.
-  - Cannot claim: skill-tag accuracy, kommune accuracy, causation, shortage prediction.
-- Check before committing: SSB publishes occupation employment at roughly 20 groups by fylke.
+  - Cannot claim: skill-tag accuracy, municipality accuracy, causation, shortage prediction.
+- Check before committing: SSB publishes occupation employment at roughly 20 groups by county.
 
 ### Say this, not that
 - Not "the model predicts shortages". Say "the prototype shows how signals would combine".
@@ -85,6 +85,6 @@ From the briefing research. Generator script lives in the research folder, not i
 - Structured output via output_config format. Do not send temperature, top_p, top_k, or force tool_choice; Sonnet 5.5 and Haiku 5.5 reject them.
 - Thinking is on by default and counts against max_tokens, so budget 16000.
 - Grounding is enforced in code, not trusted to the model. The validator rejects uncited claims, unknown row ids, predictive wording, unlabelled scenario rows, and observed claims that cite low-confidence rows.
-- Cost estimate, not measured: about 2 cents per kommune on Sonnet, under 0.1 cent on Haiku.
+- Cost estimate, not measured: about 2 cents per municipality on Sonnet, under 0.1 cent on Haiku.
 - Generate briefings ahead of the demo with a real key and serve the saved JSON. No live call on stage.
 - Open: output is English only. Norwegian needs its own prohibited-word rules.
